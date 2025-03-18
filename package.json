@@ -10,7 +10,11 @@
 		"pages:build": "npx @cloudflare/next-on-pages",
 		"preview": "npm run pages:build && wrangler pages dev",
 		"deploy": "npm run pages:build && wrangler pages deploy",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
+		"drizzle:generate": "npx drizzle-kit generate",
+		"drizzle:migrate": "npx drizzle-kit migrate",
+		"drizzle:push": "npx drizzle-kit push",
+		"drizzle:drop": "npx drizzle-kit drop"
 	},
 	"dependencies": {
 		"@mantine/core": "^7.17.1",
@@ -21,6 +25,7 @@
 		"drizzle-orm": "^0.40.0",
 		"hono": "^4.7.4",
 		"next": "15.1.6",
+		"next-auth": "^4.24.11",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0"
 	},
