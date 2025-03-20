@@ -1,0 +1,41 @@
+.header{
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  height: 100%;
+  border: 1px;
+  padding: 10px;
+  background-color: #f0f0f0;
+}
+.search{
+  border-radius: 100vh;
+  width:300px;
+  margin-right: 20px;
+}
+.userIcon{
+  height:80%;
+  border-radius: 50%;
+  margin-right:20px;
+}
+.userIcon:hover{
+  box-shadow: 0 0 8px gray;
+}
+.guestIcon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+  width:120px;
+  border: 1px solid gray;
+  border-radius:100vh;
+  margin-right: 20px;
+}
+
+.projectName{
+  border-left: 1px solid lightgray;
+  padding: 0px 20px;
+}
+
+.setting{
+  margin:0 20px;
+}

@@ -1,0 +1,45 @@
+.window{
+  box-shadow: 0 0 2px gray;
+  text-align: center;
+  width:300px;
+  border-radius: 5%;
+  padding: 0;
+}
+.profile{  
+  margin:14px;
+  padding:20px  8px;
+  background-color:#f0f0f0 ;
+  border-radius: 5%;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.profile ul{
+  list-style: none;
+  text-align: left;
+  padding-left: 10px;
+}
+.profile li:last-child{
+  font-size: 0.8rem;
+}
+.setting{
+  margin:10px 0;
+}
+.setting li{
+  list-style: none;
+  text-align: left;
+  cursor:default;
+  padding:4px 28px;
+  border-radius: 5%;
+  font-size: 126x;
+}
+.setting li:hover{
+  background-color: #f0f0f0;
+}
+
+
+.icon{
+  border-radius: 50%;
+  width:20%;
+}

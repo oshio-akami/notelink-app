@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import client from "@/libs/hono";
 
-export default function Home() {
+export default function Page() {
   const [name,setName]=useState<string>();
   useEffect(()=>{
     client.api.posts.table
