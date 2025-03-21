@@ -3,7 +3,7 @@
 import styles from "./profileWindow.module.css"
 import { Popover ,List} from "@mantine/core"
 import { ReactNode } from "hono/jsx"
-import { signOut } from "next-auth/react"
+import { signIn, signOut } from "next-auth/react"
 import { IconUser ,IconPencil,IconLogout,IconUserPlus} from "@tabler/icons-react"
 
 type Props={
@@ -31,7 +31,9 @@ export function ProfileWindow({name,mail,icon,children}:Props){
             <List>
               <List.Item icon={<IconPencil/>}>プロフィールの編集</List.Item>
               <List.Item icon={<IconUser/>}>アカウント設定</List.Item>
-              <List.Item icon={<IconUserPlus/>}>別のアカウントでログイン</List.Item>
+              <List.Item icon={<IconUserPlus/>} 
+                onClick={()=>signIn("google")}>
+                  別のアカウントでログイン</List.Item>
               <List.Item icon={<IconLogout/>} onClick={() => signOut()}>ログアウト</List.Item>
             </List>
           </div>
