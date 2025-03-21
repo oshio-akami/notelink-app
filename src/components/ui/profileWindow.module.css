@@ -33,6 +33,7 @@
   padding:4px 28px;
   border-radius: 5%;
   font-size: 126x;
+  cursor: pointer;
 }
 .setting li:hover{
   background-color: #f0f0f0;

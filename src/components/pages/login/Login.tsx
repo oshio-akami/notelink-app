@@ -1,6 +1,7 @@
 import { Input ,PasswordInput,Button} from "@mantine/core"
 import styles from "./login.module.css"
 import {signIn } from "next-auth/react"
+import { Image } from "@mantine/core"
 
 export function Login(){
   return(
@@ -12,7 +13,7 @@ export function Login(){
         <li><PasswordInput placeholder="password"></PasswordInput></li>
         <li><Button>Login</Button></li>
         <li><p className={styles.split}>or</p></li>
-        <li><img src="web_light_sq_SI.svg" alt="" onClick={()=>signIn("google",{ callbackUrl:"/dashboard" })}/></li>
+        <li><img src='/image/web_light_sq_SI.svg' alt="login" onClick={()=>signIn("google",{ callbackUrl:"/dashboard" })}></img></li>
         </ul>
       </div>
     </div>

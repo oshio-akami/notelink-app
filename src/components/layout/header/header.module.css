@@ -1,21 +1,35 @@
 .header{
   display: flex;
-  justify-content: right;
-  align-items: center;
+  justify-content: space-between;
   height: 100%;
   border: 1px;
   padding: 10px;
   background-color: #f0f0f0;
 }
+.leftSection{
+  display: flex;
+  justify-content: space-between;
+  width:50%;
+  align-items: center;
+  margin-left: 40px;
+}
+
+.rightSection{
+  display: flex;
+  justify-content: right;
+  width:50%;
+  align-items: center;
+  gap:20px;
+  margin-right: 20px;
+}
 .search{
   border-radius: 100vh;
   width:300px;
-  margin-right: 20px;
 }
 .userIcon{
   height:80%;
   border-radius: 50%;
-  margin-right:20px;
+  cursor: pointer;
 }
 .userIcon:hover{
   box-shadow: 0 0 8px gray;
@@ -33,9 +47,16 @@
 
 .projectName{
   border-left: 1px solid lightgray;
-  padding: 0px 20px;
+  border-right: 1px solid lightgray;
+  padding: 0px 10px;
 }
 
 .setting{
-  margin:0 20px;
+  height:30px;
+  width:30px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.setting:hover{
+  box-shadow: 0 0 8px gray;
 }
