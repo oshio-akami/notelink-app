@@ -3,6 +3,7 @@ import { IconUserCircle,IconBell } from "@tabler/icons-react";
 import { auth } from "@/auth";
 import { ProfileWindow } from "@/components/ui/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
+import { Image } from "@mantine/core";
 
 export async function Header() {
   const session = await auth();
@@ -13,13 +14,13 @@ export async function Header() {
       </div>
       <div className={styles.rightSection}>
         <SearchBar />
-        {session ? (
+        {session?.user? (
           <ProfileWindow
-            name={session.user?.name}
-            mail={session.user?.email}
-            icon={session.user?.image}
+            name={session.user.name||""}
+            mail={session.user.email||""}
+            icon={session.user.image||""}
           >
-            <img className={styles.userIcon} alt="" src={session.user.image} />
+            <Image className={styles.userIcon} alt="" src={session.user.image||""} />
           </ProfileWindow>
         ) : (
           <div className={styles.guestIcon}>
