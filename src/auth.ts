@@ -4,6 +4,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {db} from "@/db/index"
 import { users,accounts ,authenticators ,sessions} from "./db/schema";
 
+export const runtime = "edge";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   trustHost: true ,
