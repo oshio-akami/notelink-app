@@ -1,21 +1,6 @@
-"use client"
-
-import { useState } from "react";
-import { useEffect } from "react";
-import client from "@/libs/hono";
+import { redirect } from "next/navigation";
 
 export default function Page() {
-  const [name,setName]=useState<string>();
-  useEffect(()=>{
-    client.api.posts.table
-    .$get()
-    .then((res)=>res.json())
-    .then((json)=>{
-      setName(json[0].name);
-    });
-  },[]);
-
-  return (
-    <p>{typeof name!=="undefined" ? `Hello ${name}!`: "Loading..."}</p>
-  );
+  redirect("/dashboard");
+  return (null);
 }

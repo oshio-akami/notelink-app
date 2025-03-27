@@ -1,11 +1,12 @@
-"use client";
-
-import { useSession } from "next-auth/react";
+import { auth } from "@/auth";
 import { Login } from "@/components/pages/login/Login";
-import { Logout } from "@/components/pages/logout/Logout";
+import { redirect } from "next/navigation";
 
-export default function Page() {
-  const { data: session, status } = useSession();
+export default async function Page() {
+  const session =await auth();
+  if(session){
+    redirect("/dashboard");
+  }
   return (
     <div>
       <Login />
