@@ -6,6 +6,7 @@ type Props = {
   params:string,
 }
 
+export const runtime = "edge";
 
 const linksMockData = [
   { label: "プロフィール設定", link: "userSetting" },

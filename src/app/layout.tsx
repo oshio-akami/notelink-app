@@ -9,6 +9,8 @@ import {
 import NextAuthProvider from "@/providers/NextAuth";
 import React from "react";
 
+export const runtime = "edge";
+
 export const metadata: Metadata = {
   title: "project",
   description: "project",

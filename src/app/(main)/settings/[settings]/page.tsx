@@ -8,6 +8,8 @@ type Props = {
   params: Promise<{ [key: string]: string }>
 }
 
+export const runtime = "edge";
+
 export default async function Settings(props:Props){
   const params=await props.params;
   let setting =<></>;

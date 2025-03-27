@@ -3,6 +3,8 @@ import { NavLink } from "@mantine/core";
 import { IconDashboard ,IconChecklist,IconChartDots,IconUsersGroup,IconClipboardText,IconSettings} from "@tabler/icons-react";
 import { headers } from "next/headers";
 
+export const runtime = "edge";
+
 const iconSize=24;
 const linksMockData=[
   {label:'ダッシュボード',link:'/dashboard',active:"dashboard",icon:<IconDashboard size={iconSize} stroke={1.5} />},

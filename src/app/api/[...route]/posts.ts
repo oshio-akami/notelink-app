@@ -2,6 +2,8 @@
 import { Hono } from "hono";
 //import {db} from "@/db/index";
 
+export const runtime = "edge";
+
 const posts=new Hono()
 .get("/", async (c) => {
   return c.json({ name: "Root!" });

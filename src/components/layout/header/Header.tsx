@@ -5,6 +5,8 @@ import { ProfileWindow } from "@/components/ui/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
 import { Image } from "@mantine/core";
 
+export const runtime = "edge";
+
 export async function Header() {
   const session = await auth();
   return (
