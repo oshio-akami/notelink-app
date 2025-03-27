@@ -17,12 +17,13 @@
 		"drizzle:drop": "npx drizzle-kit drop"
 	},
 	"dependencies": {
+		"@auth/drizzle-adapter": "^1.8.0",
 		"@mantine/core": "^7.17.1",
 		"@mantine/hooks": "^7.17.1",
 		"@neondatabase/serverless": "^0.10.4",
 		"@tabler/icons-react": "^3.31.0",
 		"dotenv": "^16.4.7",
-		"drizzle-orm": "^0.40.0",
+		"drizzle-orm": "^0.40.1",
 		"hono": "^4.7.4",
 		"next": "15.1.6",
 		"next-auth": "^5.0.0-beta.25",
