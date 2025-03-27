@@ -9,6 +9,12 @@ import {
 import NextAuthProvider from "@/providers/NextAuth";
 import React from "react";
 
+import { Noto_Sans_JP  } from "next/font/google";
+
+const Font=Noto_Sans_JP ({
+  weight:"400",
+  subsets:["latin"],
+});
 export const metadata: Metadata = {
   title: "project",
   description: "project",
@@ -24,7 +30,7 @@ export default function RootLayout({
     <head>
       <ColorSchemeScript />
     </head>
-    <body>
+    <body className={Font.className}>
       <MantineProvider>
         <NextAuthProvider>
           {children}

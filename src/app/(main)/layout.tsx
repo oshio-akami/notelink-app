@@ -19,6 +19,12 @@ export const metadata: Metadata = {
   title: "project",
   description: "project",
 };
+import { Noto_Sans_JP  } from "next/font/google";
+
+const Font=Noto_Sans_JP ({
+  weight:"400",
+  subsets:["latin"],
+});
 
 export default function RootLayout({
   children,
@@ -30,17 +36,18 @@ export default function RootLayout({
     <head>
       <ColorSchemeScript />
     </head>
-    <body>
+    <body className={Font.className}>
       <MantineProvider>
         <NextAuthProvider>
           <AppShell
             header={{ height: 60 }}
-            navbar={{ width: 250, breakpoint: "sm" }}
+            navbar={{ width: 250, breakpoint: "100px" }}
+            padding={"sm"}
           >
             <AppShellHeader>
               <Header />
             </AppShellHeader>
-            <AppShellNavbar>
+            <AppShellNavbar withBorder={false}>
               <NavBar />
             </AppShellNavbar>
             <AppShellMain>{children}</AppShellMain>

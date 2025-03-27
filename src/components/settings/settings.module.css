@@ -1,0 +1,17 @@
+.setting{
+  padding: 80px;
+  display: flex;
+  flex-direction: column;
+  gap:20px;
+}
+
+.header{
+  font-size: 1.2rem;
+}
+
+.group{
+  height:600px;
+  width:100vh;
+  box-shadow: 0 0 8px gray;
+  border-radius: 20px;
+}

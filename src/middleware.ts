@@ -8,7 +8,13 @@ export async function middleware(request:NextRequest){
     url.pathname="/login";
     return NextResponse.redirect(url);
   }
-  return
+  const requestHeaders=new Headers(request.headers);
+  requestHeaders.set('x-url',request.url);
+  return NextResponse.next({
+    request:{
+      headers:requestHeaders,
+    }
+  })
   if(request.nextUrl.pathname.startsWith("/_next")){
     NextResponse.next();
   }

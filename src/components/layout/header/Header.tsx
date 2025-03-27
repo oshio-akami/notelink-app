@@ -3,6 +3,7 @@ import { IconUserCircle, IconSettings,IconBell } from "@tabler/icons-react";
 import { auth } from "@/auth";
 import { ProfileWindow } from "@/components/ui/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
+import Link from "next/link";
 
 export async function Header() {
   const session = await auth();
@@ -29,7 +30,9 @@ export async function Header() {
         )}
         <IconBell className={styles.setting}></IconBell>
         <p className={styles.projectName}>プロジェクト名</p>
-        <IconSettings className={styles.setting}></IconSettings>
+        <Link href="/profileSetting">
+          <IconSettings className={styles.setting}></IconSettings>
+        </Link>
       </div>
     </div>
   );
