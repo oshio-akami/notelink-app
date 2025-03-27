@@ -44,5 +44,4 @@ next-env.d.ts
 .wrangler
 .dev.vars*
 
-/drizzle
 env.d.ts
