@@ -13,6 +13,8 @@ import React from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
+export const runtime = "edge";
+
 export const metadata: Metadata = {
   title: "project",
   description: "project",
