@@ -6,6 +6,7 @@ import { users,accounts ,authenticators ,sessions} from "./db/schema";
 
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
+  trustHost: true ,
   secret:process.env.NEXTAUTH_SECRET,
   providers:[
     GoogleProvider({

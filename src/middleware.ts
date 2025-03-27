@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import {auth} from "@/auth";
 
 export async function middleware(request:NextRequest){
-  const session=await auth();
+  const session=await auth({ trustHost: true });
   if(!session){
     const url=request.nextUrl.clone();
     url.pathname="/login";
     return NextResponse.redirect(url);
   }
+   if(request){
   const requestHeaders=new Headers(request.headers);
   requestHeaders.set('x-url',request.url);
   return NextResponse.next({
@@ -15,6 +15,8 @@ export async function middleware(request:NextRequest){
       headers:requestHeaders,
     }
   })
+ }
+  
 }
 
 
