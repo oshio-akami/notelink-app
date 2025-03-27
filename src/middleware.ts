@@ -15,14 +15,6 @@ export async function middleware(request:NextRequest){
       headers:requestHeaders,
     }
   })
-  if(request.nextUrl.pathname.startsWith("/_next")){
-    NextResponse.next();
-  }
-  if(request.nextUrl.pathname!=="/login"){
-    const url=request.nextUrl.clone();
-    url.pathname="/login";
-    return NextResponse.redirect(url);
-  }
 }
 
 

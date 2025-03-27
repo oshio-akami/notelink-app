@@ -10,17 +10,23 @@ import {
 import { NavBar } from "@/components/layout/navbar/Navbar";
 import { Header } from "@/components/layout/header/Header";
 import React from "react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "project",
   description: "project",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session=await auth();
+  if(!session){
+    redirect("/login");
+  }
   return (
     <AppShell
     header={{ height: 60 }}
