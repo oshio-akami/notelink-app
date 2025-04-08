@@ -9,7 +9,6 @@ import {
 } from "@mantine/core";
 import { NavBar } from "@/components/layout/navbar/Navbar";
 import { Header } from "@/components/layout/header/Header";
-import React from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
@@ -19,6 +18,7 @@ export const metadata: Metadata = {
   title: "project",
   description: "project",
 };
+
 
 export default async function RootLayout({
   children,

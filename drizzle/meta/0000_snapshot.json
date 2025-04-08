@@ -1,6 +1,6 @@
 {
-  "id": "1f51ea60-2070-4904-9c66-5ac3d2ec5d7c",
-  "prevId": "10685782-9027-4fda-b038-0e5fe98e9503",
+  "id": "13b73985-61e1-4d63-9dd5-30de262249ba",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -8,9 +8,9 @@
       "name": "account",
       "schema": "",
       "columns": {
-        "userId": {
-          "name": "userId",
-          "type": "text",
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -26,8 +26,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "providerAccountId": {
-          "name": "providerAccountId",
+        "provider_account_id": {
+          "name": "provider_account_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -77,12 +77,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "account_userId_users_id_fk": {
-          "name": "account_userId_users_id_fk",
+        "account_user_id_users_id_fk": {
+          "name": "account_user_id_users_id_fk",
           "tableFrom": "account",
           "tableTo": "users",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -97,111 +97,28 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.authenticator": {
-      "name": "authenticator",
-      "schema": "",
-      "columns": {
-        "credentialID": {
-          "name": "credentialID",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "userId": {
-          "name": "userId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "providerAccountId": {
-          "name": "providerAccountId",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "credentialPublicKey": {
-          "name": "credentialPublicKey",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "counter": {
-          "name": "counter",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "credentialDeviceType": {
-          "name": "credentialDeviceType",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "credentialBackedUp": {
-          "name": "credentialBackedUp",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "transports": {
-          "name": "transports",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "authenticator_userId_users_id_fk": {
-          "name": "authenticator_userId_users_id_fk",
-          "tableFrom": "authenticator",
-          "tableTo": "users",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "authenticator_credentialID_unique": {
-          "name": "authenticator_credentialID_unique",
-          "nullsNotDistinct": false,
-          "columns": [
-            "credentialID"
-          ]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.project_members": {
-      "name": "project_members",
+    "public.group_members": {
+      "name": "group_members",
       "schema": "",
       "columns": {
         "user_id": {
           "name": "user_id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },
-        "project_id": {
-          "name": "project_id",
-          "type": "integer",
+        "group_id": {
+          "name": "group_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "project_members_user_id_users_id_fk": {
-          "name": "project_members_user_id_users_id_fk",
-          "tableFrom": "project_members",
+        "group_members_user_id_users_id_fk": {
+          "name": "group_members_user_id_users_id_fk",
+          "tableFrom": "group_members",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -212,26 +129,26 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "project_members_project_id_projects_project_id_fk": {
-          "name": "project_members_project_id_projects_project_id_fk",
-          "tableFrom": "project_members",
-          "tableTo": "projects",
+        "group_members_group_id_groups_group_id_fk": {
+          "name": "group_members_group_id_groups_group_id_fk",
+          "tableFrom": "group_members",
+          "tableTo": "groups",
           "columnsFrom": [
-            "project_id"
+            "group_id"
           ],
           "columnsTo": [
-            "project_id"
+            "group_id"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {
-        "project_members_user_id_project_id_pk": {
-          "name": "project_members_user_id_project_id_pk",
+        "group_members_user_id_group_id_pk": {
+          "name": "group_members_user_id_group_id_pk",
           "columns": [
             "user_id",
-            "project_id"
+            "group_id"
           ]
         }
       },
@@ -240,18 +157,18 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.projects": {
-      "name": "projects",
+    "public.groups": {
+      "name": "groups",
       "schema": "",
       "columns": {
-        "project_id": {
-          "name": "project_id",
-          "type": "serial",
+        "group_id": {
+          "name": "group_id",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
-        "project_name": {
-          "name": "project_name",
+        "group_name": {
+          "name": "group_name",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -294,15 +211,15 @@
       "name": "session",
       "schema": "",
       "columns": {
-        "sessionToken": {
-          "name": "sessionToken",
+        "session_token": {
+          "name": "session_token",
           "type": "text",
           "primaryKey": true,
           "notNull": true
         },
-        "userId": {
-          "name": "userId",
-          "type": "text",
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
@@ -315,12 +232,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "session_userId_users_id_fk": {
-          "name": "session_userId_users_id_fk",
+        "session_user_id_users_id_fk": {
+          "name": "session_user_id_users_id_fk",
           "tableFrom": "session",
           "tableTo": "users",
           "columnsFrom": [
-            "userId"
+            "user_id"
           ],
           "columnsTo": [
             "id"
@@ -341,7 +258,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
           "notNull": true
         },
@@ -357,8 +274,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "emailVerified": {
-          "name": "emailVerified",
+        "email_verified": {
+          "name": "email_verified",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false

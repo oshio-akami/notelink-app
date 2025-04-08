@@ -1,0 +1,15 @@
+.card{
+  width:45%;
+  height:200px;
+  border-radius: 10px;
+  background-color:var(--sub-color);
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+  padding:20px;
+}
+.title{
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 1px solid gray;
+}

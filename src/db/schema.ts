@@ -5,30 +5,32 @@ import {
   primaryKey,
   timestamp,
   text,
-  boolean,
+  uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import type { AdapterAccountType } from "next-auth/adapters"
+import {  } from "drizzle-orm/gel-core";
 
 
 export const users = pgTable("users", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
   roleId: integer("role_id").references(() => roles.roleId),
+  activeGroupId:uuid("active_group").references(() => groups.groupId, { onDelete: "set null" }),
 });
 
 export const accounts = pgTable(
   "account",
   {
-    userId: text("userId")
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccountType>().notNull(),
     provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),
@@ -47,83 +49,64 @@ export const accounts = pgTable(
 )
 
 export const sessions = pgTable("session", {
-  sessionToken: text("sessionToken").primaryKey(),
-  userId: text("userId")
+  sessionToken: text("session_token").primaryKey(),
+  userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 })
 
-export const authenticators = pgTable(
-  "authenticator",
-  {
-    credentialID: text("credentialID").notNull().unique(),
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    providerAccountId: text("providerAccountId").notNull(),
-    credentialPublicKey: text("credentialPublicKey").notNull(),
-    counter: integer("counter").notNull(),
-    credentialDeviceType: text("credentialDeviceType").notNull(),
-    credentialBackedUp: boolean("credentialBackedUp").notNull(),
-    transports: text("transports"),
-  },
-  (authenticator) => [
-    {
-      compositePK: primaryKey({
-        columns: [authenticator.userId, authenticator.credentialID],
-      }),
-    },
-  ]
-)
-
+//ユーザーの役職
 export const roles = pgTable("roles", {
   roleId: serial("role_id").primaryKey(),
   roleName: text("role_name").notNull(),
 });
 
-export const projects = pgTable("projects", {
-  projectId: serial("project_id").primaryKey(),
-  projectName: text("project_name").notNull(),
+//グループ
+export const groups = pgTable("groups", {
+  groupId: uuid("group_id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  groupName: text("group_name").notNull(),
 });
 
-export const projectMembers = pgTable(
-  "project_members",
-  {
-    userId: text("user_id").references(() => users.id, {
-      onDelete: "cascade",
-    }),
-    projectId: integer("project_id").references(() => projects.projectId),
+//グループに参加しているメンバー
+export const groupMembers = pgTable("group_members",{
+  userId: uuid("user_id").references(() => users.id, {
+     onDelete: "cascade",
+  }),
+  groupId: uuid("group_id").references(() => groups.groupId,{
+     onDelete:"cascade",
+   }),
   },
   (table) => {
     return {
-      pk: primaryKey(table.userId, table.projectId),
+      pk: primaryKey(table.userId, table.groupId),
     };
   }
 );
 
 export const userRelations = relations(users, ({ many, one }) => ({
-  projectMembers: many(projectMembers),
+  groupMembers: many(groupMembers),
   role: one(roles, {
     fields: [users.roleId],
     references: [roles.roleId],
   }),
 }));
 
-export const projectsRelations = relations(projects, ({ many }) => ({
-  projectMembers: many(projectMembers),
+export const groupsRelations = relations(groups, ({ many }) => ({
+  groupMembers: many(groupMembers),
 }));
 
-export const projectMembersRelations = relations(
-  projectMembers,
+//現状グループメンバーがあるとグループが削除できない、依存が逆になってる
+export const groupMembersRelations = relations(
+  groupMembers,
   ({ one }) => ({
     user: one(users, {
-      fields: [projectMembers.userId],
+      fields: [groupMembers.userId],
       references: [users.id],
     }),
-    project: one(projects, {
-      fields: [projectMembers.projectId],
-      references: [projects.projectId],
+    group: one(groups, {
+      fields: [groupMembers.groupId],
+      references: [groups.groupId],
     }),
   })
 );

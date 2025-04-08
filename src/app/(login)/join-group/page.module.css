@@ -1,0 +1,10 @@
+.formWrapper{
+  width:400px;
+  margin: 40px auto;
+  padding:20px;
+  background-color: var(--sub-color);
+  display: flex;
+  flex-direction: column;
+  gap:60px;
+  border-radius: 10px;
+}

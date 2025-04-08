@@ -3,24 +3,24 @@
   "dialect": "postgresql",
   "entries": [
     {
+      "idx": 0,
+      "version": "7",
+      "when": 1743420204730,
+      "tag": "0000_married_polaris",
+      "breakpoints": true
+    },
+    {
       "idx": 1,
       "version": "7",
-      "when": 1743063684761,
-      "tag": "0001_lovely_puck",
+      "when": 1743495156382,
+      "tag": "0001_magenta_slipstream",
       "breakpoints": true
     },
     {
       "idx": 2,
       "version": "7",
-      "when": 1743065261744,
-      "tag": "0002_curly_bruce_banner",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1743066164575,
-      "tag": "0003_warm_kabuki",
+      "when": 1743647297178,
+      "tag": "0002_skinny_lucky_pierre",
       "breakpoints": true
     }
   ]

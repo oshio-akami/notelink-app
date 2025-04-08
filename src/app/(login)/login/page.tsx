@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { Login } from "@/components/pages/login/Login";
+import { LoginForm } from "./_components/loginForm/LoginForm";
 import { redirect } from "next/navigation";
 
 export const runtime = "edge";
@@ -11,7 +11,7 @@ export default async function Page() {
   }
   return (
     <div>
-      <Login />
+      <LoginForm />
     </div>
   );
 }
