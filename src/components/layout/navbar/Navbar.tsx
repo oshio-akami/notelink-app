@@ -8,7 +8,7 @@ export const runtime = "edge";
 const iconSize=24;
 const linksMockData=[
   {label:'ダッシュボード',link:'/dashboard',active:"dashboard",icon:<IconDashboard size={iconSize} stroke={1.5} />},
-  {label:'タスク',link:'/task',active:"task",icon:<IconChecklist size={iconSize} stroke={1.5} />},
+  {label:'グループ作成',link:'/create-group',active:"create-group",icon:<IconChecklist size={iconSize} stroke={1.5} />},
   {label:'ガントチャート',link:'/ganttchart',active:"ganttchart",icon:<IconChartDots size={iconSize} stroke={1.5} />},
   {label:'メンバー',link:'/member',active:"member",icon:<IconUsersGroup size={iconSize} stroke={1.5} />},
   {label:'備忘録',link:'/memo',active:"memo",icon:<IconClipboardText size={iconSize} stroke={1.5} />},

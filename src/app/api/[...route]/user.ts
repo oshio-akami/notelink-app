@@ -12,6 +12,7 @@ export const runtime = "edge";
 
 const setActiveGroupSchema = z.object({
   activeGroupId: z.string(),
+  userId:z.string(),
 });
 
 const hasJoinedSchema=z.object({
@@ -42,9 +43,7 @@ const user=new Hono()
 })
 .post("/setActiveGroup", zValidator("json",setActiveGroupSchema),async (c) => {
   const body=c.req.valid("json");
-  const {activeGroupId}=body;
-  const session =await auth();
-  const userId=session?.user?.id;
+  const {activeGroupId,userId}=body;
   if(!activeGroupId||!userId){
     return;
   }
