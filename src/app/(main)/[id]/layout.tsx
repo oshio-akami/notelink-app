@@ -9,8 +9,6 @@ import {
 } from "@mantine/core";
 import { NavBar } from "@/components/layout/navbar/Navbar";
 import { Header } from "@/components/layout/header/Header";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 
 export const runtime = "edge";
 
@@ -19,16 +17,12 @@ export const metadata: Metadata = {
   description: "project",
 };
 
+type Props={
+  params:Promise<{id:string}>,
+  children:Readonly<React.ReactNode>,
+}
 
-export default async function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  const session=await auth();
-  if(!session){
-    redirect("/login");
-  }
+export default function RootLayout(props:Props) {
   return (
     <AppShell
     header={{ height: 60 }}
@@ -36,12 +30,12 @@ export default async function RootLayout({
     padding={"sm"}
   >
     <AppShellHeader>
-      <Header />
+      <Header params={props.params} />
     </AppShellHeader>
     <AppShellNavbar withBorder={false}>
       <NavBar />
     </AppShellNavbar>
-    <AppShellMain>{children}</AppShellMain>
+    <AppShellMain>{props.children}</AppShellMain>
   </AppShell>
   );
 }
