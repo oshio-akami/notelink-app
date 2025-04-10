@@ -3,7 +3,8 @@
   height: 100%;
   border: 1px;
   padding: 10px;
-  background-color: var(--sub-color);
+  background-color: white;
+  box-shadow: 0 0 8px gray;
 }
 .leftSection{
   width:100%;

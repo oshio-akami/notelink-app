@@ -8,25 +8,28 @@ import client from "@/libs/hono";
 import { Session } from "next-auth";
 import  GroupsWindow  from "@/components/ui/groupsWindow/GroupsWindow";
 
-
 export const runtime = "edge";
 
-const getActiveGroupName=async(session:Session)=>{
-  if(!session?.user.activeGroupId){
-    return "not user";
-  }
+type Props={
+  params:Promise<{id:string}>,
+}
+
+const getActiveGroupName=async(groupId:string)=>{
   const result=await client.api.posts.getGroupName.$post({
     json:{
-      groupId:session.user.activeGroupId,
+      groupId:groupId,
     }
   });
   const body=await result.json();
-  return body[0].groupName;
+  if(!body.success){
+    return "グループが存在しません"
+  }
+  return body.data[0].groupName;
 }
+
 const getGroups=async(session:Session)=>{
   if(!session?.user.id){
     return null;
-;
   }
   const groups=await client.api.posts.getGroups.$post({
     json:{
@@ -36,10 +39,12 @@ const getGroups=async(session:Session)=>{
    return await groups.json();
 }
 
-export async function Header() {
+export async function Header({params}:Props) {
+  const {id}=await params;
   const session = await auth();
-  const groupName=session?await getActiveGroupName(session):"not session";
+  const groupName=await getActiveGroupName(id);
   const groups=session?await getGroups(session):[];
+  console.log("再読み込み")
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>

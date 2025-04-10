@@ -5,7 +5,6 @@ import client from "@/libs/hono";
 import {parseWithZod} from "@conform-to/zod"
 import {createGroupFormSchema} from "@/utils/types/formSchema"
 import { redirect } from "next/navigation";
-import user from "@/app/api/[...route]/user";
 
 export async function createGroup(_:unknown,formData: FormData){
   const submission=parseWithZod(formData,{schema:createGroupFormSchema});
@@ -35,5 +34,5 @@ export async function createGroup(_:unknown,formData: FormData){
       activeGroupId:body.groupId,
     }
   });
-  redirect("/dashboard");
+  redirect(`/${body.groupId}/home`);
 }

@@ -25,12 +25,12 @@ export default function GroupsWindow({groups,children}:Props){
    })
   return (
     <>
-      <Popover width="80%"  trapFocus offset={{ mainAxis: 10, crossAxis: 40 }} >
+      <Popover width="60%"  trapFocus offset={{ mainAxis: 10, crossAxis: 40 }} >
         <Popover.Target>{children}</Popover.Target>
         <Popover.Dropdown className={styles.window} h="80%" bg="#f0f0f0">
           <Text fw={700} size="xl" td="underline" m={20}>グループ一覧</Text>
-          <TextInput value={searchValue} onChange={(e)=>setSearchValue(e.target.value)} label="グループを検索" leftSection={<IconSearch />}></TextInput>
-          <ScrollArea h="80%">
+          <TextInput value={searchValue} onChange={(e)=>setSearchValue(e.target.value)} label="グループを検索" leftSection={<IconSearch /> } m={20}/>
+          <ScrollArea h="70%">
             <Grid className={styles.groups} p={20} bg="white">
               {groupCards}
             </Grid>
