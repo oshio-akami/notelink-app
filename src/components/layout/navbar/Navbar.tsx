@@ -19,9 +19,9 @@ const linksMockData=[
 
 const createLink=(session:Session|null,link:string)=>{
   if(!session?.user.activeGroupId){
-    return `/0${link}`;
+    return `/group/0${link}`;
   }
-  return `/${session.user.activeGroupId}${link}`;
+  return `/group/${session.user.activeGroupId}${link}`;
 }
 
 export function NavBar(){

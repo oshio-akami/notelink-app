@@ -8,6 +8,7 @@ import { auth } from "@/auth";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { eq, inArray } from "drizzle-orm";
+import { getGroupNameSchema ,getGroupsSchema} from "@/utils/types/apiSchema";
 
 interface joinGroupRequestBody{
   groupId:string;
@@ -17,14 +18,6 @@ interface joinGroupRequestBody{
 const createGroupSchema = z.object({
   groupName: z.string(),
 });
-
-const getGroupNameSchema = z.object({
-  groupId: z.string(),
-});
-const getGroupsSchema=z.object({
-  userId:z.string(),
-})
-
 
 async function getUserId(){
   const session =await auth();
@@ -71,12 +64,16 @@ const posts=new Hono()
     return c.json({message:"グループを作成しました"});
 }).post("/getGroupName", zValidator("json",getGroupNameSchema),async(c)=>{
   const body=await c.req.valid("json");
+  if(!body||!body.groupId){
+    console.log("error-throw")
+    throw new Error('Validation failed: groupId is required');
+  }
     const groupId=body.groupId;
     const result=await db
     .select({groupName:groups.groupName})
     .from(groups)
     .where(eq(groups.groupId,groupId))
-    return c.json(result);
+    return c.json({success:true,data:result});
 }).post("/getGroups",zValidator("json",getGroupsSchema),async(c)=>{
   const body=await c.req.valid("json");
   const userId=body.userId;

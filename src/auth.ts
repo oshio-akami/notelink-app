@@ -11,19 +11,22 @@ export const runtime = "edge";
 
 declare module "next-auth" {
   interface User{
-    activeGroupId:string;
+    currentGroupId
+    :string;
     roleId:string;
   }
   interface Session extends DefaultSession {
     user: {
-      activeGroupId: string;
+      currentGroupId
+      : string;
       roleId: string;
     } & DefaultSession["user"];
   }
  }
  declare module "next-auth/jwt"{
   interface JWT{
-    activeGroupId:string;
+    currentGroupId
+    :string;
     roleId:string;
   }
  }
@@ -43,14 +46,18 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
   callbacks:{
     async jwt({ token, user }) {
       if (user) {
-        token.activeGroupId = user.activeGroupId;
+        token.currentGroupId
+         = user.currentGroupId
+        ;
         token.roleId = user.roleId;
       }
       return token;
     },
     async session({session,token}){
       if(token){
-        session.user.activeGroupId=token.activeGroupId;
+        session.user.currentGroupId
+        =token.currentGroupId
+        ;
         session.user.roleId=token.roleId;
       }
       return session;

@@ -15,5 +15,5 @@ export default async function setActiveGroup(groupId:string){
       activeGroupId:groupId,
     }
   })
-  redirect(`/${groupId}/home`);
+  redirect(`/group/${groupId}/home`);
 }

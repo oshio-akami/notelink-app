@@ -34,5 +34,5 @@ export async function createGroup(_:unknown,formData: FormData){
       activeGroupId:body.groupId,
     }
   });
-  redirect(`/${body.groupId}/home`);
+  redirect(`/group/${body.groupId}/home`);
 }
