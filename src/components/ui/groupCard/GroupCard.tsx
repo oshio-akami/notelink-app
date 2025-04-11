@@ -2,7 +2,7 @@
 
 import { Card, CardSection, Image ,Text} from "@mantine/core"
 import styles from "./groupCard.module.css"
-import setActiveGroup from "@/actions/user/setActiveGroup"
+import setCurrentGroup from "@/actions/user/setActiveGroup"
 
 type Props={
   groupName:string,
@@ -11,7 +11,7 @@ type Props={
 
 export default function GroupCard({groupName,groupId}:Props){
   return(
-    <Card onClick={()=>{setActiveGroup(groupId)}} className={styles.card} shadow="sm" padding="lg" radius="md" withBorder>
+    <Card onClick={()=>{setCurrentGroup(groupId)}} className={styles.card} shadow="sm" padding="lg" radius="md" withBorder>
       <CardSection>
         <Image src="https://placecats.com/300/200" height={160} alt="nya-" />
       </CardSection>

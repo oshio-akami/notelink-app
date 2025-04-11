@@ -5,13 +5,12 @@ import { groupMembers,users } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { auth } from "@/auth";
 import { joinGroupSchema } from "@/utils/types/apiSchema";
 
 export const runtime = "edge";
 
-const setActiveGroupSchema = z.object({
-  activeGroupId: z.string(),
+const setCurrentGroupSchema = z.object({
+  currentGroupId: z.string(),
   userId:z.string(),
 });
 
@@ -41,15 +40,15 @@ const user=new Hono()
 .get("/", async (c) => {
   return c.json({ testSub: "Root!" });
 })
-.post("/setActiveGroup", zValidator("json",setActiveGroupSchema),async (c) => {
+.post("/setCurrentGroup", zValidator("json",setCurrentGroupSchema),async (c) => {
   const body=c.req.valid("json");
-  const {activeGroupId,userId}=body;
-  if(!activeGroupId||!userId){
+  const {currentGroupId,userId}=body;
+  if(!currentGroupId||!userId){
     return;
   }
   const result=await db
     .update(users)
-    .set({activeGroupId:activeGroupId})
+    .set({currentGroupId:currentGroupId})
     .where(eq(users.id,userId));
   return c.json(result);
 }).post("/getJoinGroups",zValidator("json",joinGroupSchema),async(c)=>{

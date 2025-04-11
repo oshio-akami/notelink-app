@@ -40,9 +40,9 @@ export async function CreateGroup(data:FormData){
 
   const groupData=await test.json();
   console.log(groupData.groupId);
-  await client.api.users.setActiveGroup.$post({
+  await client.api.users.setCurrentGroup.$post({
     json:{
-      activeGroupId:groupData.groupId,
+      currentGroupId:groupData.groupId,
     }
   });
 }

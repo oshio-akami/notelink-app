@@ -28,10 +28,10 @@ export async function createGroup(_:unknown,formData: FormData){
       groupId:body.groupId,
     }
   });
-  await client.api.users.setActiveGroup.$post({
+  await client.api.users.setCurrentGroup.$post({
     json:{
       userId:session.user.id,
-      activeGroupId:body.groupId,
+      currentGroupId:body.groupId,
     }
   });
   redirect(`/group/${body.groupId}/home`);

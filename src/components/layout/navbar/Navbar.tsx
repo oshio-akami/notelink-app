@@ -18,10 +18,10 @@ const linksMockData=[
 ]
 
 const createLink=(session:Session|null,link:string)=>{
-  if(!session?.user.activeGroupId){
+  if(!session?.user.currentGroupId){
     return `/group/0${link}`;
   }
-  return `/group/${session.user.activeGroupId}${link}`;
+  return `/group/${session.user.currentGroupId}${link}`;
 }
 
 export function NavBar(){

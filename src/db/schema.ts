@@ -19,7 +19,7 @@ export const users = pgTable("users", {
   emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
   roleId: integer("role_id").references(() => roles.roleId),
-  activeGroupId:uuid("active_group").references(() => groups.groupId, { onDelete: "set null" }),
+  currentGroupId:uuid("active_group").references(() => groups.groupId, { onDelete: "set null" }),
 });
 
 export const accounts = pgTable(
