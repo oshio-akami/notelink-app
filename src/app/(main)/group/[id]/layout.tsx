@@ -9,6 +9,9 @@ import {
 } from "@mantine/core";
 import { NavBar } from "@/components/layout/navbar/Navbar";
 import { Header } from "@/components/layout/header/Header";
+import { auth } from "@/auth";
+import { notFound } from "next/navigation";
+import isJoinGroup from "@/actions/user/isJoinGroup";
 
 export const runtime = "edge";
 
@@ -22,7 +25,12 @@ type Props={
   children:Readonly<React.ReactNode>,
 }
 
-export default function RootLayout(props:Props) {
+export default async function RootLayout(props:Props) {
+  const session=await auth();
+  const {id}=await props.params;
+  if(!session?.user||!isJoinGroup(id)){
+    notFound();
+  }
   return (
     <AppShell
     header={{ height: 60 }}
