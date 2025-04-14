@@ -3,11 +3,10 @@ import { IconUserCircle,IconBell } from "@tabler/icons-react";
 import { auth } from "@/auth";
 import { ProfileWindow } from "@/components/ui/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
-import { Image,Button } from "@mantine/core";
-import client from "@/libs/hono";
-import { Session } from "next-auth";
+import { Image } from "@mantine/core";
 import  GroupsWindow  from "@/components/ui/groupsWindow/GroupsWindow";
 import getJoinedGroups from "@/actions/user/getJoinedGroups";
+import CreateGroupModal from "@/components/ui/createGroupModal/CreateGroupModal";
 
 export const runtime = "edge";
 
@@ -57,7 +56,7 @@ export async function Header({params}:Props) {
           </div>
         )}
         <IconBell className={styles.setting}></IconBell>
-        <Button >新規グループの作成</Button>
+        <CreateGroupModal></CreateGroupModal>
       </div>
     </div>
   );

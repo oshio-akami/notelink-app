@@ -11,7 +11,6 @@ import { Session } from "next-auth";
 const iconSize=24;
 const linksMockData=[
   {label:'ホーム',link:'/home',active:"home",icon:<IconDashboard size={iconSize} stroke={1.5} />},
-  {label:'グループ作成',link:'/create-group',active:"create-group",icon:<IconChecklist size={iconSize} stroke={1.5} />},
   {label:'メンバー',link:'/member',active:"member",icon:<IconUsersGroup size={iconSize} stroke={1.5} />},
   {label:'投稿',link:'/post',active:"post",icon:<IconClipboardText size={iconSize} stroke={1.5} />},
   {label:'設定',link:'/settings/userSetting',active:"settings",icon:<IconSettings size={iconSize} stroke={1.5} />},

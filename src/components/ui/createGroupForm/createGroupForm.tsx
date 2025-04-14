@@ -10,7 +10,7 @@ import {
   LoadingOverlay,
   Box,
 } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useActionState } from "react";
 import { createGroup } from "@/actions/group/createGroup";
 import { getFormProps, useForm } from "@conform-to/react";
@@ -24,7 +24,11 @@ const errorElements=(errors:string[])=>{
   })
 }
 
-export default function CreateGroupForm() {
+type Props = {
+  onPendingChange: (value: boolean) => void;
+};
+
+export default function CreateGroupForm({onPendingChange}:Props) {
   const [groupName, setGroupName] = useState("");
   const [_, formAction, isPending] = useActionState(
     createGroup,
@@ -37,6 +41,11 @@ export default function CreateGroupForm() {
     shouldValidate: "onBlur",
     onSubmit:()=>toggle(),
   });
+
+  useEffect(()=>{
+    onPendingChange(isPending)
+  },[isPending]);
+  
   const [visible, { toggle }] = useDisclosure(false);
   return (
     <>
