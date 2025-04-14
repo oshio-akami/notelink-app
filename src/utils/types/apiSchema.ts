@@ -1,6 +1,15 @@
 import { z } from "zod";
 
-export const joinGroupSchema=z.object({
+export const joinedGroupsSchema=z.object({
+  userId:z.string().uuid(),
+})
+
+export const setCurrentGroupSchema = z.object({
+  currentGroupId: z.string(),
+  userId:z.string(),
+});
+
+export const hasJoinedGroupSchema=z.object({
   userId:z.string().uuid(),
   groupId:z.string().uuid(),
 })
@@ -17,3 +26,4 @@ export const getGroupNameSchema=z.object({
 export const getGroupsSchema=z.object({
   userId:z.string().uuid(),
 })
+

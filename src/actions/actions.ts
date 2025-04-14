@@ -7,20 +7,20 @@ import { auth } from "@/auth";
 /**
  * ユーザーがいずれかのグループに参加しているかを取得する関数
  */
-export async function hasJoined(){
+export async function hasJoinedGroup(){
   const session = await auth();
   const id=session?.user.id;
   if(!id){
     return false
   }
-  const result= await client.api.users.hasJoined
+  const result= await client.api.users.hasJoinedGroup
     .$post({
        json: {
          userId: id,
        },
     });
     const data=await result.json();
-    return data.hasJoined;
+    return data.hasJoinedGroup;
 };
 
 /**

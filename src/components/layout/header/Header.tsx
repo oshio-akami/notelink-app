@@ -3,10 +3,11 @@ import { IconUserCircle,IconBell } from "@tabler/icons-react";
 import { auth } from "@/auth";
 import { ProfileWindow } from "@/components/ui/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
-import { Image } from "@mantine/core";
+import { Image,Button } from "@mantine/core";
 import client from "@/libs/hono";
 import { Session } from "next-auth";
 import  GroupsWindow  from "@/components/ui/groupsWindow/GroupsWindow";
+import getJoinedGroups from "@/actions/user/getJoinedGroups";
 
 export const runtime = "edge";
 
@@ -14,37 +15,19 @@ type Props={
   params:Promise<{id:string}>,
 }
 
-const getActiveGroupName=async(groupId:string)=>{
-  const result=await client.api.posts.getGroupName.$post({
-    json:{
-      groupId:groupId,
-    }
-  });
-  const body=await result.json();
-  if(!body.success){
+const getCurrentGroupName=async(groups:{groupId:string,groupName:string}[],currentGroupId:string)=>{
+  const currentGroup=groups.find(c=>c.groupId===currentGroupId);
+  if(!currentGroup){
     return "グループが存在しません"
   }
-  return body.data[0].groupName;
-}
-
-const getGroups=async(session:Session)=>{
-  if(!session?.user.id){
-    return null;
-  }
-  const groups=await client.api.posts.getGroups.$post({
-    json:{
-      userId:session?.user.id,
-   }
-  })
-   return await groups.json();
+  return currentGroup.groupName;
 }
 
 export async function Header({params}:Props) {
   const {id}=await params;
   const session = await auth();
-  const groupName=await getActiveGroupName(id);
-  const groups=session?await getGroups(session):[];
-  console.log("再読み込み")
+  const groups=await getJoinedGroups();
+  const groupName=groups?await getCurrentGroupName(groups,id):"グループが存在しません";
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
@@ -74,7 +57,7 @@ export async function Header({params}:Props) {
           </div>
         )}
         <IconBell className={styles.setting}></IconBell>
-        <p>{groupName}</p>
+        <Button >新規グループの作成</Button>
       </div>
     </div>
   );

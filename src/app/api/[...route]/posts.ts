@@ -7,8 +7,8 @@ import client from "@/libs/hono";
 import { auth } from "@/auth";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-import { eq, inArray } from "drizzle-orm";
-import { getGroupNameSchema ,getGroupsSchema} from "@/utils/types/apiSchema";
+import { eq } from "drizzle-orm";
+import { getGroupNameSchema } from "@/utils/types/apiSchema";
 
 interface joinGroupRequestBody{
   groupId:string;
@@ -74,18 +74,6 @@ const posts=new Hono()
     .from(groups)
     .where(eq(groups.groupId,groupId))
     return c.json({success:true,data:result});
-}).post("/getGroups",zValidator("json",getGroupsSchema),async(c)=>{
-  const body=await c.req.valid("json");
-  const userId=body.userId;
-  const result = await db
-   .select({
-     groupId: groups.groupId,
-     groupName: groups.groupName,
-   })
-   .from(groupMembers)
-   .innerJoin(groups, eq(groupMembers.groupId, groups.groupId))
-   .where(eq(groupMembers.userId, userId));
-  return c.json(result);
 });
 
 

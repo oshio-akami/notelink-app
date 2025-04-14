@@ -3,16 +3,17 @@
 import { auth } from "@/auth"
 import client from "@/libs/hono"
 
-export default async function isJoinGroup(groupId:string){
+export default async function hasJoinGroup(groupId:string){
   const session=await auth();
   if(!session?.user?.id){
     return false;
   }
-  const res=await client.api.posts.getGroups.$post({
+  const res=await client.api.users.hasJoinedGroup.$post({
     json:{
       userId:session.user.id,
+      groupId:groupId,
     }
   })
   const body=await res.json();
-  return body.some(c=>c.groupId===groupId);
+  return body.hasJoinedGroup;
 }
