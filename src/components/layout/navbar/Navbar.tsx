@@ -1,7 +1,7 @@
 "use client"
 
 import styles from "./navbar.module.css";
-import { IconDashboard ,IconChecklist,IconUsersGroup,IconClipboardText,IconSettings} from "@tabler/icons-react";
+import { IconDashboard ,IconUsersGroup,IconClipboardText,IconSettings} from "@tabler/icons-react";
 import { NavLink } from "@mantine/core";
 import { redirect } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -11,8 +11,8 @@ import { Session } from "next-auth";
 const iconSize=24;
 const linksMockData=[
   {label:'ホーム',link:'/home',active:"home",icon:<IconDashboard size={iconSize} stroke={1.5} />},
-  {label:'メンバー',link:'/member',active:"member",icon:<IconUsersGroup size={iconSize} stroke={1.5} />},
   {label:'投稿',link:'/post',active:"post",icon:<IconClipboardText size={iconSize} stroke={1.5} />},
+  {label:'メンバー',link:'/member',active:"member",icon:<IconUsersGroup size={iconSize} stroke={1.5} />},
   {label:'設定',link:'/settings/userSetting',active:"settings",icon:<IconSettings size={iconSize} stroke={1.5} />},
 ]
 

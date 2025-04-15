@@ -10,7 +10,7 @@ export default function CreateGroupModal(){
   const [isPending,setIsPending]=useState(false);
   return(
     <>
-      <Modal opened={opened} onClose={close} closeOnClickOutside={!isPending} closeOnEscape={!isPending}>
+      <Modal opened={opened} onClose={close} closeOnClickOutside={!isPending} closeOnEscape={!isPending} withCloseButton={!isPending} size={"lg"}>
         <CreateGroupForm onPendingChange={setIsPending}/>
       </Modal>
       <Button onClick={open} >新規グループを作成</Button>

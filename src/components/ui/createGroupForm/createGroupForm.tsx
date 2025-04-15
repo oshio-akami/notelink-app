@@ -51,7 +51,7 @@ export default function CreateGroupForm({onPendingChange}:Props) {
     <>
     
     <form {...getFormProps(form)} className={styles.form} action={formAction}>
-      <Box pos="relative">
+      <Box pos="relative" >
       <LoadingOverlay visible={visible} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
         <h1>グループを作成</h1>
         <label>グループ名</label>
@@ -59,11 +59,12 @@ export default function CreateGroupForm({onPendingChange}:Props) {
           name={fields.groupName.name}
           value={groupName}
           onChange={(event) => setGroupName(event.target.value)}
+          mb={30}
         ></TextInput>
         {fields.groupName.errors&&errorElements(fields.groupName.errors)}
         <label>グループの説明</label>
-        <Textarea />
-        <Radio.Group
+        <Textarea mb={30} />
+        <Radio.Group mb={30}
           label="他ユーザーのグループへの参加方法"
           description="この設定は後から変更できます"
         >
