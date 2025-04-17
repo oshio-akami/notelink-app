@@ -1,5 +1,5 @@
 {
-  "id": "13b73985-61e1-4d63-9dd5-30de262249ba",
+  "id": "e66d874a-b346-4ff4-8534-aafa83611869",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -97,6 +97,65 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.group_invites": {
+      "name": "group_invites",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "group_id": {
+          "name": "group_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token": {
+          "name": "token",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now() + interval '10 days'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "group_invites_group_id_groups_group_id_fk": {
+          "name": "group_invites_group_id_groups_group_id_fk",
+          "tableFrom": "group_invites",
+          "tableTo": "groups",
+          "columnsFrom": [
+            "group_id"
+          ],
+          "columnsTo": [
+            "group_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.group_members": {
       "name": "group_members",
       "schema": "",
@@ -112,6 +171,12 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {},
@@ -139,7 +204,7 @@
           "columnsTo": [
             "group_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -186,10 +251,16 @@
       "name": "roles",
       "schema": "",
       "columns": {
-        "role_id": {
-          "name": "role_id",
+        "id": {
+          "name": "id",
           "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
         "role_name": {
@@ -286,26 +357,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "role_id": {
-          "name": "role_id",
-          "type": "integer",
+        "active_group": {
+          "name": "active_group",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "users_role_id_roles_role_id_fk": {
-          "name": "users_role_id_roles_role_id_fk",
+        "users_active_group_groups_group_id_fk": {
+          "name": "users_active_group_groups_group_id_fk",
           "tableFrom": "users",
-          "tableTo": "roles",
+          "tableTo": "groups",
           "columnsFrom": [
-            "role_id"
+            "active_group"
           ],
           "columnsTo": [
-            "role_id"
+            "group_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "set null",
           "onUpdate": "no action"
         }
       },
