@@ -2,7 +2,7 @@
 
 import { Card, CardSection, Image ,Text} from "@mantine/core"
 import styles from "./groupCard.module.css"
-import setCurrentGroup from "@/actions/user/setActiveGroup"
+import setCurrentGroup from "@/actions/user/setCurrentGroup"
 
 type Props={
   groupName:string,

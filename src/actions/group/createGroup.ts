@@ -26,6 +26,7 @@ export async function createGroup(_:unknown,formData: FormData){
     json:{
       userId:session?.user.id,
       groupId:body.groupId,
+      roleId:1,
     }
   });
   await client.api.users.setCurrentGroup.$post({

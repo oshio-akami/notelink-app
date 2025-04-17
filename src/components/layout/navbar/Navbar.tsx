@@ -5,8 +5,6 @@ import { IconDashboard ,IconUsersGroup,IconClipboardText,IconSettings} from "@ta
 import { NavLink } from "@mantine/core";
 import { redirect } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
 
 const iconSize=24;
 const linksMockData=[
@@ -16,22 +14,24 @@ const linksMockData=[
   {label:'設定',link:'/settings/userSetting',active:"settings",icon:<IconSettings size={iconSize} stroke={1.5} />},
 ]
 
-const createLink=(session:Session|null,link:string)=>{
-  if(!session?.user.currentGroupId){
-    return `/group/0${link}`;
-  }
-  return `/group/${session.user.currentGroupId}${link}`;
+type Props={
+  id:string,
 }
 
-export function NavBar(){
-  const session=useSession();
+const createLink=(id:string,link:string)=>{
+  return `/group/${id}${link}`;
+}
+
+
+
+export function NavBar({id}:Props){
   const path=usePathname();
   const links=linksMockData.map((target)=>(
     <NavLink className={styles.nav} key={target.link}
-      onClick={()=>redirect(createLink(session.data,target.link))}
+      onClick={()=>redirect(createLink(id,target.link))}
       label={target.label}
       leftSection={target.icon}
-      active={path.indexOf(createLink(session.data,target.link))!==-1}
+      active={path.indexOf(createLink(id,target.link))!==-1}
       color="#f0f0f0"
       variant="filled"
       autoContrast

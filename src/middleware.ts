@@ -38,19 +38,19 @@ export async function middleware(request:NextRequest){
     return NextResponse.redirect(url);
   }
   const pathname=request.nextUrl.pathname;
-  const matcher=match("/group/:id/{*splat}",{decode:decodeURIComponent});
+  const matcher=match("/group/:id/*splat",{decode:decodeURIComponent});
   const matched=matcher(pathname); 
-  console.log("matched:"+matched);
   if(matched){
+    console.log("-----------------------------------------------");
+    console.log("matched : true");
+    console.log(matched.path);
     const {id}=matched.params;
     if(id){
       const groupId=id.toString();
       const hasJoined=await hasJoinedGroup(session.user.id,groupId);
-      console.log(hasJoined);
       if(!hasJoined){
         const joinedGroups=await getJoinedGroups(session.user.id);
         const group=joinedGroups[0];
-        console.log("group :"+group);
         if(group){
           setCurrentGroup(session.user.id,group.groupId);
           const url=request.nextUrl.clone();

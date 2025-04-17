@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { string, z } from "zod";
 
 export const joinedGroupsSchema=z.object({
   userId:z.string().uuid(),
@@ -27,3 +27,21 @@ export const getGroupsSchema=z.object({
   userId:z.string().uuid(),
 })
 
+export const joinGroupSchema=z.object({
+  userId:z.string().uuid(),
+  groupId:z.string().uuid(),
+  roleId:z.number().default(2),
+})
+
+export const inviteSchema=z.object({
+  groupId:string().uuid(),
+})
+
+export const validInviteTokenSchema=z.object({
+  inviteToken:string().uuid(),
+})
+
+export const joinInviteGroupSchema=z.object({
+  inviteToken:string().uuid(),
+  userId:z.string().uuid(),
+})

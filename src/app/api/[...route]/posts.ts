@@ -1,19 +1,15 @@
 
 import { Hono } from "hono";
 import {db} from "@/db/index";
-import { groups, users,groupMembers } from "@/db/schema";
+import { groups, users,groupMembers, groupInvites } from "@/db/schema";
 export const runtime = "edge";
 import client from "@/libs/hono";
 import { auth } from "@/auth";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { eq } from "drizzle-orm";
-import { getGroupNameSchema } from "@/utils/types/apiSchema";
+import { getGroupNameSchema, inviteSchema, joinGroupSchema, joinInviteGroupSchema } from "@/utils/types/apiSchema";
 
-interface joinGroupRequestBody{
-  groupId:string;
-  userId:string;
-}
 
 const createGroupSchema = z.object({
   groupName: z.string(),
@@ -50,16 +46,17 @@ const posts=new Hono()
     });
     return c.json(insertGroup[0]);
 })
-.post("/joinGroup",async (c) => {
-  const body=await c.req.json<joinGroupRequestBody>();
-    const groupId=body.groupId;
-    const userId=body.userId;
+.post("/joinGroup",
+  zValidator("json",joinGroupSchema), async (c) => {
+    const body=await c.req.valid("json");
+    const {groupId,userId,roleId}=body;
     if(!userId||!groupId){
       return c.json({error:"ユーザーID、グループIDが存在しません"},400);
     }
     await db.insert(groupMembers).values({
       userId:userId,
       groupId:groupId,
+      roleId:roleId,
     });
     return c.json({message:"グループを作成しました"});
 }).post("/getGroupName", zValidator("json",getGroupNameSchema),async(c)=>{
@@ -73,7 +70,38 @@ const posts=new Hono()
     .select({groupName:groups.groupName})
     .from(groups)
     .where(eq(groups.groupId,groupId))
-    return c.json({success:true,data:result});
+    .limit(1);
+    return c.json({success:true,data:result[0]});
+}).post("/createInviteToken",zValidator("json",inviteSchema),async(c)=>{
+  const body=await c.req.valid("json");
+  const {groupId}=body;
+  const result=await db
+  .insert(groupInvites).values({
+    groupId:groupId,
+  })
+  .returning();
+  return c.json(result);
+}).post("/getInviteToken",zValidator("json",inviteSchema),async(c)=>{
+  const body=await c.req.valid("json");
+  const {groupId}=body;
+  const inviteData=await db
+  .select({groupInvites})
+  .from(groupInvites)
+  .where(eq(groupInvites.groupId,groupId))
+  .orderBy(groupInvites.createdAt)
+  .limit(1);
+  if(!inviteData[0]){
+    return c.json({success:false,data:null});
+  }
+  const {token,expiresAt}=inviteData[0].groupInvites;
+  const currentDate=new Date();
+  if(!token){
+    return c.json({success:false,data:null});
+  }
+  if(expiresAt<currentDate){
+    return c.json({success:false,data:null});
+  }
+  return c.json({success:true,data:token});
 });
 
 

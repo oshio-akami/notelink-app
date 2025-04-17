@@ -5,6 +5,7 @@ import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 
+
 export default function CreateGroupModal(){
   const [opened,{open,close}]=useDisclosure(false);
   const [isPending,setIsPending]=useState(false);
@@ -13,7 +14,7 @@ export default function CreateGroupModal(){
       <Modal opened={opened} onClose={close} closeOnClickOutside={!isPending} closeOnEscape={!isPending} withCloseButton={!isPending} size={"lg"}>
         <CreateGroupForm onPendingChange={setIsPending}/>
       </Modal>
-      <Button onClick={open} >新規グループを作成</Button>
+      <Button onClick={open} >グループの作成・参加</Button>
     </>
   )
 }

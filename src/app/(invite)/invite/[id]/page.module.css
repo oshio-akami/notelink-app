@@ -1,0 +1,20 @@
+.page{
+  width:100vw;
+  height:100vh;
+  background-color: var(--sub-color);
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+.box{
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap:20px;
+  width: 400px;
+  height: 200px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px gray;
+  background-color: white;
+}

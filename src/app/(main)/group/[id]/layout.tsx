@@ -22,7 +22,8 @@ type Props={
   children:Readonly<React.ReactNode>,
 }
 
-export default function RootLayout(props:Props) {
+export default async function RootLayout(props:Props) {
+  const {id}=await props.params;
   return (
     <AppShell
     header={{ height: 60 }}
@@ -33,7 +34,7 @@ export default function RootLayout(props:Props) {
       <Header params={props.params} />
     </AppShellHeader>
     <AppShellNavbar withBorder={false}>
-      <NavBar />
+      <NavBar id={id} />
     </AppShellNavbar>
     <AppShellMain>{props.children}</AppShellMain>
   </AppShell>

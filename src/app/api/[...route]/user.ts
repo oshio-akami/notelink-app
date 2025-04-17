@@ -2,9 +2,9 @@
 import { Hono } from "hono";
 import {db} from "@/db/index";
 import { groupMembers,users } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq,and } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
-import { joinedGroupsSchema,hasJoinedGroupSchema,setCurrentGroupSchema } from "@/utils/types/apiSchema";
+import { joinedGroupsSchema,hasJoinedGroupSchema,setCurrentGroupSchema, joinInviteGroupSchema } from "@/utils/types/apiSchema";
 import { groups } from "@/db/schema";
 
 export const runtime = "edge";
@@ -16,12 +16,16 @@ const user=new Hono()
 .post("/hasJoinedGroup",zValidator("json",hasJoinedGroupSchema),async (c)=>{
   try{
     const body=c.req.valid("json");
-    const {userId}=body;
+    const {userId,groupId}=body;
     console.log("userid : "+userId);
     const result=await db
-    .select({groupId:groupMembers.groupId})
+    .select()
     .from(groupMembers)
-    .where(eq(groupMembers.userId,userId));
+    .where(and(
+      eq(groupMembers.userId,userId),
+      eq(groupMembers.groupId,groupId),
+      )
+    ).limit(1);
     return c.json({hasJoinedGroup:result.length>0},200);
   }catch(error){
     throw new Error("api error"+error);
@@ -56,7 +60,7 @@ const user=new Hono()
      .innerJoin(groups, eq(groupMembers.groupId, groups.groupId))
      .where(eq(groupMembers.userId, userId));
     return c.json(result);
-})
+});
 
 
 export default user

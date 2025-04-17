@@ -1,5 +1,5 @@
 import styles from "./header.module.css";
-import { IconUserCircle,IconBell } from "@tabler/icons-react";
+import { IconUserCircle,IconBell} from "@tabler/icons-react";
 import { auth } from "@/auth";
 import { ProfileWindow } from "@/components/ui/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
@@ -56,7 +56,7 @@ export async function Header({params}:Props) {
           </div>
         )}
         <IconBell className={styles.setting}></IconBell>
-        <CreateGroupModal></CreateGroupModal>
+        <CreateGroupModal />
       </div>
     </div>
   );

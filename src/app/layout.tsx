@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 import { Noto_Sans_JP  } from "next/font/google";
 
 const Font=Noto_Sans_JP ({
-  weight:["400","700"],
+  weight:"400",
   subsets:["latin"],
 });
 
