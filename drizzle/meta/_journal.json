@@ -15,6 +15,20 @@
       "when": 1744684492754,
       "tag": "0001_loud_vanisher",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1744938965471,
+      "tag": "0002_spicy_otto_octavius",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744939195052,
+      "tag": "0003_flat_hairball",
+      "breakpoints": true
     }
   ]
 }

@@ -2,7 +2,7 @@ import NextAuth, { DefaultSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {db} from "@/db/index"
-import { users,accounts  ,sessions} from "./db/schema";
+import { users,accounts  ,sessions, userProfiles} from "./db/schema";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import {JWT} from "next-auth/jwt"
 import { Adapter } from "next-auth/adapters";
@@ -68,4 +68,19 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     accountsTable:accounts,
     sessionsTable:sessions,
   }) as Adapter,
+
+  events:{
+    async createUser({user}){
+      if(!user.id){
+        return;
+      }
+      await db.insert(userProfiles).values({
+        userId:user.id,
+        displayName:user.name??"ユーザー",
+        image:user.image,
+        about:"",
+      })
+    }
+  }
+
 });

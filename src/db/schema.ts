@@ -10,7 +10,6 @@ import {
 import { relations, sql } from "drizzle-orm";
 import type { AdapterAccountType } from "next-auth/adapters"
 import {  } from "drizzle-orm/gel-core";
-import { number } from "zod";
 
 
 export const users = pgTable("users", {
@@ -56,6 +55,16 @@ export const sessions = pgTable("session", {
   expires: timestamp("expires", { mode: "date" }).notNull(),
 })
 
+/*ユーザーのprofile情報*/
+export const userProfiles=pgTable("user_profiles",{
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  displayName:text("display_name").notNull(),
+  image: text("image"),
+  about:text("about"),
+})
+
 //ユーザーの役職
 export const roles = pgTable("roles", {
   id: serial("id").primaryKey(),
@@ -97,7 +106,7 @@ export const groupInvites=pgTable("group_invites",{
   createdAt:timestamp("created_at").defaultNow().notNull(),
 })
 
-export const userRelations = relations(users, ({ many }) => ({
+export const userRelations = relations(users, ({ many ,one}) => ({
   groupMembers: many(groupMembers),
 }));
 
