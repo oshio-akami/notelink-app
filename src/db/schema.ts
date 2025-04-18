@@ -9,8 +9,6 @@ import {
 } from "drizzle-orm/pg-core";
 import { relations, sql } from "drizzle-orm";
 import type { AdapterAccountType } from "next-auth/adapters"
-import {  } from "drizzle-orm/gel-core";
-
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -59,7 +57,7 @@ export const sessions = pgTable("session", {
 export const userProfiles=pgTable("user_profiles",{
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade" }).primaryKey(),
   displayName:text("display_name").notNull(),
   image: text("image"),
   about:text("about"),
@@ -106,7 +104,7 @@ export const groupInvites=pgTable("group_invites",{
   createdAt:timestamp("created_at").defaultNow().notNull(),
 })
 
-export const userRelations = relations(users, ({ many ,one}) => ({
+export const userRelations = relations(users, ({ many }) => ({
   groupMembers: many(groupMembers),
 }));
 
@@ -119,6 +117,10 @@ export const groupMembersRelations = relations(groupMembers,({ one }) => ({
       fields: [groupMembers.userId],
       references: [users.id],
     }),
+    userProfiles:one(userProfiles,{
+      fields:[groupMembers.userId],
+      references:[userProfiles.userId]
+    }),
     group: one(groups, {
       fields: [groupMembers.groupId],
       references: [groups.groupId],
@@ -129,3 +131,11 @@ export const groupMembersRelations = relations(groupMembers,({ one }) => ({
     }),
   })
 );
+
+
+export const schema={
+  users,
+  userProfiles,
+  groups,
+  groupMembers,
+}

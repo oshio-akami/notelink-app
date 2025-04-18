@@ -20,5 +20,6 @@ export default function JoinButton({inviteToken}:Props){
   }
   return(
     <Button onClick={handleClick}>{loading?"参加中...":"参加する"}</Button>
+
   )
 } 

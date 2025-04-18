@@ -3,7 +3,7 @@
 import { auth } from "@/auth"
 import client from "@/libs/hono"
 
-export default async function hasJoinGroup(groupId:string){
+export default async function hasJoinedGroup(groupId:string){
   const session=await auth();
   if(!session?.user?.id){
     console.log("not user");

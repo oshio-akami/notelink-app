@@ -3,7 +3,7 @@
 import client from "@/libs/hono";
 import validateInviteToken from "./validateInviteToken";
 import { auth } from "@/auth";
-import hasJoinGroup from "../user/hasJoinedGroup";
+import hasJoinedGroup from "../user/hasJoinedGroup";
 import { redirect } from "next/navigation";
 
 export default async function joinInviteGroup(inviteToken:string){
@@ -18,7 +18,7 @@ export default async function joinInviteGroup(inviteToken:string){
   if(!validate.message){
     return "招待コードが存在しません";
   }
-  const hasJoin=await hasJoinGroup(validate.message);
+  const hasJoin=await hasJoinedGroup(validate.message);
   if(hasJoin){
     return "すでにグループに参加しています"
   }
