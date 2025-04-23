@@ -1,12 +1,5 @@
 import { z } from "zod";
 
-const userIdSchema=z.object({
-  userId:z.string().uuid(),
-})
-const groupIdSchema=z.object({
-  groupId:z.string().uuid(),
-})
-
 export const joinedGroupsSchema=z.object({
   userId:z.string().uuid(),
 })

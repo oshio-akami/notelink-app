@@ -1,18 +1,23 @@
 "use server"
 
-import client from "@/libs/hono";
-import validateInviteToken from "./validateInviteToken";
+import {getClient} from "@/libs/hono";
 import { auth } from "@/auth";
-import hasJoinedGroup from "../user/hasJoinedGroup";
 import { redirect } from "next/navigation";
+import { hasJoinedGroup } from "@/libs/apiLibs";
 
 export default async function joinInviteGroup(inviteToken:string){
-  const validate=await validateInviteToken(inviteToken);
+  const client=await getClient();
+  const res=await client.api.invite.validate[":token"].$get({
+    param:{
+      token:inviteToken,
+    }
+  });
+  const validate=await res.json()
   if(!validate.success){
     return validate.message;
   }
   const session=await auth();
-    if(!session?.user.id){  
+    if(!session?.user?.id){  
       return "ユーザー存在しません";
     }
   if(!validate.message){
@@ -22,10 +27,12 @@ export default async function joinInviteGroup(inviteToken:string){
   if(hasJoin){
     return "すでにグループに参加しています"
   }
-  await client.api.posts.joinGroup.$post({
-    json:{
+  await client.api.user.join[":groupId"].$post({
+    param:{
       groupId:validate.message,
-      userId:session.user.id,
+    },
+    json:{
+      roleId:2,
     }
   })
   redirect(`/group/${validate.message}/home`);

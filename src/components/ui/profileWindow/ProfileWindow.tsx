@@ -9,12 +9,12 @@ import { Image } from "@mantine/core"
 
 type Props={
   name:string
-  mail:string
+  about:string
   icon:string
   children:ReactNode
 }
 
-export function ProfileWindow({name,mail,icon,children}:Props){
+export function ProfileWindow({name,about,icon,children}:Props){
   return (
     <>
       <Popover width={320} trapFocus offset={{ mainAxis: 10, crossAxis: 40 }} >
@@ -24,7 +24,7 @@ export function ProfileWindow({name,mail,icon,children}:Props){
             <Image className={styles.icon} alt="" src={icon} />
             <ul>
               <li>{name}</li>
-              <li>{mail}</li>
+              <li>{about}</li>
             </ul>
             
           </div>

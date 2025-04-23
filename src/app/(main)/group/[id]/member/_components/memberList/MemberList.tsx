@@ -5,9 +5,9 @@ import { Table, TableTd, TableTr ,Avatar , TableThead,TableTh, TableTbody,Text, 
 type Props={
   members: {
     userId: string | null;
-    displayName: string;
+    displayName: string |null;
     image: string | null;
-    role: string;
+    role: string |null;
   }[]|null
 }
 

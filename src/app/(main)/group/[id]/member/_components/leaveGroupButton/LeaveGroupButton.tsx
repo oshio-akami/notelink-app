@@ -10,7 +10,7 @@ type Props={
 
 export default function LeaveGroupButton({groupId}:Props){
   const handleClick=async()=>{
-    const success=await leaveGroup(groupId);
+    await leaveGroup(groupId);
   }
   return(
     <Popover width="60%"  trapFocus offset={{ mainAxis: 10, crossAxis: 40 }} >

@@ -1,65 +1,60 @@
-import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/auth";
+import { NextRequest, NextResponse } from "next/server"
 import {match} from "path-to-regexp"
-import client from "./libs/hono";
+import {getClient} from "./libs/hono"
+import { auth } from "./auth"
 
-const hasJoinedGroup=async(id:string,groupId:string)=>{
-  const res=await client.api.users.hasJoinedGroup.$post({
-      json:{
-        userId:id,
+const hasJoinedGroup=async(groupId:string)=>{
+  const client=await getClient();
+  const res=await client.api.user.hasJoined[":groupId"].$get({
+      param:{
         groupId:groupId,
       }
     })
-    const body=await res.json();
-    return body.hasJoinedGroup;
+    const body=await res.json()
+    return body.hasJoinedGroup
 }
-const getJoinedGroups=async(id:string)=>{
-    const res=await client.api.users.getJoinedGroups.$post({
-      json:{
-        userId:id,
-     }
-    })
-    return await res.json();
+const getJoinedGroups=async()=>{
+  const client=await getClient();
+  const res=await client.api.user.groups.$get()
+  const body=await res.json()
+  return body.groups
 }
-const setCurrentGroup=async(id:string,groupId:string)=>{
-  await client.api.users.setCurrentGroup.$post({
-      json:{
-        userId:id,
-        currentGroupId:groupId,
+const setCurrentGroup=async(groupId:string)=>{
+  const client=await getClient();
+  await client.api.user.currentGroup[":groupId"].$patch({
+      param:{
+        groupId:groupId,
       }
-    })
+  })
 }
 
 export async function middleware(request:NextRequest){
   const session=await auth();
-  if(!session?.user?.id){
-    const url=request.nextUrl.clone();
-    url.pathname="/login";
-    return NextResponse.redirect(url);
+  const userId=session?.user?.id;
+  if(!userId){
+    const url=request.nextUrl.clone()
+    url.pathname="/login"
+    return NextResponse.redirect(url)
   }
-  const pathname=request.nextUrl.pathname;
-  const matcher=match("/group/:id/*splat",{decode:decodeURIComponent});
-  const matched=matcher(pathname); 
+  const pathname=request.nextUrl.pathname
+  const matcher=match("/group/:id/*splat",{decode:decodeURIComponent})
+  const matched=matcher(pathname) 
   if(matched){
-    console.log("-----------------------------------------------");
-    console.log("matched : true");
-    console.log(matched.path);
-    const {id}=matched.params;
+    const {id}=matched.params
     if(id){
-      const groupId=id.toString();
-      const hasJoined=await hasJoinedGroup(session.user.id,groupId);
+      const groupId=id.toString()
+      const hasJoined=await hasJoinedGroup(groupId)
       if(!hasJoined){
-        const joinedGroups=await getJoinedGroups(session.user.id);
-        const group=joinedGroups[0];
-        if(group){
-          setCurrentGroup(session.user.id,group.groupId);
-          const url=request.nextUrl.clone();
-          url.pathname=`/group/${group.groupId}/home`;
-          return NextResponse.redirect(url);
+        const joinedGroups=await getJoinedGroups()
+        if(joinedGroups){
+          setCurrentGroup(joinedGroups[0].groupId)
+          const url=request.nextUrl.clone()
+          url.pathname=`/group/${joinedGroups[0].groupId}/home`
+          return NextResponse.redirect(url)
         }
-        const url=request.nextUrl.clone();
+        const url=request.nextUrl.clone()
         url.pathname="/join-group"
-        return NextResponse.redirect(url);
+        return NextResponse.redirect(url)
       }
     }
   }

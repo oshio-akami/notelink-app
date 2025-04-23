@@ -2,13 +2,13 @@
 import { Hono } from "hono"
 import {db} from "@/db/index"
 import { zValidator } from "@hono/zod-validator"
-import { groupMembers, roles, userProfiles ,groups} from "@/db/schema"
+import { groupMembers, roles ,groups, users} from "@/db/schema"
 import { eq } from "drizzle-orm"
-import client from "@/libs/hono"
+import {getClient} from "@/libs/hono"
 import { z } from "zod"
-import { auth } from "@/auth"
 import { handleApiError } from "@/libs/handleApiError"
 import { hasJoinedGroup } from "@/libs/apiLibs"
+import { getSessionUserId } from "@/libs/getSessionUserId"
 
 export const runtime = "edge"
 
@@ -19,6 +19,7 @@ const group=new Hono()
 })),async(c)=>{
   try{
     const  {groupId}=await c.req.valid("param")
+    const client=await getClient();
     const hasJoined=await client.api.user.hasJoined[":groupId"].$get({
       param:{groupId:groupId}
     })
@@ -28,12 +29,12 @@ const group=new Hono()
     const members=await db
       .select({
         userId:groupMembers.userId,
-        displayName:userProfiles.displayName,
-        image:userProfiles.image,
+        displayName:users.displayName,
+        image:users.image,
         role:roles.roleName
       })
       .from(groupMembers)
-      .innerJoin(userProfiles,eq(groupMembers.userId,userProfiles.userId))
+      .innerJoin(users,eq(groupMembers.userId,users.id))
       .innerJoin(roles,eq(groupMembers.roleId,roles.roleId))
       .where(eq(groupMembers.groupId,groupId))
       .orderBy(groupMembers.roleId)
@@ -44,25 +45,23 @@ const group=new Hono()
 })
 /**グループを作成するAPI */
 .post("/create",zValidator("json",z.object({
-    groupName:z.string().uuid(),
+    groupName:z.string(),
   })),async(c)=>{
     try{
-      
-      const body=await c.req.valid("json")
-      const name=body.groupName
+      const {groupName}=await c.req.valid("json")
       const createdGroup=await db.insert(groups).values({
-      groupName:name,
+        groupName:groupName,
       })
       .returning()
       if(createdGroup.length===0){
-        return c.json({success: false }, 404)
+        return c.json({created: null }, 404)
       }
-      const session=await auth()
-      if(!session?.user.id){
-        return c.json({created:null},401)
-      }
-      const userId=session.user.id
-      await db.insert(groupMembers).values({
+      const userId=await getSessionUserId();
+        if(!userId){
+          return c.json({created:null},401)
+        }
+        console.log("user-id : "+userId)
+        await db.insert(groupMembers).values({
         userId:userId,
         groupId:createdGroup[0].groupId,
         roleId:1,
@@ -93,6 +92,25 @@ const group=new Hono()
       return c.json({ group: group[0] }, 404)
     }catch(error){
       return handleApiError(c,error,{group:null})
+    }
+  }
+)
+.get("/:groupId/name",zValidator("param",z.object({
+  groupId:z.string().uuid(),
+})),async(c)=>{
+    try{
+      const {groupId}=c.req.valid("param")
+      const group=await db
+        .select({groupName:groups.groupName})
+        .from(groups)
+        .where(eq(groups.groupId,groupId))
+        .limit(1)
+      if(group.length===0){
+        return c.json({ groupName: null }, 404)
+      }
+      return c.json({ groupName: group[0].groupName }, 404)
+    }catch(error){
+      return handleApiError(c,error,{groupName:null})
     }
   }
 )

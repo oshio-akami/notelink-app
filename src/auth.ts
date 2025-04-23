@@ -1,35 +1,10 @@
-import NextAuth, { DefaultSession } from "next-auth"
+import NextAuth from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {db} from "@/db/index"
-import { users,accounts  ,sessions, userProfiles} from "./db/schema";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {JWT} from "next-auth/jwt"
-import { Adapter } from "next-auth/adapters";
+import { users} from "./db/schema";
+import { getToken } from "next-auth/jwt";
 
 export const runtime = "edge";
-
-declare module "next-auth" {
-  interface User{
-    currentGroupId
-    :string;
-    roleId:string;
-  }
-  interface Session extends DefaultSession {
-    user: {
-      currentGroupId
-      : string;
-      roleId: string;
-    } & DefaultSession["user"];
-  }
- }
- declare module "next-auth/jwt"{
-  interface JWT{
-    currentGroupId
-    :string;
-    roleId:string;
-  }
- }
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
   trustHost: true ,
@@ -43,44 +18,36 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
     })
   ],
+  session:{
+    strategy:"jwt"
+  },
   callbacks:{
     async jwt({ token, user }) {
       if (user) {
-        token.currentGroupId
-         = user.currentGroupId
-        ;
-        token.roleId = user.roleId;
+        token.id = user.id;
+        token.name = user.name;
+        token.picture = user.image;
       }
       return token;
     },
     async session({session,token}){
-      if(token){
-        session.user.currentGroupId
-        =token.currentGroupId
-        ;
-        session.user.roleId=token.roleId;
+      if(token&&session.user){
+        session.user.id=token.sub as string;
       }
       return session;
     }
   },
-  adapter: DrizzleAdapter(db,{
-    usersTable:users,
-    accountsTable:accounts,
-    sessionsTable:sessions,
-  }) as Adapter,
-
   events:{
     async createUser({user}){
       if(!user.id){
         return;
       }
-      await db.insert(userProfiles).values({
-        userId:user.id,
+      await db.insert(users).values({
+        id:user.id,
         displayName:user.name??"ユーザー",
         image:user.image,
         about:"",
       })
-    }
+    },
   }
-
 });

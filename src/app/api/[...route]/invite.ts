@@ -23,16 +23,16 @@ const invite=new Hono()
     .where(eq(groupInvites.token,token))
     .limit(1)
     if(!result[0]){
-      return c.json({success:false},404)
+      return c.json({success:false,message:"招待コードが存在しません"},404)
     }
     const {expiresAt}=result[0].groupInvites
     const currentDate=new Date()
     if(expiresAt<currentDate){
-      return c.json({success:false},410)
+      return c.json({success:false,message:"招待コードの期限が切れています"},410)
     }
     return c.json({success:true,message:result[0].groupInvites.groupId})
   }catch(error){
-    return handleApiError(c,error,{success:false})
+    return handleApiError(c,error,{success:false,message:"エラー"})
   }
 })
 /**招待トークンを作成するAPI */

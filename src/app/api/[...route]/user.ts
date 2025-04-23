@@ -3,9 +3,10 @@ import {db} from "@/db/index"
 import { groupMembers,users } from "@/db/schema"
 import { eq,and } from "drizzle-orm"
 import { zValidator } from "@hono/zod-validator"
-import { auth } from "@/auth"
 import { groups } from "@/db/schema"
 import { z } from "zod"
+import { handleApiError } from "@/libs/handleApiError"
+import { getSessionUserId } from "@/libs/getSessionUserId"
 
 export const runtime = "edge"
 
@@ -17,11 +18,10 @@ const user = new Hono()
     })),
     async (c) => {
       try {
-        const session=await auth()
-        if(!session?.user.id){
+        const userId=await getSessionUserId();
+        if(!userId){
           return c.json({hasJoinedGroup:false},401)
         }
-        const userId=session.user.id
         const {groupId} = c.req.valid("param")
         const result = await db
           .select()
@@ -52,11 +52,10 @@ const user = new Hono()
     })),
     async (c)=>{
       try{
-        const session=await auth()
-        if(!session?.user.id){
-          return c.json({success:false},401)
+        const userId=await getSessionUserId();
+        if(!userId){
+          return c.json({joinedGroup:null},401)
         }
-        const userId=session.user.id
         const {groupId} = c.req.valid("param")
         const {roleId}=c.req.valid("json")
         const joinedGroup=await db.insert(groupMembers).values({
@@ -69,61 +68,89 @@ const user = new Hono()
         }
         return c.json({joinedGroup:joinedGroup},200)
       }catch(error){
-        if(error instanceof z.ZodError){
-          return c.json({joinedGroup:null},422)
-        }
-        return c.json({joinedGroup:null},500)
+        return handleApiError(c,error,{joinedGroup:null})
       }
   })
   /**現在のグループを更新するAPI */
   .patch("/currentGroup/:groupId",zValidator("param", z.object({
-    currentGroupId:z.string().uuid(),
+    groupId:z.string().uuid(),
   })),
     async (c) => {
       try{
-        const session=await auth()
-        if(!session?.user.id){
+        const userId=await getSessionUserId();
+        if(!userId){
           return c.json({success:false},401)
         }
-        const userId=session.user.id
         const body = c.req.valid("param")
-        const { currentGroupId } = body
-        if (!currentGroupId || !userId) {
+        const { groupId } = body
+        if (!groupId || !userId) {
           return
         }
         const setCurrentGroup = await db
           .update(users)
-          .set({ currentGroupId: currentGroupId })
+          .set({ currentGroupId: groupId })
           .where(eq(users.id, userId))
         if(setCurrentGroup.rowCount===0){
           return c.json({success: false }, 404)
         }
         return c.json({success:true},200)
       }catch(error){
-        if(error instanceof z.ZodError){
-          return c.json({success:false},422)
-        }
-        return c.json({success:false},500)
+        return handleApiError(c,error,{success:false})
       }
     }
   )
+  .get("/currentGroup",async(c)=>{
+    try{
+      const userId=await getSessionUserId();
+      if(!userId){
+        return c.json({currentGroup:null},401)
+      }
+      const currentGroup=await db
+        .select({currentGroup:users.currentGroupId})
+        .from(users)
+        .where(eq(users.id,userId))
+        .limit(1)
+      if(!currentGroup||currentGroup.length===0){
+        const joinedGroup=await db
+          .select()
+          .from(groupMembers)
+          .where(eq(groupMembers.userId,userId))
+          .limit(1)
+        if(!joinedGroup||joinedGroup.length===0){
+          return c.json({currentGroup:null},404)
+        }
+        await db
+          .update(users)
+          .set({ currentGroupId: joinedGroup[0].groupId })
+          .where(eq(users.id, userId))
+
+        return c.json({currentGroup:joinedGroup[0].groupId},200)
+      }
+      return c.json({currentGroup:currentGroup[0]},200)
+    }catch(error){
+      return handleApiError(c,error,{currentGroup:null})
+    }
+  })
   /**グループ一覧を取得するAPI */
   .get("/groups",
     async (c) => {
-      const session=await auth()
-      if(!session?.user.id){
-        return c.json({hasJoined:false},401)
+      try{
+        const userId=await getSessionUserId();
+        if(!userId){
+          return c.json({groups:null},401)
+        }
+        const groupList = await db
+          .select({
+            groupId: groups.groupId,
+            groupName: groups.groupName,
+          })
+          .from(groupMembers)
+          .innerJoin(groups, eq(groupMembers.groupId, groups.groupId))
+          .where(eq(groupMembers.userId, userId))
+        return c.json({groups:groupList},200)
+      }catch(error){
+        return handleApiError(c,error,{groups:null})
       }
-      const userId=session.user.id
-      const groupList = await db
-        .select({
-          groupId: groups.groupId,
-          groupName: groups.groupName,
-        })
-        .from(groupMembers)
-        .innerJoin(groups, eq(groupMembers.groupId, groups.groupId))
-        .where(eq(groupMembers.userId, userId))
-      return c.json({groups:groupList},200)
     }
   )
   /**グループを退会するAPI */
@@ -134,13 +161,12 @@ const user = new Hono()
     ),
     async (c) => {
       try {
-        const session=await auth()
-        if(!session?.user.id){
-          return c.json({hasJoined:false},401)
+        const userId=await getSessionUserId();
+        if(!userId){
+          return c.json({deleted:null},401)
         }
         const body = await c.req.valid("param")
         const {groupId } = body
-        const userId=session.user.id
         const deleted = await db
           .delete(groupMembers)
           .where(
@@ -154,13 +180,29 @@ const user = new Hono()
         }
         return c.json({ deleted: deleted }, 200)
       } catch (error) {
-        if(error instanceof z.ZodError){
-          return c.json({deleted: null },422)
-        }
-        return c.json({deleted: null },500)
+        return handleApiError(c,error,{deleted:null})
       }
     }
   )
+  .get("/profile",async(c)=>{
+    try{
+      const userId=await getSessionUserId();
+        if(!userId){
+          return c.json({profile:null},401)
+        }
+      const profile=await db
+        .select()
+        .from(users)
+        .where(eq(users.id,userId))
+        .limit(1)
+      if(profile.length===0){
+        return c.json({ profile: null }, 404)
+      }
+      return c.json({ profile: profile[0] }, 200)
+    }catch (error) {
+      return handleApiError(c,error,{profile:null})
+    }
+  })
 
 
 export default user

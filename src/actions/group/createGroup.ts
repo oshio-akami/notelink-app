@@ -1,7 +1,7 @@
 "use server"
 
 import { auth } from "@/auth";
-import client from "@/libs/hono";
+import {getClient} from "@/libs/hono";
 import {parseWithZod} from "@conform-to/zod"
 import {createGroupFormSchema} from "@/utils/types/formSchema"
 import { redirect } from "next/navigation";
@@ -11,29 +11,26 @@ export async function createGroup(_:unknown,formData: FormData){
   if(submission.status!=='success'){
     return submission.reply();
   }
-  
   const session=await auth();
-  if(!session?.user.id){  
+  if(!session?.user?.id){  
     return submission.reply();
   }
-  const res=await client.api.posts.createGroup.$post({
+  const client=await getClient();
+  const res=await client.api.group.create.$post({
       json:{
         groupName:submission.value.groupName,
       }
   });
   const body=await res.json();
-  await client.api.posts.joinGroup.$post({
-    json:{
-      userId:session?.user.id,
-      groupId:body.groupId,
-      roleId:1,
+  const groupId=body.created?.groupId;
+  if(!groupId){
+    return
+  }
+
+  await client.api.user.currentGroup[":groupId"].$patch({
+    param:{
+      groupId:groupId
     }
-  });
-  await client.api.users.setCurrentGroup.$post({
-    json:{
-      userId:session.user.id,
-      currentGroupId:body.groupId,
-    }
-  });
-  redirect(`/group/${body.groupId}/home`);
+  })
+  redirect(`/group/${groupId}/home`);
 }

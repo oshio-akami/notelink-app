@@ -1,18 +1,13 @@
 "use server"
 
-import { auth } from "@/auth"
-import client from "@/libs/hono"
+import {getClient} from "@/libs/hono"
 import { redirect } from "next/navigation";
 
 export default async function setCurrentGroup(groupId:string){
-  const session=await auth();
-  if(!session?.user?.id){
-    return
-  }
-  await client.api.users.setCurrentGroup.$post({
-    json:{
-      userId:session.user.id,
-      currentGroupId:groupId,
+  const client=await getClient();
+  await client.api.user.currentGroup[":groupId"].$patch({
+    param:{
+      groupId:groupId,
     }
   })
   redirect(`/group/${groupId}/home`);

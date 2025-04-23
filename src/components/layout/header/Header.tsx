@@ -1,12 +1,11 @@
 import styles from "./header.module.css";
 import { IconUserCircle,IconBell} from "@tabler/icons-react";
-import { auth } from "@/auth";
-import { ProfileWindow } from "@/components/ui/ProfileWindow";
+import { ProfileWindow } from "@/components/ui/profileWindow/ProfileWindow";
 import SearchBar from "@/components/ui/searchBar/SearchBar";
 import { Image } from "@mantine/core";
 import  GroupsWindow  from "@/components/ui/groupsWindow/GroupsWindow";
-import getJoinedGroups from "@/actions/user/getJoinedGroups";
 import CreateGroupModal from "@/components/ui/createGroupModal/CreateGroupModal";
+import {getClient} from "@/libs/hono";
 
 export const runtime = "edge";
 
@@ -21,11 +20,23 @@ const getCurrentGroupName=async(groups:{groupId:string,groupName:string}[],curre
   }
   return currentGroup.groupName;
 }
+const getJoinedGroups=async()=>{
+  const client=await getClient();
+  const res=await client.api.user.groups.$get();
+  const body=await res.json();
+  return body.groups;
+}
+const getUserProfile=async()=>{
+  const client=await getClient();
+  const res=await client.api.user.profile.$get();
+  const body=await res.json();
+  return body.profile;
+}
 
 export async function Header({params}:Props) {
   const {id}=await params;
-  const session = await auth();
   const groups=await getJoinedGroups();
+  const userProfile=await getUserProfile();
   const groupName=groups?await getCurrentGroupName(groups,id):"グループが存在しません";
   return (
     <div className={styles.header}>
@@ -41,13 +52,13 @@ export async function Header({params}:Props) {
       </div>
       <div className={styles.rightSection}>
         <SearchBar />
-        {session?.user? (
+        {userProfile? (
           <ProfileWindow
-            name={session.user.name||""}
-            mail={session.user.email||""}
-            icon={session.user.image||""}
+            name={userProfile.displayName||""}
+            about={userProfile.about||""}
+            icon={userProfile.image||""}
           >
-            <Image className={styles.userIcon} alt="" src={session.user.image||""} />
+            <Image className={styles.userIcon} alt="" src={userProfile.image||""} />
           </ProfileWindow>
         ) : (
           <div className={styles.guestIcon}>

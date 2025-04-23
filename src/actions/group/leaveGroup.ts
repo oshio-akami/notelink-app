@@ -1,19 +1,17 @@
 "use server"
 
-import { auth } from "@/auth";
-import client from "@/libs/hono";
+import {getClient} from "@/libs/hono";
 
 export default async function leaveGroup(groupId:string){
-  const session=await auth();
-      if(!session?.user.id){  
-        return false;
-      }
-  const res=await client.api.group.leaveGroup.$post({
-    json:{
-      userId:session.user.id,
+  const client=await getClient();
+  const res=await client.api.user[":groupId"].$delete({
+    param:{
       groupId:groupId,
     }
   });
   const body=await res.json();
-  return body.success;
+  if(!body.deleted||body.deleted.length===0){
+    return false
+  }
+  return true;
 }
