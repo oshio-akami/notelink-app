@@ -11,7 +11,7 @@ const getCurrentGroup=async()=>{
   const client=await getClient();
   const res =await client.api.user.currentGroup.$get();
   const body=await res.json();
-  return body.currentGroup?.toString();
+  return body.currentGroup;
 }
 const getGroups=async()=>{
   const client=await getClient();
@@ -37,6 +37,7 @@ export default async function Page() {
           groupId:groups[0].groupId
         }
       });
+      redirect(`group/${groups[0].groupId}/home`)
     }
   return(
     <div className={styles.formWrapper}>

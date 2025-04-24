@@ -32,8 +32,10 @@ export async function middleware(request:NextRequest){
   const session=await auth();
   const userId=session?.user?.id;
   if(!userId){
+    const callbackUrl=request.nextUrl.pathname+request.nextUrl.search;
     const url=request.nextUrl.clone()
     url.pathname="/login"
+    url.searchParams.set("callbackUrl",callbackUrl)
     return NextResponse.redirect(url)
   }
   const pathname=request.nextUrl.pathname

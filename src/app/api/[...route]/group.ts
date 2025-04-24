@@ -2,7 +2,7 @@
 import { Hono } from "hono"
 import {db} from "@/db/index"
 import { zValidator } from "@hono/zod-validator"
-import { groupMembers, roles ,groups, users} from "@/db/schema"
+import { groupMembers, roles ,groups, userProfiles} from "@/db/schema"
 import { eq } from "drizzle-orm"
 import {getClient} from "@/libs/hono"
 import { z } from "zod"
@@ -29,12 +29,12 @@ const group=new Hono()
     const members=await db
       .select({
         userId:groupMembers.userId,
-        displayName:users.displayName,
-        image:users.image,
+        displayName:userProfiles.displayName,
+        image:userProfiles.image,
         role:roles.roleName
       })
       .from(groupMembers)
-      .innerJoin(users,eq(groupMembers.userId,users.id))
+      .innerJoin(userProfiles,eq(groupMembers.userId,userProfiles.userId))
       .innerJoin(roles,eq(groupMembers.roleId,roles.roleId))
       .where(eq(groupMembers.groupId,groupId))
       .orderBy(groupMembers.roleId)
@@ -60,7 +60,6 @@ const group=new Hono()
         if(!userId){
           return c.json({created:null},401)
         }
-        console.log("user-id : "+userId)
         await db.insert(groupMembers).values({
         userId:userId,
         groupId:createdGroup[0].groupId,

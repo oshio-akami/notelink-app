@@ -1,6 +1,6 @@
 import { Hono } from "hono"
 import {db} from "@/db/index"
-import { groupMembers,users } from "@/db/schema"
+import { groupMembers,userProfiles } from "@/db/schema"
 import { eq,and } from "drizzle-orm"
 import { zValidator } from "@hono/zod-validator"
 import { groups } from "@/db/schema"
@@ -87,9 +87,9 @@ const user = new Hono()
           return
         }
         const setCurrentGroup = await db
-          .update(users)
+          .update(userProfiles)
           .set({ currentGroupId: groupId })
-          .where(eq(users.id, userId))
+          .where(eq(userProfiles.userId, userId))
         if(setCurrentGroup.rowCount===0){
           return c.json({success: false }, 404)
         }
@@ -106,9 +106,9 @@ const user = new Hono()
         return c.json({currentGroup:null},401)
       }
       const currentGroup=await db
-        .select({currentGroup:users.currentGroupId})
-        .from(users)
-        .where(eq(users.id,userId))
+        .select({currentGroup:userProfiles.currentGroupId})
+        .from(userProfiles)
+        .where(eq(userProfiles.userId,userId))
         .limit(1)
       if(!currentGroup||currentGroup.length===0){
         const joinedGroup=await db
@@ -120,13 +120,13 @@ const user = new Hono()
           return c.json({currentGroup:null},404)
         }
         await db
-          .update(users)
+          .update(userProfiles)
           .set({ currentGroupId: joinedGroup[0].groupId })
-          .where(eq(users.id, userId))
+          .where(eq(userProfiles.userId, userId))
 
         return c.json({currentGroup:joinedGroup[0].groupId},200)
       }
-      return c.json({currentGroup:currentGroup[0]},200)
+      return c.json({currentGroup:currentGroup[0].currentGroup},200)
     }catch(error){
       return handleApiError(c,error,{currentGroup:null})
     }
@@ -192,8 +192,8 @@ const user = new Hono()
         }
       const profile=await db
         .select()
-        .from(users)
-        .where(eq(users.id,userId))
+        .from(userProfiles)
+        .where(eq(userProfiles.userId,userId))
         .limit(1)
       if(profile.length===0){
         return c.json({ profile: null }, 404)
