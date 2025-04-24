@@ -44,7 +44,7 @@ export default function CreateGroupForm({onPendingChange}:Props) {
 
   useEffect(()=>{
     onPendingChange(isPending)
-  },[isPending]);
+  },[isPending,onPendingChange]);
   
   const [visible, { toggle }] = useDisclosure(false);
   return (
