@@ -30,7 +30,7 @@ type Props = {
 
 export default function CreateGroupForm({onPendingChange}:Props) {
   const [groupName, setGroupName] = useState("");
-  const [_, formAction, isPending] = useActionState(
+  const [, formAction, isPending] = useActionState(
     createGroup,
     undefined
   );
