@@ -1,8 +1,10 @@
-import NextAuth from "next-auth"
+import NextAuth, { DefaultSession } from "next-auth"
 import GoogleProvider from "next-auth/providers/google";
+import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {db} from "@/db/index"
-import { users} from "./db/schema";
-import { getToken } from "next-auth/jwt";
+import { users,accounts  ,sessions, userProfiles} from "./db/schema";
+ 
+import { Adapter } from "next-auth/adapters";
 
 export const runtime = "edge";
 
@@ -18,36 +20,23 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       },
     })
   ],
-  session:{
-    strategy:"jwt"
-  },
-  callbacks:{
-    async jwt({ token, user }) {
-      if (user) {
-        token.id = user.id;
-        token.name = user.name;
-        token.picture = user.image;
-      }
-      return token;
-    },
-    async session({session,token}){
-      if(token&&session.user){
-        session.user.id=token.sub as string;
-      }
-      return session;
-    }
-  },
+  adapter: DrizzleAdapter(db,{
+    usersTable:users,
+    accountsTable:accounts,
+    sessionsTable:sessions,
+  }) as Adapter,
+
   events:{
     async createUser({user}){
       if(!user.id){
         return;
       }
-      await db.insert(users).values({
-        id:user.id,
+      await db.insert(userProfiles).values({
+        userId:user.id,
         displayName:user.name??"ユーザー",
         image:user.image,
         about:"",
       })
-    },
+    }
   }
 });
