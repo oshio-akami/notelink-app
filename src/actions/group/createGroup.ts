@@ -6,8 +6,6 @@ import {parseWithZod} from "@conform-to/zod"
 import {createGroupFormSchema} from "@/utils/types/formSchema"
 import { redirect } from "next/navigation";
 
-export const runtime="edge"
-
 export async function createGroup(_:unknown,formData: FormData){
   const submission=parseWithZod(formData,{schema:createGroupFormSchema});
   if(submission.status!=='success'){

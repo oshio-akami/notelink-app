@@ -1,7 +1,6 @@
 "use server"
 
 import {getClient} from "@/libs/hono";
-export const runtime="edge"
 
 export default async function leaveGroup(groupId:string){
   const client=await getClient();

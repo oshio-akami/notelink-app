@@ -4,7 +4,6 @@ import {getClient} from "@/libs/hono";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { hasJoinedGroup } from "@/libs/apiLibs";
-export const runtime="edge"
 
 export default async function joinInviteGroup(inviteToken:string){
   const client=await getClient();
