@@ -5,30 +5,29 @@ import {
   primaryKey,
   timestamp,
   text,
-  boolean,
+  uuid,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { sql } from "drizzle-orm";
+
 import type { AdapterAccountType } from "next-auth/adapters"
 
-
 export const users = pgTable("users", {
-  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text("name"),
   email: text("email").unique(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
+  emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
-  roleId: integer("role_id").references(() => roles.roleId),
-});
+})
 
 export const accounts = pgTable(
   "account",
   {
-    userId: text("userId")
+    userId: uuid("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
     type: text("type").$type<AdapterAccountType>().notNull(),
     provider: text("provider").notNull(),
-    providerAccountId: text("providerAccountId").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
     refresh_token: text("refresh_token"),
     access_token: text("access_token"),
     expires_at: integer("expires_at"),
@@ -47,83 +46,70 @@ export const accounts = pgTable(
 )
 
 export const sessions = pgTable("session", {
-  sessionToken: text("sessionToken").primaryKey(),
-  userId: text("userId")
+  sessionToken: text("session_token").primaryKey(),
+  userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: timestamp("expires", { mode: "date" }).notNull(),
 })
 
-export const authenticators = pgTable(
-  "authenticator",
-  {
-    credentialID: text("credentialID").notNull().unique(),
-    userId: text("userId")
-      .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
-    providerAccountId: text("providerAccountId").notNull(),
-    credentialPublicKey: text("credentialPublicKey").notNull(),
-    counter: integer("counter").notNull(),
-    credentialDeviceType: text("credentialDeviceType").notNull(),
-    credentialBackedUp: boolean("credentialBackedUp").notNull(),
-    transports: text("transports"),
-  },
-  (authenticator) => [
-    {
-      compositePK: primaryKey({
-        columns: [authenticator.userId, authenticator.credentialID],
-      }),
-    },
-  ]
-)
+/*ユーザーのprofile情報*/
+export const userProfiles=pgTable("user_profiles",{
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }).primaryKey(),
+  displayName:text("display_name").notNull(),
+  image: text("image"),
+  about:text("about"),
+  currentGroupId:uuid("current_group_id").references(() => groups.groupId, { onDelete: "set null" }),
+})
 
+//ユーザーの役職
 export const roles = pgTable("roles", {
-  roleId: serial("role_id").primaryKey(),
+  id: serial("id").primaryKey(),
+  roleId:integer("role_id").notNull(),
   roleName: text("role_name").notNull(),
 });
 
-export const projects = pgTable("projects", {
-  projectId: serial("project_id").primaryKey(),
-  projectName: text("project_name").notNull(),
+/**グループ */
+export const groups = pgTable("groups", {
+  groupId: uuid("group_id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  groupName: text("group_name").notNull(),
 });
 
-export const projectMembers = pgTable(
-  "project_members",
-  {
-    userId: text("user_id").references(() => users.id, {
-      onDelete: "cascade",
-    }),
-    projectId: integer("project_id").references(() => projects.projectId),
+/*グループに参加しているメンバー */
+export const groupMembers = pgTable("group_members",{
+  userId: uuid("user_id").references(() => users.id, {
+     onDelete: "cascade",
+  }),
+  groupId: uuid("group_id").references(() => groups.groupId,{
+     onDelete:"cascade",
+   }),
+   roleId: integer("role_id").notNull().default(2),
   },
   (table) => {
     return {
-      pk: primaryKey(table.userId, table.projectId),
+      pk: primaryKey(table.userId, table.groupId),
     };
   }
 );
 
-export const userRelations = relations(users, ({ many, one }) => ({
-  projectMembers: many(projectMembers),
-  role: one(roles, {
-    fields: [users.roleId],
-    references: [roles.roleId],
+/*グループの招待トークン*/
+export const groupInvites=pgTable("group_invites",{
+  id:serial().primaryKey().notNull(),
+  groupId: uuid("group_id").references(() => groups.groupId,{
+    onDelete:"cascade",
   }),
-}));
+  token:uuid("token").$defaultFn(() => crypto.randomUUID()),
+  expiresAt:timestamp("expires_at").default(sql`now() + interval '10 days'`).notNull(),
+  createdAt:timestamp("created_at").defaultNow().notNull(),
+})
 
-export const projectsRelations = relations(projects, ({ many }) => ({
-  projectMembers: many(projectMembers),
-}));
-
-export const projectMembersRelations = relations(
-  projectMembers,
-  ({ one }) => ({
-    user: one(users, {
-      fields: [projectMembers.userId],
-      references: [users.id],
-    }),
-    project: one(projects, {
-      fields: [projectMembers.projectId],
-      references: [projects.projectId],
-    }),
-  })
-);
+export const schema={
+  users,
+  userProfiles,
+  roles,
+  groups,
+  groupMembers,
+  groupInvites,
+}

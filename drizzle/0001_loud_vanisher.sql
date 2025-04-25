@@ -1,0 +1,1 @@
+ALTER TABLE "group_members" RENAME COLUMN "role" TO "role_id";

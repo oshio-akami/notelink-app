@@ -1,0 +1,16 @@
+.form{
+  display: flex;
+  flex-direction: column;
+  gap:20px
+}
+
+.button{
+  width:100%;
+  margin: 0 auto;
+}
+
+.error{
+  color:red;
+  font-size: 14px;
+  line-height: 0;
+}

@@ -1,17 +1,20 @@
-import { auth } from "@/auth";
-import { Login } from "@/components/pages/login/Login";
+import { LoginForm } from "./_components/loginForm/LoginForm";
 import { redirect } from "next/navigation";
+import {getClient} from "@/libs/hono";
 
 export const runtime = "edge";
 
 export default async function Page() {
-  const session =await auth();
-  if(session){
-    redirect("/dashboard");
+  const client=await getClient();
+  const res=await client.api.user.currentGroup.$get();
+  const body=await res.json();
+  const {currentGroup}=body;
+  if(currentGroup){   
+    redirect(`/group/${currentGroup}/home`);
   }
   return (
     <div>
-      <Login />
+      <LoginForm />
     </div>
   );
 }

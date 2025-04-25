@@ -1,23 +1,23 @@
 .header{
   display: flex;
-  justify-content: space-between;
   height: 100%;
   border: 1px;
   padding: 10px;
-  background-color: var(--sub-color);
+  background-color: white;
+  box-shadow: 0 0 8px gray;
 }
 .leftSection{
+  width:100%;
   display: flex;
-  justify-content: space-between;
-  width:50%;
   align-items: center;
   margin-left: 40px;
+  gap:20px;
 }
 
 .rightSection{
+  width:100%;
   display: flex;
   justify-content: right;
-  width:50%;
   align-items: center;
   gap:20px;
   margin-right: 20px;
@@ -59,4 +59,15 @@
 }
 .setting:hover{
   box-shadow: 0 0 8px gray;
+}
+
+.groupIcon{
+  cursor: pointer;
+  min-width: 100px;
+  text-align: center;
+  margin-left: auto;
+}
+.groupIcon:hover{
+  /*text-decoration: underline;*/
+  border-bottom: 2px solid black;
 }
