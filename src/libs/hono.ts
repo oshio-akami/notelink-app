@@ -1,7 +1,6 @@
 import { hc } from "hono/client";
 import type { AppType } from "@/app/api/[...route]/route";
 import { headers } from "next/headers";
-import { env } from "process";
 
 export const getClient=async()=>{
   const headerList=await headers();
