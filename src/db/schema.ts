@@ -10,6 +10,7 @@ import {
 import { sql } from "drizzle-orm";
 
 import type { AdapterAccountType } from "next-auth/adapters"
+import { number } from "zod";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -105,6 +106,22 @@ export const groupInvites=pgTable("group_invites",{
   createdAt:timestamp("created_at").defaultNow().notNull(),
 })
 
+/**投稿 */
+export const articles=pgTable("articles",{
+  id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  userId: uuid("user_id").references(() => users.id, {
+    onDelete: "cascade",
+ }),
+  groupId: uuid("group_id").references(() => groups.groupId,{
+    onDelete:"cascade",
+  }),
+  title:text("title").notNull().default("タイトル"),
+  content:text("title").notNull().default("タイトル"),
+  image:text("image"),
+  createdAt:timestamp("created_at").defaultNow().notNull(),
+})
+
+
 export const schema={
   users,
   userProfiles,
@@ -112,4 +129,5 @@ export const schema={
   groups,
   groupMembers,
   groupInvites,
+  articles,
 }
