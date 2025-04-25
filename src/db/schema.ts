@@ -10,7 +10,6 @@ import {
 import { sql } from "drizzle-orm";
 
 import type { AdapterAccountType } from "next-auth/adapters"
-import { number } from "zod";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
