@@ -3,6 +3,8 @@
 import {getClient} from "@/libs/hono"
 import { redirect } from "next/navigation";
 
+export const runtime="edge"
+
 export default async function setCurrentGroup(groupId:string){
   const client=await getClient();
   await client.api.user.currentGroup[":groupId"].$patch({
