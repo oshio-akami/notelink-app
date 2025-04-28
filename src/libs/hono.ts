@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 export const getClient=async()=>{
   const headerList=await headers();
   const cookie=headerList.get("cookie");
-  const client=hc<AppType>(process.env.NEXT_PUBLIC_URL!,{
+  const client=hc<AppType>(process.env.CF_PAGES_URL||process.env.NEXT_PUBLIC_URL!,{
     init:{
       headers:{
         cookie:cookie??"",

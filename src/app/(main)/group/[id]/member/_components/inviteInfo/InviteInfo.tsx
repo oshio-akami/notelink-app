@@ -8,7 +8,7 @@ type Props={
 }
 
 const createInviteLink=(inviteToken:string)=>{
-  return `${process.env.CF_PAGES_URL||process.env.NEXT_PUBLIC_DEFAUT_URL}/invite/${inviteToken}`;
+  return `${process.env.CF_PAGES_URL||process.env.NEXT_PUBLIC_DEFAULT_URL}/invite/${inviteToken}`;
 }
 
 export default async function InviteInfo({inviteToken}:Props){
