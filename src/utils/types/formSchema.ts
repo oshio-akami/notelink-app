@@ -8,3 +8,10 @@ export const createGroupFormSchema=z.object({
   .min(1)
   .max(20),
 })
+
+export const PostFormSchema=z.object({
+  groupId:z.string().uuid(),
+  title:z.string({required_error:"*タイトルは必須です"}),
+  image:z.string().default(""),
+  content:z.string().default(""),
+})

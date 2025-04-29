@@ -1,6 +1,5 @@
 "use server"
 
-import { auth } from "@/auth";
 import {getClient} from "@/libs/hono";
 import {parseWithZod} from "@conform-to/zod"
 import {createGroupFormSchema} from "@/utils/types/formSchema"
@@ -8,11 +7,7 @@ import { redirect } from "next/navigation";
 
 export async function createGroup(_:unknown,formData: FormData){
   const submission=parseWithZod(formData,{schema:createGroupFormSchema});
-  if(submission.status!=='success'){
-    return submission.reply();
-  }
-  const session=await auth();
-  if(!session?.user?.id){  
+  if(submission.status!=="success"){
     return submission.reply();
   }
   const client=await getClient();

@@ -115,8 +115,8 @@ export const articles=pgTable("articles",{
     onDelete:"cascade",
   }),
   title:text("title").notNull().default("タイトル"),
-  content:text("title").notNull().default("タイトル"),
-  image:text("image"),
+  image:text("image").default(""),
+  content:text("content").default(""),
   createdAt:timestamp("created_at").defaultNow().notNull(),
 })
 

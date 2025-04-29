@@ -3,6 +3,7 @@ import { handle } from "hono/vercel"
 import user from "./user"
 import invite from "./invite"
 import group from "./group"
+import article from "./article"
 export const runtime="edge"
 
 
@@ -14,6 +15,7 @@ const route=app
   .route("/user",user)
   .route("invite",invite)
   .route("/group",group)
+  .route("/article",article)
 
 
 export const GET=handle(app)
