@@ -1,22 +1,62 @@
-import { Card, Text } from "@mantine/core";
+import { Accordion, Card, Text,Avatar, Flex } from "@mantine/core";
+import styles from "./articleCard.module.css"
+import ArticleButton from "../articleButton/ArticleButton";
 
 type Props={
   article:{
-    title: string,
-    content:string|null,
-    image: string | null,
-    createdAt: string,
-  }|null,
+    userProfiles: {
+      userId: string;
+      displayName: string;
+      image: string | null;
+    };
+    title: string;
+    content: string | null;
+    image: string | null;
+    createdAt: string;
+  }| null
+}
+
+const date=(dateString:string)=> {
+  const date=new Date(dateString)
+  const now = new Date();
+  const diff = (now.getTime() - date.getTime()) / 1000; 
+  const rtf = new Intl.RelativeTimeFormat('ja', { numeric: 'auto' });
+  const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+  if (diff < 60) {
+    return rtf.format(-Math.floor(diff), 'seconds');
+  } else if (diff < 3600) {
+    return rtf.format(-Math.floor(diff / 60), 'minutes');
+  } else if (diff < 86400) {
+    return rtf.format(-Math.floor(diff / 3600), 'hours'); 
+  } else if (date.getFullYear() === now.getFullYear()) {
+    return `${date.getMonth() + 1}月${date.getDate()}日${hours}:${minutes}`;
+  } else {
+    return `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+  }
 }
 
 export default function ArticleCard({article}:Props){
+  if(!article){
+    return(<></>)
+  }
   return(
-    <div>
-      <Card withBorder>
-        <Text fw={500} size="1.5rem">{article?.title}</Text>
-        <Text>内容：{article?.content}</Text>
-        <Text>作成日：{article?.createdAt}</Text>
-      </Card>
-    </div>
+    <Card withBorder className={styles.card}>
+      <div className={styles.profile}>
+        <Flex align="center">
+          <Avatar src={article.userProfiles.image}></Avatar>
+          <Text>{article.userProfiles.displayName}</Text>
+        </Flex>
+        <Text>投稿時間：{date(article.createdAt)}</Text>
+      </div>
+      <div className={styles.title}>
+        <Text fw={500} size="1.5rem">{article.title}</Text>
+      </div>
+      <Accordion>
+      </Accordion>
+      <Text className={styles.content}>{article.content}</Text>
+      <ArticleButton />
+      
+    </Card>
   )
 }

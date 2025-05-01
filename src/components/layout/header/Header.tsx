@@ -1,7 +1,6 @@
 import styles from "./header.module.css";
 import { IconUserCircle,IconBell} from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/ui/profileWindow/ProfileWindow";
-import SearchBar from "@/components/ui/searchBar/SearchBar";
 import { Image } from "@mantine/core";
 import  GroupsWindow  from "@/components/ui/groupsWindow/GroupsWindow";
 import CreateGroupModal from "@/components/ui/createGroupModal/CreateGroupModal";
@@ -51,7 +50,6 @@ export async function Header({params}:Props) {
         )}
       </div>
       <div className={styles.rightSection}>
-        <SearchBar />
         {userProfile? (
           <ProfileWindow
             name={userProfile.displayName||""}

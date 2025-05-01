@@ -4,11 +4,13 @@ import { useState } from "react"
 import { IconSearch } from "@tabler/icons-react";
 import styles from "./searchBar.module.css"
 
+
 export default function SearchBar(){
   const [value,setValue]=useState("");
   return(
     <TextInput className={styles.textInput}
-    placeholder="プロジェクト内を検索"
+    radius={50}
+    placeholder="投稿を検索"
     value={value}
     onChange={(event) => setValue(event.currentTarget.value)}
     leftSection={<IconSearch />}

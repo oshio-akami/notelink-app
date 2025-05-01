@@ -203,6 +203,27 @@ const user = new Hono()
       return handleApiError(c,error,{profile:null})
     }
   })
-
+  .get("profile/",zValidator("json",
+    z.object({
+      userId:z.string().uuid(),
+    })),async(c)=>{
+      try{
+        const {userId}=c.req.valid("json")
+          if(!userId){
+            return c.json({profile:null},401)
+          }
+        const profile=await db
+          .select()
+          .from(userProfiles)
+          .where(eq(userProfiles.userId,userId))
+          .limit(1)
+        if(profile.length===0){
+          return c.json({ profile: null }, 404)
+        }
+        return c.json({ profile: profile[0] }, 200)
+      }catch (error) {
+        return handleApiError(c,error,{profile:null})
+      }
+  })
 
 export default user

@@ -1,0 +1,6 @@
+.page{
+  position: fixed;
+  background-color: var(--sub-color);
+  width:20%;
+  height:90vh;
+}
