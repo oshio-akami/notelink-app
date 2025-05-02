@@ -1,5 +1,6 @@
 "use client"
 
+import JoinGroupForm from "@/app/(login)/join-group/_components/joinGroupForm/joinGroupForm";
 import CreateGroupForm from "@/components/ui/createGroupForm/createGroupForm";
 import { Button, Modal } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
@@ -13,6 +14,7 @@ export default function CreateGroupModal(){
     <>
       <Modal opened={opened} onClose={close} closeOnClickOutside={!isPending} closeOnEscape={!isPending} withCloseButton={!isPending} size={"lg"}>
         <CreateGroupForm onPendingChange={setIsPending}/>
+        <JoinGroupForm />
       </Modal>
       <Button onClick={open} >グループの作成・参加</Button>
     </>
