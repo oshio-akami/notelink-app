@@ -16,8 +16,8 @@ export function LoginForm(){
       <h1>ログイン</h1>
       <div className={styles.loginWindow}>
         <ul>
-          <li><Input placeholder="メールドレス"></Input></li>
-          <li><PasswordInput placeholder="パスワード"></PasswordInput></li>
+          <li><Input placeholder="メールドレス" disabled></Input></li>
+          <li><PasswordInput placeholder="パスワード" disabled></PasswordInput></li>
           <li><Button>ログイン</Button></li>
           <li><p className={styles.split}>他の方法でログイン</p></li>
           <li className={styles.googleLogin} onClick={()=>signIn("google",{ callbackUrl:callbackUrl})}> 

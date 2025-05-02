@@ -1,5 +1,13 @@
-import { notFound} from "next/navigation";
+import Link from "next/link";
+import { Text,Button } from "@mantine/core";
 
 export default function Page() {
-  notFound();
+  return (
+  <>
+    <Text>最初のページ(仮)</Text>
+    <Link href="/login">
+      <Button>ログインする</Button>
+    </Link>
+  </>
+  )
 }
