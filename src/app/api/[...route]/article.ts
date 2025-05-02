@@ -5,21 +5,30 @@ import { handleApiError } from "@/libs/handleApiError"
 import { db } from "@/db"
 import { articles, userProfiles } from "@/db/schema"
 import { hasJoinedGroup } from "@/libs/apiLibs"
-import { eq ,desc} from "drizzle-orm"
+import { eq ,desc,and} from "drizzle-orm"
 import { auth } from "@/auth"
 
 export const runtime = "edge"
 
 
 const article=new Hono()
-.get("/:groupId/articles",zValidator("param",z.object({
+.get("/:groupId/articles/:mine?",zValidator("param",z.object({
   groupId:z.string().uuid(),
+  mine:z.string().optional().transform((val)=>val==="true").default("false")
 })),async(c)=>{
   try{
-    const {groupId}=await c.req.valid("param")
+    const {groupId,mine}=await c.req.valid("param")
     const hasJoined=await hasJoinedGroup(groupId)
     if(!hasJoined){
       return c.json({articles:null},404)
+    }
+    const session=await auth();
+    if(!session?.user?.id){
+      return c.json({articles:null},401)
+    }
+    const whereConditions = [eq(articles.groupId, groupId)];
+    if (mine) {
+     whereConditions.push(eq(articles.userId, session?.user?.id));
     }
     const articleList=await db
       .select({
@@ -35,7 +44,7 @@ const article=new Hono()
       })
       .from(articles)
       .innerJoin(userProfiles,eq(articles.userId,userProfiles.userId))
-      .where(eq(articles.groupId,groupId))
+      .where(and(...whereConditions))
       .orderBy(desc(articles.createdAt))
     return c.json({articles:articleList},200)
   }catch(error){
@@ -58,6 +67,7 @@ const article=new Hono()
           displayName:userProfiles.displayName,
           image:userProfiles.image,
         },
+        id:articles.id,
         title:articles.title,
         content:articles.content,
         image:articles.image,
@@ -93,6 +103,23 @@ const article=new Hono()
         image:image,
     })
     return c.json({created:created},200)
+  }catch(error){
+    return handleApiError(c,error,{article:false})
+  }
+})
+.delete("/:articleId",zValidator("param",z.object({
+  articleId:z.string().uuid(),
+})),async(c)=>{
+  try{
+    const session=await auth();
+    if(!session?.user?.id){
+      return c.json({deleted:null},401)
+    }
+    const {articleId}=c.req.valid("param")
+    const deleted=await db
+      .delete(articles)
+      .where(eq(articles.id,articleId))
+    return c.json({deleted:deleted},200)
   }catch(error){
     return handleApiError(c,error,{article:false})
   }

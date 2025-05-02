@@ -25,7 +25,14 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
     accountsTable:accounts,
     sessionsTable:sessions,
   }) as Adapter,
-
+  callbacks:{
+    async session({session, user}) {
+      if (session?.user) {
+        session.user.id = user.id;
+      }
+      return session;
+    },
+  },
   events:{
     async createUser({user}){
       if(!user.id){

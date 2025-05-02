@@ -10,7 +10,7 @@ type Props={
 
 const getArticles=async(groupId:string)=>{
   const client =await getClient();
-  const res=await client.api.article[":groupId"].articles.$get({
+  const res=await client.api.article[":groupId"].articles[":mine?"].$get({
     param:{
       groupId:groupId,
     }
@@ -20,7 +20,7 @@ const getArticles=async(groupId:string)=>{
 }
 const getRecommend=async(groupId:string)=>{
   const client =await getClient();
-  const res=await client.api.article[":groupId"].articles.$get({
+  const res=await client.api.article[":groupId"].articles[":mine?"].$get({
     param:{
       groupId:groupId,
     }
@@ -39,7 +39,7 @@ export default async function Home({params}:Props){
         <div className={styles.sticky}>
         <Tabs defaultValue="default">
           <TabsList grow justify="center"  classNames={{list:styles.list}}>
-            <TabsTab value="default">ホーム</TabsTab>
+            <TabsTab value="default" >新着</TabsTab>
             <TabsTab value="recommend">おすすめ</TabsTab>
             <TabsTab value="bookmark">ブックマーク</TabsTab>   
           </TabsList>

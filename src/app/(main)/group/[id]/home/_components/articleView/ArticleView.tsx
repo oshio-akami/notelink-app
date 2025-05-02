@@ -15,7 +15,7 @@ type Props={
   }[] | null
 }
 
-export default function ArticleView({articles}:Props){
+export default async function ArticleView({articles}:Props){
   const articleElements=articles?.map((article)=>{
     return <ArticleCard key={article.createdAt} article={article}/>;
   })
