@@ -20,7 +20,7 @@ export function LoginForm(){
           <li><PasswordInput placeholder="パスワード" disabled></PasswordInput></li>
           <li><Button>ログイン</Button></li>
           <li><p className={styles.split}>他の方法でログイン</p></li>
-          <li className={styles.googleLogin} onClick={()=>signIn("google",{ callbackUrl:callbackUrl})}> 
+          <li className={styles.googleLogin} onClick={()=>signIn("google",{ callbackUrl:callbackUrl,redirect:false})}> 
             <Image className={styles.googleLogo} 
               src="https://developers.google.com/identity/images/g-logo.png" 
               alt="login" 
