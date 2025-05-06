@@ -1,5 +1,5 @@
 import { TextInput ,Text} from "@mantine/core";
-import Copy from "@/components/ui/copyButton/CopyButton";
+import CopyButton from "@/components/ui/copyButton/CopyButton";
 import styles from "./inviteInfo.module.css"
 
 
@@ -20,12 +20,12 @@ export default async function InviteInfo({inviteToken}:Props){
       <div className={styles.info}>
         <Text w={100}>招待URL : </Text>
         <TextInput width={400}  value={link} readOnly flex={1}></TextInput>
-        <Copy text={link}></Copy>
+        <CopyButton text={link}></CopyButton>
       </div>
       <div className={styles.info}>
         <Text w={100}>招待コード : </Text>
         <TextInput width={400}  value={inviteToken} readOnly flex={1}></TextInput>
-        <Copy text={inviteToken}></Copy>
+        <CopyButton text={inviteToken}></CopyButton>
       </div>
     </div>
   )

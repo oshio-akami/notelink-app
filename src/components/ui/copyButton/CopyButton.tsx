@@ -1,19 +1,19 @@
 "use client"
 
-import { Button ,CopyButton} from "@mantine/core"
+import { Button ,CopyButton as MantineCopyButton} from "@mantine/core"
 
 type Props={
   text:string,
 }
 
-export default function Copy({text}:Props){
+export default function CopyButton({text}:Props){
   return(
-    <CopyButton value={text}>
+    <MantineCopyButton value={text}>
       {({ copied, copy }) => (
         <Button w={150} color={copied ? "teal" : "blue"} onClick={copy}>
           {copied ? "コピーしました" : 'コピーする'}
         </Button>
       )}
-    </CopyButton>
+    </MantineCopyButton>
   )
 }
