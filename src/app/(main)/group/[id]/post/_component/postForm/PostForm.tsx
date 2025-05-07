@@ -36,7 +36,7 @@ export default function PostForm({groupId}:Props) {
       return parseWithZod(formData, { schema: PostFormSchema });
     },
     shouldValidate: "onBlur",
-    onSubmit:()=>open(),
+    onSubmit:()=>{open()},
   });
   const [visible, { open,close }] = useDisclosure(false);
   useEffect(()=>{
