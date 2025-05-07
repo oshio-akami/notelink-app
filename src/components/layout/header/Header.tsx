@@ -1,5 +1,5 @@
 import styles from "./header.module.css";
-import { IconUserCircle, IconBell } from "@tabler/icons-react";
+import {  IconBell } from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/ui/profileWindow/ProfileWindow";
 import { Image } from "@mantine/core";
 import GroupsWindow from "@/components/ui/groupsWindow/GroupsWindow";

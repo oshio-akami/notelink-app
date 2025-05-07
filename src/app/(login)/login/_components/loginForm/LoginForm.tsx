@@ -3,7 +3,7 @@ import { Input ,PasswordInput,Button} from "@mantine/core"
 import styles from "./loginForm.module.css"
 import {signIn } from "next-auth/react"
 import { Image } from "@mantine/core"
-import { redirect, useSearchParams } from "next/navigation"
+import {  useSearchParams } from "next/navigation"
 import createPreviewGroup from "@/actions/group/createPreviewGroup"
 
 export function LoginForm(){
