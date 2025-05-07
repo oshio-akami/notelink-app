@@ -7,6 +7,7 @@ const meta = {
   argTypes: {
     text: { control: 'text' },
   },
+  tags:["autodocs"],
 } satisfies Meta<typeof CopyButton>;
 
 export default meta;
