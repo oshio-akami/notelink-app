@@ -81,10 +81,10 @@ export const groups = pgTable("groups", {
 export const groupMembers = pgTable("group_members",{
   userId: uuid("user_id").references(() => users.id, {
      onDelete: "cascade",
-  }),
+  }).notNull(),
   groupId: uuid("group_id").references(() => groups.groupId,{
      onDelete:"cascade",
-   }),
+   }).notNull(),
    roleId: integer("role_id").notNull().default(2),
   },
   (table) => {
@@ -99,7 +99,7 @@ export const groupInvites=pgTable("group_invites",{
   id:serial().primaryKey().notNull(),
   groupId: uuid("group_id").references(() => groups.groupId,{
     onDelete:"cascade",
-  }),
+  }).notNull(),
   token:uuid("token").$defaultFn(() => crypto.randomUUID()),
   expiresAt:timestamp("expires_at").default(sql`now() + interval '10 days'`).notNull(),
   createdAt:timestamp("created_at").defaultNow().notNull(),
@@ -110,10 +110,10 @@ export const articles=pgTable("articles",{
   id: uuid("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: uuid("user_id").references(() => users.id, {
     onDelete: "cascade",
- }),
+ }).notNull(),
   groupId: uuid("group_id").references(() => groups.groupId,{
     onDelete:"cascade",
-  }),
+  }).notNull(),
   title:text("title").notNull().default("タイトル"),
   image:text("image").default(""),
   content:text("content").default(""),
