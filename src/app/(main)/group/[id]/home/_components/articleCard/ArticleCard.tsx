@@ -1,9 +1,8 @@
 "use client"
 
-import { Accordion, Card, Text,Avatar, Flex, Button } from "@mantine/core";
+import { Card, Text,Avatar, Flex } from "@mantine/core";
 import styles from "./articleCard.module.css"
 import ArticleButton from "../articleButton/ArticleButton";
-import { useSession } from "next-auth/react";
 
 type Props={
   article:{
@@ -40,7 +39,6 @@ const date=(dateString:string)=> {
 }
 
 export default function ArticleCard({article}:Props){
-  const {data}=useSession();
   if(!article){
     return(<></>)
   }
@@ -49,20 +47,15 @@ export default function ArticleCard({article}:Props){
       <div className={styles.header}>
         <Flex align="center">
           <Avatar src={article.userProfiles.image}></Avatar>
-          <Text>{article.userProfiles.displayName}</Text>
+          <Text fw={700}>{article.userProfiles.displayName}</Text>
         </Flex>
-        <Flex gap={20} align="center">
-          <Text>投稿時間：{date(article.createdAt)}</Text>
-          {data?.user?.id===article.userProfiles.userId&&<Button color="red">削除する</Button>}
-        </Flex>
+        <Text>{date(article.createdAt)}</Text>
       </div>
-      <div className={styles.title}>
-        <Text fw={500} size="1.5rem">{article.title}</Text>
+      <div className={styles.contents}>
+        <Text >{article.title}</Text>
+        <Text >{article.content}</Text>
+        <ArticleButton />
       </div>
-      <Accordion>
-      </Accordion>
-      <Text className={styles.content}>{article.content}</Text>
-      <ArticleButton />
       
     </Card>
   )

@@ -8,7 +8,7 @@ export default function ArticleButton(){
   const [bookMarkButton,toggleBookMarkButton]=useToggle([<IconBookmark key="Bookmark" onClick={()=>toggleBookMarkButton()}/>,<IconBookmarksFilled key="BookmarkFilled"  onClick={()=>toggleBookMarkButton()}/>] as const);
   return (
     <>
-      <Flex gap={20} mt={20} mr={40} justify="right">
+      <Flex gap={20} mt={20}>
         {goodButton}
         {bookMarkButton}
       </Flex>
