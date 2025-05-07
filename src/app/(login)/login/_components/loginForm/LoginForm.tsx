@@ -27,6 +27,9 @@ export function LoginForm(){
             />
             <p>Googleでログイン</p>
           </li>
+          <li className={styles.googleLogin} onClick={()=>signIn("credentials",{ callbackUrl:callbackUrl,redirect:false})}>
+            <p>ゲストとして参加</p>
+          </li>
         </ul>
       </div>
     </div>
