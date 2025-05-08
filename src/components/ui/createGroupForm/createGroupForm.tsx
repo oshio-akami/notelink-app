@@ -5,8 +5,6 @@ import {
   TextInput,
   Button,
   Textarea,
-  Radio,
-  Group,
   LoadingOverlay,
   Box,
 } from "@mantine/core";
@@ -64,15 +62,6 @@ export default function CreateGroupForm({onPendingChange}:Props) {
         {fields.groupName.errors&&errorElements(fields.groupName.errors)}
         <label>グループの説明</label>
         <Textarea mb={30} />
-        <Radio.Group mb={30}
-          label="他ユーザーのグループへの参加方法"
-          description="この設定は後から変更できます"
-        >
-          <Group>
-            <Radio value="true" label="承認制" />
-            <Radio value="false" label="自由参加" />
-          </Group>
-        </Radio.Group>
       </Box>
       <Button className={styles.button} type="submit">
         {isPending ? "グループを作成中..." : "新しいグループを作成する"}
