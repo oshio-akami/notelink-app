@@ -1,10 +1,11 @@
+import { ScrollArea } from "@mantine/core"
 import styles from "./homeSidebar.module.css"
 import SearchBar from "@/components/ui/searchBar/SearchBar"
 
 export default function HomeSidebar(){
   return(
-    <div className={styles.page}>
+    <ScrollArea className={styles.page}>
       <SearchBar />
-    </div>
+    </ScrollArea>
   )
 }

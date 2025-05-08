@@ -28,6 +28,7 @@ export default async function RootLayout(props:Props) {
     <AppShell
     header={{ height: 60 }}
     navbar={{ width: 250, breakpoint: "100px" }}
+    aside={{width:400,breakpoint:"sm"}}
     padding={"sm"}
   >
     <AppShellHeader>
