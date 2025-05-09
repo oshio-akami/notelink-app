@@ -1,6 +1,6 @@
 import { getClient } from "@/libs/hono";
-import ArticleView from "./_components/articleView/ArticleView";
-import HomeSidebar from "./_components/homeSidebar/HomeSidebar";
+import ArticleView from "@/components/article/articleView/ArticleView";
+import HomeSidebar from "@/components/layout/homeSidebar/HomeSidebar";
 import {
   Tabs,
   TabsList,
@@ -59,7 +59,7 @@ export default async function Home({ params }: Props) {
       <AppShellAside p={20} withBorder={false} zIndex={-1}>
         <div className={styles.sidebar}>
           <HomeSidebar />
-        </div>         
+        </div>
       </AppShellAside>
     </div>
   );
