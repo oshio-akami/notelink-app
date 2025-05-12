@@ -1,9 +1,9 @@
 import styles from "./header.module.css";
-import {  IconBell } from "@tabler/icons-react";
-import { ProfileWindow } from "@/components/ui/profileWindow/ProfileWindow";
+import { IconBell } from "@tabler/icons-react";
+import { ProfileWindow } from "@/components/auth/profileWindow/ProfileWindow";
 import { Image } from "@mantine/core";
-import GroupsWindow from "@/components/ui/groupsWindow/GroupsWindow";
-import CreateGroupModal from "@/components/ui/createGroupModal/CreateGroupModal";
+import GroupsWindow from "@/components/group/groupsWindow/groupsWindow";
+import CreateGroupModal from "@/components/group/createGroupModal/createGroupModal";
 import { getClient } from "@/libs/hono";
 
 export const runtime = "edge";
@@ -70,9 +70,9 @@ export async function Header({ params }: Props) {
             ) : (
               <Image
                 className={styles.userIcon}
-                src="https://ui-avatars.com/api/?name=Guest&background=cccccc&color=ffffff&rounded=true" 
+                src="https://ui-avatars.com/api/?name=Guest&background=cccccc&color=ffffff&rounded=true"
                 alt="ゲストアイコン"
-               />
+              />
             )}
           </ProfileWindow>
         )}
