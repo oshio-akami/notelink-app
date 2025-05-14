@@ -1,8 +1,6 @@
 import type { Preview } from "@storybook/react";
-import { MantineProvider } from "@mantine/core";
+import ProviderWrapper from "@/components/providerWrapper/providerWrapper";
 import React from "react";
-import "@mantine/core/styles.css";
-import "@mantine/tiptap/styles.css";
 
 const preview: Preview = {
   parameters: {
@@ -15,9 +13,9 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <MantineProvider>
+      <ProviderWrapper>
         <Story />
-      </MantineProvider>
+      </ProviderWrapper>
     ),
   ],
 };
