@@ -1,6 +1,6 @@
 import styles from "./header.module.css";
 import { IconBell } from "@tabler/icons-react";
-import { ProfileWindow } from "@/components/auth/profileWindow/ProfileWindow";
+import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
 import { Image } from "@mantine/core";
 import GroupsWindow from "@/components/group/groupsWindow/groupsWindow";
 import CreateGroupModal from "@/components/group/createGroupModal/createGroupModal";

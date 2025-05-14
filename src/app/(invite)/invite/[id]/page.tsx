@@ -1,7 +1,7 @@
 import styles from "./page.module.css";
-import { hasJoinedGroup } from "@/libs/apiLibs";
+import { hasJoinedGroup } from "@/libs/apiUtils";
 import setCurrentGroup from "@/actions/user/setCurrentGroup";
-import JoinButton from "@/components/shared/JoinButton/JoinButton";
+import JoinButton from "@/components/invite/JoinButton/JoinButton";
 import { getClient } from "@/libs/hono";
 
 type Props = {
