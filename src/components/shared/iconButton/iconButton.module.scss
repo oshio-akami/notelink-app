@@ -1,0 +1,15 @@
+.button {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    box-shadow: 0 0 4px gray;
+  }
+  &:active {
+    box-shadow: 0 0 4px red;
+  }
+}
