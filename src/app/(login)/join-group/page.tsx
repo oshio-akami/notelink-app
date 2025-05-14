@@ -1,6 +1,6 @@
 import styles from "./page.module.css";
 import { redirect } from "next/navigation";
-import { hasJoinedGroup } from "@/libs/apiLibs";
+import { hasJoinedGroup } from "@/libs/apiUtils";
 import { getClient } from "@/libs/hono";
 import CreateGroupForm from "@/components/group/createGroupForm/createGroupForm";
 import JoinGroupForm from "@/components/group/joinGroupForm/joinGroupForm";
