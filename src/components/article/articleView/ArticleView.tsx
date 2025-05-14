@@ -1,23 +1,12 @@
-import ArticleCard from "../articleCard/ArticleCard";
-import styles from "./articleView.module.css";
+import { Article } from "@/utils/types/articleType";
+import ArticleCard from "../articleCard/articleCard";
+import styles from "./articleView.module.scss";
 
 type Props = {
-  articles:
-    | {
-        userProfiles: {
-          userId: string;
-          displayName: string;
-          image: string | null;
-        };
-        title: string;
-        content: string | null;
-        image: string | null;
-        createdAt: string;
-      }[]
-    | null;
+  articles: Article[];
 };
 
-export default async function ArticleView({ articles }: Props) {
+export default function ArticleView({ articles }: Props) {
   const articleElements = articles?.map((article) => {
     return <ArticleCard key={article.createdAt} article={article} />;
   });
