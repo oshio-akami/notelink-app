@@ -1,13 +1,14 @@
 "use client";
 import { Input, PasswordInput, Button } from "@mantine/core";
-import styles from "./loginForm.module.css";
+import styles from "./loginForm.module.scss";
 import { signIn } from "next-auth/react";
 import { Image } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
 import createPreviewGroup from "@/actions/group/createPreviewGroup";
 
 export function LoginForm() {
-  const searchParams = useSearchParams();
+  const searchParams =
+    useSearchParams() || new URLSearchParams("callbackUrl=/mocked-url");
   const callbackUrl = searchParams.get("callbackUrl") || "/join-group";
   return (
     <>

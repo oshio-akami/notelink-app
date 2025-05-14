@@ -14,11 +14,6 @@ const meta: Meta<typeof LoginForm> = {
   component: LoginForm,
   tags: ["autodocs"],
   parameters: {
-    nextjs: {
-      navigation: {
-        searchParams: { callbackUrl: "/mocked-url" },
-      },
-    },
     moduleMock: {
       mocks: {
         "@/actions/group/createPreviewGroup": {
