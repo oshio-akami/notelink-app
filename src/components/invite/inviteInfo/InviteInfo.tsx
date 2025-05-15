@@ -1,3 +1,5 @@
+"use client";
+
 import { TextInput, Text } from "@mantine/core";
 import CopyButton from "@/components/shared/copyButton/CopyButton";
 import styles from "./inviteInfo.module.scss";
@@ -10,7 +12,7 @@ const createInviteLink = (inviteToken: string) => {
   return `${process.env.NEXT_PUBLIC_DEFAULT_URL}/invite/${inviteToken}`;
 };
 
-export default async function InviteInfo({ inviteToken }: Props) {
+export default function InviteInfo({ inviteToken }: Props) {
   const link = createInviteLink(inviteToken);
 
   return (

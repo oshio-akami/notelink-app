@@ -8,7 +8,7 @@ import {
   AppShellMain,
 } from "@mantine/core";
 import { NavBar } from "@/components/layout/navbar/Navbar";
-import { Header } from "@/components/layout/header/Header";
+import { Header } from "@/components/layout/header/header";
 
 export const runtime = "edge";
 

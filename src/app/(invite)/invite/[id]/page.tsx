@@ -1,8 +1,8 @@
 import styles from "./page.module.css";
 import { hasJoinedGroup } from "@/libs/apiUtils";
 import setCurrentGroup from "@/actions/user/setCurrentGroup";
-import JoinButton from "@/components/invite/JoinButton/JoinButton";
 import { getClient } from "@/libs/hono";
+import InviteWindow from "@/components/invite/inviteWindow/inviteWindow";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -47,12 +47,5 @@ export default async function Invite({ params }: Props) {
     await setCurrentGroup(groupId);
   }
   const groupName = await getGroupName(groupId);
-  return (
-    <div className={styles.page}>
-      <div className={styles.box}>
-        <p>【{groupName}】に招待されています</p>
-        <JoinButton inviteToken={id} />
-      </div>
-    </div>
-  );
+  return <InviteWindow groupName={groupName!} inviteToken={id} />;
 }
