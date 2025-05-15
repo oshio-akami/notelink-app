@@ -5,6 +5,9 @@ const meta: Meta<typeof RichTextEditor> = {
   title: "Editor/RichTextEditor",
   tags: ["autodocs"],
   component: RichTextEditor,
+  argTypes: {
+    onChange: { action: "onChange" },
+  },
 };
 
 export default meta;
@@ -12,5 +15,9 @@ export default meta;
 type Story = StoryObj<typeof RichTextEditor>;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    onChange: (html: string) => {
+      console.log("更新:", html);
+    },
+  },
 };

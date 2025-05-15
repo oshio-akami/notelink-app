@@ -8,10 +8,15 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
+import { useEffect } from "react";
 
 const content = "";
 
-export default function RichTextEditor() {
+type Props = {
+  onChange: (html: string) => void;
+};
+
+export default function RichTextEditor({ onChange }: Props) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -24,7 +29,18 @@ export default function RichTextEditor() {
     ],
     content,
   });
-  console.log(editor?.getHTML());
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+    const handleUpdate = () => {
+      onChange(editor.getHTML());
+    };
+    editor.on("update", handleUpdate);
+    return () => {
+      editor.off("update", handleUpdate);
+    };
+  }, [editor, onChange]);
   return (
     <MantineRichTextEditor editor={editor}>
       <MantineRichTextEditor.Toolbar>
