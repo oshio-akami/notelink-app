@@ -1,5 +1,5 @@
 import InviteInfo from "@/components/invite/inviteInfo/InviteInfo";
-import MemberList from "@/components/group/memberList/MemberList";
+import MemberList from "@/components/group/memberList/memberList";
 import { getClient } from "@/libs/hono";
 
 export const dynamic = "force-dynamic";
