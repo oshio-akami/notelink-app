@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./profileWindow.module.css";
+import styles from "./profileWindow.module.scss";
 import { Popover, List } from "@mantine/core";
 import { ReactNode } from "react";
 import { signIn } from "next-auth/react";

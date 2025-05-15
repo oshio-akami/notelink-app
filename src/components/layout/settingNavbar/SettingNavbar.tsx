@@ -1,10 +1,10 @@
-import styles from "./settingNavbar.module.css";
+import styles from "./settingNavbar.module.scss";
 import { NavLink } from "@mantine/core";
 import { headers } from "next/headers";
 
 type Props = {
-  params:string,
-}
+  params: string;
+};
 
 export const runtime = "edge";
 
@@ -15,17 +15,16 @@ const linksMockData = [
   { label: "通知設定", link: "alertSetting" },
 ];
 
-function className(params:string,link:string):string{
-  
-  return params==link?styles.targetNav:styles.nav;
+function className(params: string, link: string): string {
+  return params == link ? styles.targetNav : styles.nav;
 }
 
-export async function SettingNavBar(props:Props) {
+export async function SettingNavBar(props: Props) {
   const headerList = await headers();
   const headerURL = headerList.get("x-url");
   const links = linksMockData.map((target) => (
     <NavLink
-      className={className(props.params,target.link)}
+      className={className(props.params, target.link)}
       key={target.link}
       href={target.link}
       label={target.label}

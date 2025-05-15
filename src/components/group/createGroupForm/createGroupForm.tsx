@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./createGroupForm.module.css";
+import styles from "./createGroupForm.module.scss";
 import {
   TextInput,
   Button,

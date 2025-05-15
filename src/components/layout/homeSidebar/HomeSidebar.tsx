@@ -1,5 +1,5 @@
 import { ScrollArea } from "@mantine/core";
-import styles from "./homeSidebar.module.css";
+import styles from "./homeSidebar.module.scss";
 import SearchBar from "@/components/shared/searchBar/SearchBar";
 
 export default function HomeSidebar() {

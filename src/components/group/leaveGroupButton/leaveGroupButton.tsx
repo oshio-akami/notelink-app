@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./leaveGroupButton.module.css";
+import styles from "./leaveGroupButton.module.scss";
 import leaveGroup from "@/actions/group/leaveGroup";
 import {
   Button,

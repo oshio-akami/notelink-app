@@ -1,4 +1,4 @@
-import styles from "./header.module.css";
+import styles from "./header.module.scss";
 import { IconBell } from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
 import { Image } from "@mantine/core";

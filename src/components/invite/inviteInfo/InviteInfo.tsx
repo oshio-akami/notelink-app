@@ -1,32 +1,35 @@
-import { TextInput ,Text} from "@mantine/core";
-import CopyButton from "@/components/ui/copyButton/CopyButton";
-import styles from "./inviteInfo.module.css"
+import { TextInput, Text } from "@mantine/core";
+import CopyButton from "@/components/shared/copyButton/CopyButton";
+import styles from "./inviteInfo.module.scss";
 
+type Props = {
+  inviteToken: string;
+};
 
-type Props={
-  inviteToken:string,
-}
-
-const createInviteLink=(inviteToken:string)=>{
+const createInviteLink = (inviteToken: string) => {
   return `${process.env.NEXT_PUBLIC_DEFAULT_URL}/invite/${inviteToken}`;
-}
+};
 
-export default async function InviteInfo({inviteToken}:Props){
+export default async function InviteInfo({ inviteToken }: Props) {
+  const link = createInviteLink(inviteToken);
 
-  const link=createInviteLink(inviteToken);
-
-  return(
+  return (
     <div className={styles.page}>
       <div className={styles.info}>
         <Text w={100}>招待URL : </Text>
-        <TextInput width={400}  value={link} readOnly flex={1}></TextInput>
+        <TextInput width={400} value={link} readOnly flex={1}></TextInput>
         <CopyButton text={link}></CopyButton>
       </div>
       <div className={styles.info}>
         <Text w={100}>招待コード : </Text>
-        <TextInput width={400}  value={inviteToken} readOnly flex={1}></TextInput>
+        <TextInput
+          width={400}
+          value={inviteToken}
+          readOnly
+          flex={1}
+        ></TextInput>
         <CopyButton text={inviteToken}></CopyButton>
       </div>
     </div>
-  )
+  );
 }

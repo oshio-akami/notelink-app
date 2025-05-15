@@ -1,17 +1,17 @@
-.window{
+.window {
   box-shadow: 0 0 8px gray;
   text-align: center;
-  width:300px;
+  width: 300px;
 }
-.groupCard{
+.groupCard {
   border-bottom: 1px solid lightgray;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height:50px;
+  height: 50px;
   cursor: pointer;
-}
-.groupCard:hover{
-  background-color: var(--sub-color);
+  &:hover {
+    background-color: var(--sub-color);
+  }
 }

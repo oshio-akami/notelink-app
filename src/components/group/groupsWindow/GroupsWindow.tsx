@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./groupWindow.module.css";
+import styles from "./groupWindow.module.scss";
 import { Popover, ScrollArea, TextInput } from "@mantine/core";
 import { ReactNode, useState } from "react";
 import { Grid, GridCol, Text } from "@mantine/core";
