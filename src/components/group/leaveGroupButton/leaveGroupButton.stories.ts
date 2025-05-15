@@ -5,20 +5,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 const mockModule = createMock(leaveGroupModule, "default");
 
-const mockLeaveGroup = mockModule.mockImplementation(async (groupId) => {
-  console.log(`Mock leaveGroup called with groupId: ${groupId}`);
-  return true;
-});
-
 const meta: Meta<typeof LeaveGroupButton> = {
   title: "Group/LeaveGroupButton",
   component: LeaveGroupButton,
   tags: ["autodocs"], // Autodocsを有効化
-  parameters: {
-    moduleMock: {
-      mock: () => mockLeaveGroup,
-    },
-  },
   args: {
     groupId: "mock-group-id",
   },
@@ -26,4 +16,15 @@ const meta: Meta<typeof LeaveGroupButton> = {
 
 export default meta;
 
-export const Default: StoryObj<typeof LeaveGroupButton> = {};
+export const Default: StoryObj<typeof LeaveGroupButton> = {
+  parameters: {
+    moduleMock: {
+      mock: () => {
+        mockModule.mockImplementation(async (groupId) => {
+          console.log(`Mock leaveGroup called with groupId: ${groupId}`);
+          return true;
+        });
+      },
+    },
+  },
+};

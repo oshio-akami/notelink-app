@@ -5,19 +5,10 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 const mockModule = createMock(signOutModule, "default");
 
-const mockSignOut = mockModule.mockImplementation(async () => {
-  console.log("Mock signOut called");
-});
-
 const meta: Meta<typeof ProfileWindow> = {
   title: "User/ProfileWindow",
   component: ProfileWindow,
-  tags: ["autodocs"], // Autodocsを有効化
-  parameters: {
-    moduleMock: {
-      mock: mockSignOut,
-    },
-  },
+  tags: ["autodocs"],
   args: {
     name: "John Doe",
     about: "Software Developer",
@@ -27,5 +18,14 @@ const meta: Meta<typeof ProfileWindow> = {
 };
 
 export default meta;
-
-export const Default: StoryObj<typeof ProfileWindow> = {};
+export const Default: StoryObj<typeof ProfileWindow> = {
+  parameters: {
+    moduleMock: {
+      mock: () => {
+        mockModule.mockImplementation(async () => {
+          console.log("signOut");
+        });
+      },
+    },
+  },
+};
