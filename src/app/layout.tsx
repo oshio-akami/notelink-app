@@ -18,10 +18,7 @@ export const metadata: Metadata = {
 };
 import { Noto_Sans_JP } from "next/font/google";
 
-const Font = Noto_Sans_JP({
-  weight: "400",
-  subsets: ["latin"],
-});
+const Font = Noto_Sans_JP();
 
 export default function RootLayout({
   children,

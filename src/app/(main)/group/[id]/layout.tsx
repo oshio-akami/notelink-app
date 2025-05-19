@@ -18,26 +18,33 @@ export const metadata: Metadata = {
 };
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: { id: string };
   children: Readonly<React.ReactNode>;
 };
 
-export default async function RootLayout(props: Props) {
-  const { id } = await props.params;
+export default function RootLayout(props: Props) {
+  const { id } = props.params;
   return (
     <AppShell
-      header={{ height: 60 }}
-      navbar={{ width: 250, breakpoint: "100px" }}
-      aside={{ width: 400, breakpoint: "sm" }}
-      padding={"sm"}
+      header={{ height: "60px" }}
+      navbar={{
+        width: "300px",
+        breakpoint: "600px",
+        collapsed: { desktop: false, mobile: true },
+      }}
+      aside={{
+        width: "30%",
+        breakpoint: "600px",
+        collapsed: { desktop: false, mobile: true },
+      }}
     >
       <AppShellHeader>
-        <Header params={props.params} />
+        <Header id={id} />
       </AppShellHeader>
-      <AppShellNavbar withBorder={false}>
+      <AppShellNavbar>
         <NavBar id={id} />
       </AppShellNavbar>
-      <AppShellMain>{props.children}</AppShellMain>
+      <AppShellMain bg="#f0f0f0">{props.children}</AppShellMain>
     </AppShell>
   );
 }

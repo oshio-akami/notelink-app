@@ -7,8 +7,9 @@ import {
   TabsPanel,
   TabsTab,
   AppShellAside,
+  ScrollArea,
 } from "@mantine/core";
-import styles from "./page.module.css";
+import styles from "./page.module.scss";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -22,7 +23,7 @@ const getArticles = async (groupId: string) => {
     },
   });
   const body = await res.json();
-  return body.articles;
+  return body.articles!;
 };
 const getRecommend = async (groupId: string) => {
   const client = await getClient();
@@ -32,7 +33,7 @@ const getRecommend = async (groupId: string) => {
     },
   });
   const body = await res.json();
-  return body.articles;
+  return body.articles!;
 };
 
 export default async function Home({ params }: Props) {
@@ -40,23 +41,26 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <Tabs defaultValue="default">
-        <TabsList grow justify="center" classNames={{ list: styles.list }}>
-          <TabsTab value="default">新着</TabsTab>
-          <TabsTab value="recommend">おすすめ</TabsTab>
-          <TabsTab value="bookmark">ブックマーク</TabsTab>
-        </TabsList>
-        <TabsPanel value="default">
-          <ArticleView articles={await getArticles(id)} />
-        </TabsPanel>
-        <TabsPanel value="recommend">
-          <ArticleView articles={await getRecommend(id)} />
-        </TabsPanel>
-        <TabsPanel value="bookmark">
-          <ArticleView articles={await getArticles(id)} />
-        </TabsPanel>
-      </Tabs>
-      <AppShellAside p={20} withBorder={false} zIndex={-1}>
+      <ScrollArea h="calc(100vh-60px">
+        <Tabs defaultValue="default" className={styles.tab}>
+          <TabsList grow justify="center" classNames={{ list: styles.list }}>
+            <TabsTab value="default">新着</TabsTab>
+            <TabsTab value="recommend">おすすめ</TabsTab>
+            <TabsTab value="bookmark">ブックマーク</TabsTab>
+          </TabsList>
+
+          <TabsPanel value="default">
+            <ArticleView articles={await getArticles(id)} />
+          </TabsPanel>
+          <TabsPanel value="recommend">
+            <ArticleView articles={await getRecommend(id)} />
+          </TabsPanel>
+          <TabsPanel value="bookmark">
+            <ArticleView articles={await getArticles(id)} />
+          </TabsPanel>
+        </Tabs>
+      </ScrollArea>
+      <AppShellAside p={20} withBorder={false} zIndex={-1} bg="#f0f0f0">
         <div className={styles.sidebar}>
           <HomeSidebar />
         </div>
