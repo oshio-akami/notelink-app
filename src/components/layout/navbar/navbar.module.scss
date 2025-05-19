@@ -5,10 +5,17 @@
   align-items: center;
   background-color: var(--theme-color);
   height: 100vh;
+  padding: 20px;
+  gap: 5px;
 }
 .nav {
-  padding: 20px;
+  border-radius: 5px;
+  padding: 5px;
   &:hover {
     background-color: var(--sub-color);
   }
+}
+.label {
+  font-size: 0.8rem;
+  color: gray;
 }

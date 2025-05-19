@@ -9,6 +9,7 @@ import {
 import { NavLink } from "@mantine/core";
 import { redirect } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { Text } from "@mantine/core";
 
 const iconSize = 24;
 const linksMockData = [
@@ -56,5 +57,13 @@ export function NavBar({ id }: Props) {
       autoContrast
     />
   ));
-  return <nav className={styles.navbar}>{links}</nav>;
+  return (
+    <>
+      <nav className={styles.navbar}>
+        <Text className={styles.label}>グループメニュー</Text>
+        {links}
+      </nav>
+      ;
+    </>
+  );
 }

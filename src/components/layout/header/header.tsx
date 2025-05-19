@@ -9,7 +9,7 @@ import { getClient } from "@/libs/hono";
 export const runtime = "edge";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  id: string;
 };
 
 const getCurrentGroupName = async (
@@ -35,8 +35,7 @@ const getUserProfile = async () => {
   return body.profile;
 };
 
-export async function Header({ params }: Props) {
-  const { id } = await params;
+export async function Header({ id }: Props) {
   const groups = await getJoinedGroups();
   const userProfile = await getUserProfile();
   const groupName = groups

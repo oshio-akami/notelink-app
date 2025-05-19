@@ -8,10 +8,18 @@ import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
+import PlaceHolder from "@tiptap/extension-placeholder";
+import { useEffect } from "react";
 
 const content = "";
 
-export default function RichTextEditor() {
+type Props = {
+  onChange: (html: string) => void;
+  width: string;
+  minHeight: string;
+};
+
+export default function RichTextEditor({ onChange, width, minHeight }: Props) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -21,12 +29,26 @@ export default function RichTextEditor() {
       SubScript,
       Highlight,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
+      PlaceHolder.configure({
+        placeholder: "ここに本文を入力...",
+      }),
     ],
     content,
   });
-  console.log(editor?.getHTML());
+  useEffect(() => {
+    if (!editor) {
+      return;
+    }
+    const handleUpdate = () => {
+      onChange(editor.getHTML());
+    };
+    editor.on("update", handleUpdate);
+    return () => {
+      editor.off("update", handleUpdate);
+    };
+  }, [editor, onChange]);
   return (
-    <MantineRichTextEditor editor={editor}>
+    <MantineRichTextEditor editor={editor} w={width} mih={minHeight}>
       <MantineRichTextEditor.Toolbar>
         <MantineRichTextEditor.ControlsGroup>
           <MantineRichTextEditor.Bold />
