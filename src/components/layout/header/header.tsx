@@ -1,5 +1,5 @@
 import styles from "./header.module.scss";
-import { IconBell } from "@tabler/icons-react";
+import { IconBell, IconCaretUpDown } from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
 import { Image } from "@mantine/core";
 import GroupsWindow from "@/components/group/groupsWindow/groupsWindow";
@@ -44,10 +44,14 @@ export async function Header({ id }: Props) {
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
-        <p>アプリ名 | </p>
+        <p>アプリ名 </p>
+        <p>|</p>
         {groups ? (
           <GroupsWindow groups={groups}>
-            <p className={styles.groupIcon}>{groupName}</p>
+            <div className={styles.groupIcon}>
+              <p>{groupName}</p>
+              <IconCaretUpDown size={24} />
+            </div>
           </GroupsWindow>
         ) : (
           <p>group error</p>

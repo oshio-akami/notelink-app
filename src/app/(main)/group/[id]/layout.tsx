@@ -29,12 +29,12 @@ export default function RootLayout(props: Props) {
       header={{ height: "60px" }}
       navbar={{
         width: "300px",
-        breakpoint: "1200px",
+        breakpoint: "600px",
         collapsed: { desktop: false, mobile: true },
       }}
       aside={{
         width: "500px",
-        breakpoint: "1000px",
+        breakpoint: "1400px",
         collapsed: { desktop: false, mobile: true },
       }}
     >
@@ -44,7 +44,7 @@ export default function RootLayout(props: Props) {
       <AppShellNavbar>
         <NavBar id={id} />
       </AppShellNavbar>
-      <AppShellMain bg="#f0f0f0">{props.children}</AppShellMain>
+      <AppShellMain>{props.children}</AppShellMain>
     </AppShell>
   );
 }
