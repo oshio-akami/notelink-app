@@ -6,16 +6,5 @@
   background-color: var(--theme-color);
   height: 100vh;
   padding: 20px;
-  gap: 5px;
-}
-.nav {
-  border-radius: 5px;
-  padding: 5px;
-  &:hover {
-    background-color: var(--sub-color);
-  }
-}
-.label {
-  font-size: 0.8rem;
-  color: gray;
+  gap: 10px;
 }
