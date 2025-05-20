@@ -29,12 +29,12 @@ export default function RootLayout(props: Props) {
       header={{ height: "60px" }}
       navbar={{
         width: "300px",
-        breakpoint: "600px",
+        breakpoint: "1200px",
         collapsed: { desktop: false, mobile: true },
       }}
       aside={{
-        width: "30%",
-        breakpoint: "600px",
+        width: "500px",
+        breakpoint: "1000px",
         collapsed: { desktop: false, mobile: true },
       }}
     >

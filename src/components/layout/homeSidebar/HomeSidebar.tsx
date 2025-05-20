@@ -5,7 +5,7 @@ import SearchBar from "@/components/shared/searchBar/SearchBar";
 export default function HomeSidebar() {
   return (
     <ScrollArea className={styles.page}>
-      <SearchBar />
+      <SearchBar placeHolder="投稿を検索" />
     </ScrollArea>
   );
 }

@@ -41,7 +41,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <ScrollArea h="calc(100vh-60px">
+      <ScrollArea h="calc(100vh-60px" w="100%">
         <Tabs defaultValue="default" className={styles.tab}>
           <TabsList grow justify="center" classNames={{ list: styles.list }}>
             <TabsTab value="default">新着</TabsTab>
