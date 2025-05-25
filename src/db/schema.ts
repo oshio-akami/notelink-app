@@ -138,7 +138,7 @@ export const articles = pgTable("articles", {
     })
     .notNull(),
   title: text("title").notNull().default("タイトル"),
-  image: text("image").$default(""),
+  image: text("image").default(""),
   content: text("content").default(""),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
