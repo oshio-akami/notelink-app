@@ -26,7 +26,6 @@ const homeMenuData = [
     link: "/member",
     icon: <IconUsersGroup size={iconSize} stroke={1.5} />,
   },
-  //{label:'設定',link:'/settings/userSetting',active:"settings",icon:<IconSettings size={iconSize} stroke={1.5} />},
 ];
 
 type Props = {
