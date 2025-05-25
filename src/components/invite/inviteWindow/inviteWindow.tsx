@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./inviteWindow.module.scss";
-import JoinButton from "@/components/invite/joinButton/joinButton";
+import JoinButton from "../JoinButton/joinButton";
 
 type Props = {
   groupName: string;
