@@ -6,6 +6,7 @@ import IconButton from "@/components/shared/iconButton/iconButton";
 import { IconThumbUp, IconBookmark } from "@tabler/icons-react";
 import { formatDate } from "@/libs/utils";
 import { Article } from "@/utils/types/articleType";
+import DOMPurify from "dompurify";
 
 type Props = {
   article: Article;
@@ -15,6 +16,7 @@ export default function ArticleCard({ article }: Props) {
   if (!article) {
     return <></>;
   }
+  const sanitizeContent = DOMPurify.sanitize(article.content!);
   return (
     <Card withBorder className={styles.card}>
       <div className={styles.header}>
@@ -28,12 +30,14 @@ export default function ArticleCard({ article }: Props) {
         </div>
       </div>
       <div className={styles.contents}>
-        <Text size="1.2rem" fw={600} lh={1.3}>
+        <Text size="1.5rem" fw={600} lh={1.5} mb={10}>
           {article.title}
         </Text>
-        <Text size="1.2rem" lh={1.3}>
-          {article.content}
-        </Text>
+        <Text
+          size="1.2rem"
+          lh={1.3}
+          dangerouslySetInnerHTML={{ __html: sanitizeContent }}
+        />
       </div>
       <div className={styles.actions}>
         <IconButton icon={<IconThumbUp />} />

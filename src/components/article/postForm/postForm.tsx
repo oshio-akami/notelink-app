@@ -2,13 +2,14 @@
 
 import styles from "./postForm.module.scss";
 import { TextInput, Button, LoadingOverlay, Box } from "@mantine/core";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { postArticle } from "@/actions/article/articleActions";
 import { getFormProps, useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { useDisclosure } from "@mantine/hooks";
 import { PostFormSchema } from "@/utils/types/formSchema";
 import RichTextEditor from "@/components/editor/richTextEditor/richTextEditor";
+import { blobToUploadUrl } from "@/libs/htmlUtils";
 
 const errorElements = (errors: string[]) => {
   return errors.map((error) => {
@@ -25,8 +26,15 @@ type Props = {
 };
 
 export default function PostForm({ groupId }: Props) {
+  const upload = async (_: unknown, formData: FormData) => {
+    const content = formData.get("content");
+    const replaceContent = await blobToUploadUrl(content as string);
+    formData.set("content", replaceContent);
+    await postArticle(_, formData);
+  };
   const [content, setContent] = useState("");
-  const [, formAction, isPending] = useActionState(postArticle, undefined);
+  const blobToFileRef = useRef<Map<string, File>>(new Map());
+  const [, formAction, isPending] = useActionState(upload, undefined);
   const [form, fields] = useForm({
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: PostFormSchema });
@@ -48,7 +56,7 @@ export default function PostForm({ groupId }: Props) {
         <Box pos="relative">
           <LoadingOverlay
             visible={visible}
-            zIndex={1000}
+            zIndex={10}
             overlayProps={{ radius: "sm", blur: 2 }}
           />
           <div className={styles.formContents}>
@@ -63,7 +71,10 @@ export default function PostForm({ groupId }: Props) {
             </div>
             <div>
               <RichTextEditor
-                onChange={(html) => setContent(html)}
+                onChange={(html, blobToFile) => {
+                  setContent(html);
+                  blobToFileRef.current = new Map(blobToFile);
+                }}
                 width="100%"
                 minHeight="400px"
               />
