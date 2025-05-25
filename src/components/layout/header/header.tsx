@@ -1,15 +1,15 @@
-import styles from "./header.module.css";
-import {  IconBell } from "@tabler/icons-react";
-import { ProfileWindow } from "@/components/ui/profileWindow/ProfileWindow";
+import styles from "./header.module.scss";
+import { IconBell } from "@tabler/icons-react";
+import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
 import { Image } from "@mantine/core";
-import GroupsWindow from "@/components/ui/groupsWindow/GroupsWindow";
-import CreateGroupModal from "@/components/ui/createGroupModal/CreateGroupModal";
+import GroupsWindow from "@/components/group/groupsWindow/groupsWindow";
+import CreateGroupModal from "@/components/group/createGroupModal/createGroupModal";
 import { getClient } from "@/libs/hono";
 
 export const runtime = "edge";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  id: string;
 };
 
 const getCurrentGroupName = async (
@@ -35,8 +35,7 @@ const getUserProfile = async () => {
   return body.profile;
 };
 
-export async function Header({ params }: Props) {
-  const { id } = await params;
+export async function Header({ id }: Props) {
   const groups = await getJoinedGroups();
   const userProfile = await getUserProfile();
   const groupName = groups
@@ -45,10 +44,13 @@ export async function Header({ params }: Props) {
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
-        <p>アプリ名 | </p>
+        <p>アプリ名 </p>
+        <p>|</p>
         {groups ? (
           <GroupsWindow groups={groups}>
-            <p className={styles.groupIcon}>{groupName}</p>
+            <div className={styles.groupIcon}>
+              <p>{groupName}</p>
+            </div>
           </GroupsWindow>
         ) : (
           <p>group error</p>
@@ -70,9 +72,9 @@ export async function Header({ params }: Props) {
             ) : (
               <Image
                 className={styles.userIcon}
-                src="https://ui-avatars.com/api/?name=Guest&background=cccccc&color=ffffff&rounded=true" 
+                src="https://ui-avatars.com/api/?name=Guest&background=cccccc&color=ffffff&rounded=true"
                 alt="ゲストアイコン"
-               />
+              />
             )}
           </ProfileWindow>
         )}

@@ -1,8 +1,9 @@
 :root {
-  --background: #ffffff;
+  --background: #f8fbff;
   --foreground: #171717;
-  --theme-color:#cccccc;
-  --sub-color:#f0f0f0;
+  --theme-color: white;
+  --sub-color: #f0f0f0;
+  --header-height: 60px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -16,7 +17,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 body {
@@ -43,5 +44,3 @@ a {
     color-scheme: dark;
   }
 }
-
-

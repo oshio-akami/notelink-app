@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import "@mantine/core/styles.css";
+import "@mantine/tiptap/styles.css";
 import {
   MantineProvider,
   mantineHtmlProps,
@@ -15,11 +16,12 @@ export const metadata: Metadata = {
   title: "project",
   description: "project",
 };
-import { Noto_Sans_JP  } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 
-const Font=Noto_Sans_JP ({
-  weight:"400",
-  subsets:["latin"],
+const Font = Noto_Sans_JP({
+  weight: ["400", "700"],
+  subsets: ["latin"],
+  preload: false,
 });
 
 export default function RootLayout({
@@ -27,18 +29,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return(
-  <html lang="en" {...mantineHtmlProps}>
-    <head>
-      <ColorSchemeScript />
-    </head>
-    <body className={Font.className}>
-      <MantineProvider>
-        <NextAuthProvider>
-          {children}
-        </NextAuthProvider>
-      </MantineProvider>
-    </body>
-  </html>
-  )
+  return (
+    <html lang="en" {...mantineHtmlProps}>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <body className={Font.className}>
+        <MantineProvider>
+          <NextAuthProvider>{children}</NextAuthProvider>
+        </MantineProvider>
+      </body>
+    </html>
+  );
 }

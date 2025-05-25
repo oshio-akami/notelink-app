@@ -1,0 +1,28 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 40px auto;
+  width: 90%;
+  padding: 40px;
+  background-color: white;
+  .formContents {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+.title {
+  text-align: center;
+}
+
+.button {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  text-indent: 1rem;
+}

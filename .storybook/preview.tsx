@@ -1,22 +1,24 @@
-import type { Preview } from '@storybook/react'
-import { MantineProvider } from '@mantine/core';
-import React from 'react';
-import '@mantine/core/styles.css';
+import type { Preview } from "@storybook/react";
+import ProviderWrapper from "@/components/providerWrapper/providerWrapper";
+import React from "react";
 
 const preview: Preview = {
   parameters: {
+    nextjs: {
+      appDirectory: true,
+    },
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
   },
   decorators: [
     (Story) => (
-      <MantineProvider>
+      <ProviderWrapper>
         <Story />
-      </MantineProvider>
+      </ProviderWrapper>
     ),
   ],
 };

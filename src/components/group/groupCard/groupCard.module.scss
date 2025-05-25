@@ -1,0 +1,13 @@
+.card {
+  cursor: pointer;
+  height: 300px;
+  border: 2px solid gray;
+  &:hover {
+    box-shadow: 0 0 8px black;
+  }
+}
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-bottom: 1px solid gray;
+}

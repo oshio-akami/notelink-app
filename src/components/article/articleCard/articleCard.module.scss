@@ -1,0 +1,53 @@
+.card {
+  border: 1px solid lightgray;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 20px;
+  .header {
+    display: flex;
+    gap: 10px;
+    justify-content: left;
+    align-items: center;
+    text-indent: 0.5rem;
+    .avatar {
+      width: 50px;
+      height: 50px;
+    }
+    .date {
+      text-indent: 1rem;
+      color: gray;
+    }
+  }
+  .contents {
+    padding-right: 50px;
+    padding-left: 50px;
+    max-width: 100%;
+    img {
+      max-width: 100%;
+      height: auto;
+      padding: 0;
+    }
+  }
+  .actions {
+    padding-right: 50px;
+    padding-left: 50px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    .comment {
+      width: 90%;
+    }
+  }
+  pre {
+    background-color: #333333;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid lightgray;
+  }
+  ol,
+  ul {
+    padding-left: 1.5rem;
+  }
+}
