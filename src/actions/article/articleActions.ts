@@ -32,12 +32,18 @@ export async function postArticle(_: unknown, formData: FormData) {
   return { status: "success", message: "投稿しました" };
 }
 
+type UploadResponse = {
+  success: boolean;
+  message: string;
+  url: string | null;
+};
+
 /**ファイルをR2にアップロードする非同期関数 */
 export const uploadR2 = async (formData: FormData) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/upload/r2`, {
     method: "POST",
     body: formData,
   });
-  const body = await res.json();
+  const body = (await res.json()) as UploadResponse;
   return body;
 };
