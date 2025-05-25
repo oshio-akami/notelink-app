@@ -3,7 +3,8 @@
   top: 0;
   height: 70px;
   z-index: 10;
-  background-color: white;
+  background-color: var(--background);
+  border: none;
 }
 .wrapper {
   display: flex;

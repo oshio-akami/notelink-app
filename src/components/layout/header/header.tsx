@@ -1,5 +1,5 @@
 import styles from "./header.module.scss";
-import { IconBell, IconCaretUpDown } from "@tabler/icons-react";
+import { IconBell } from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
 import { Image } from "@mantine/core";
 import GroupsWindow from "@/components/group/groupsWindow/groupsWindow";
@@ -50,7 +50,6 @@ export async function Header({ id }: Props) {
           <GroupsWindow groups={groups}>
             <div className={styles.groupIcon}>
               <p>{groupName}</p>
-              <IconCaretUpDown size={24} />
             </div>
           </GroupsWindow>
         ) : (

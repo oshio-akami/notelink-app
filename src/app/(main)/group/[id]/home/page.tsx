@@ -41,11 +41,10 @@ export default async function Home({ params }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <ScrollArea h="calc(100vh-60px" w="100%">
+      <ScrollArea h="calc(100vh-60px" w="100%" type="hidden">
         <Tabs defaultValue="default" className={styles.tab}>
-          <TabsList grow justify="center" classNames={{ list: styles.list }}>
+          <TabsList grow classNames={{ list: styles.list }}>
             <TabsTab value="default">新着</TabsTab>
-            <TabsTab value="recommend">おすすめ</TabsTab>
             <TabsTab value="bookmark">ブックマーク</TabsTab>
           </TabsList>
 
@@ -60,7 +59,7 @@ export default async function Home({ params }: Props) {
           </TabsPanel>
         </Tabs>
       </ScrollArea>
-      <AppShellAside p={20} withBorder={false} zIndex={-1} bg="#f0f0f0">
+      <AppShellAside p={20} withBorder={false} zIndex={-1} bg={"#f8fbff"}>
         <div className={styles.sidebar}>
           <HomeSidebar />
         </div>

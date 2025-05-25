@@ -1,6 +1,6 @@
 "use client";
 
-import { NavLink, ScrollArea, Text } from "@mantine/core";
+import { Accordion, NavLink, Text } from "@mantine/core";
 import styles from "./groupMenu.module.scss";
 import { usePathname, useRouter } from "next/navigation";
 import SearchBar from "@/components/shared/searchBar/SearchBar";
@@ -31,7 +31,7 @@ export default function GroupMenu({ groups }: Props) {
       className={styles.menu}
       key={group.groupId}
       onClick={() => router.push(createLink(group.groupId))}
-      label={group.groupName}
+      label={`#${group.groupName}`}
       active={path.indexOf(group.groupId) !== -1}
       color="#f0f0f0"
       variant="filled"
@@ -47,9 +47,12 @@ export default function GroupMenu({ groups }: Props) {
           setSearchValue(value);
         }}
       />
-      <ScrollArea w="100%" type="always" mah={200} className={styles.border}>
-        {links}
-      </ScrollArea>
+      <Accordion className={styles.accordion} defaultValue="item">
+        <Accordion.Item value="item">
+          <Accordion.Control>general</Accordion.Control>
+          <Accordion.Panel>{links}</Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
     </>
   );
 }
