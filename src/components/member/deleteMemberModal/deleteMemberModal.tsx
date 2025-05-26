@@ -54,6 +54,7 @@ export default function DeleteMemberModal({
         <div className={styles.buttonGroup}>
           <Button
             size="md"
+            w="45%"
             bg="white"
             variant="default"
             c="black"
@@ -62,7 +63,7 @@ export default function DeleteMemberModal({
           >
             閉じる
           </Button>
-          <Button size="md" bg="red" onClick={handleClick}>
+          <Button size="md" w="45%" bg="red" onClick={handleClick}>
             {isPending ? "削除中..." : "削除"}
           </Button>
         </div>

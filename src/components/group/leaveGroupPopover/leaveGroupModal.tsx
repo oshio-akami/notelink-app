@@ -48,10 +48,11 @@ export default function LeaveGroupModal({ groupId, opened, onClose }: Props) {
             variant="default"
             c="black"
             onClick={onClose}
+            w="45%"
           >
             閉じる
           </Button>
-          <Button size="md" bg="red" onClick={handleClick}>
+          <Button size="md" w="45%" bg="red" onClick={handleClick}>
             {isPending ? "退会処理中..." : "退会する"}
           </Button>
         </div>
