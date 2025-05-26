@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { db } from "@/db/index";
 import { zValidator } from "@hono/zod-validator";
 import { groupMembers, roles, groups, userProfiles } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { getClient } from "@/libs/hono";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
@@ -140,6 +140,61 @@ const group = new Hono()
         return c.json({ groupName: group[0].groupName }, 404);
       } catch (error) {
         return handleApiError(c, error, { groupName: null });
+      }
+    }
+  ) /**グループからメンバーを削除するAPI */
+  .delete(
+    "/:groupId/user/:userId",
+    zValidator(
+      "param",
+      z.object({
+        groupId: z.string().uuid(),
+        userId: z.string().uuid(),
+      })
+    ),
+    async (c) => {
+      try {
+        const body = await c.req.valid("param");
+        const { groupId, userId } = body;
+        //ユーザの役職取得
+        const ownUserId = await getSessionUserId();
+        if (!ownUserId) {
+          return c.json({ deleted: null }, 401);
+        }
+        const role = await db
+          .select({ roleId: groupMembers.roleId })
+          .from(groupMembers)
+          .where(
+            and(
+              eq(groupMembers.userId, ownUserId),
+              eq(groupMembers.groupId, groupId)
+            )
+          )
+          .limit(1);
+        if (role.length === 0) {
+          return c.json({ deleted: null }, 404);
+        }
+        const roleId = role[0].roleId;
+        //役職がadminの場合のみ削除
+        if (roleId !== 1) {
+          return c.json({ deleted: null }, 401);
+        }
+
+        const deleted = await db
+          .delete(groupMembers)
+          .where(
+            and(
+              eq(groupMembers.userId, userId),
+              eq(groupMembers.groupId, groupId)
+            )
+          )
+          .returning();
+        if (deleted.length === 0) {
+          return c.json({ deleted: null }, 404);
+        }
+        return c.json({ deleted: deleted }, 200);
+      } catch (error) {
+        return handleApiError(c, error, { deleted: null });
       }
     }
   );

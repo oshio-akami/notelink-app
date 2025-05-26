@@ -1,13 +1,13 @@
 import { createMock } from "storybook-addon-module-mock";
 import * as leaveGroupModule from "@/actions/group/leaveGroup";
-import LeaveGroupButton from "./leaveGroupButton";
+import LeaveGroupModal from "./leaveGroupModal";
 import type { Meta, StoryObj } from "@storybook/react";
 
 const mockModule = createMock(leaveGroupModule, "default");
 
-const meta: Meta<typeof LeaveGroupButton> = {
+const meta: Meta<typeof LeaveGroupModal> = {
   title: "Group/LeaveGroupButton",
-  component: LeaveGroupButton,
+  component: LeaveGroupModal,
   tags: ["autodocs"], // Autodocsを有効化
   args: {
     groupId: "mock-group-id",
@@ -16,7 +16,7 @@ const meta: Meta<typeof LeaveGroupButton> = {
 
 export default meta;
 
-export const Default: StoryObj<typeof LeaveGroupButton> = {
+export const Default: StoryObj<typeof LeaveGroupModal> = {
   parameters: {
     moduleMock: {
       mock: () => {

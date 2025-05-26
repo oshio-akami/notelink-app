@@ -1,10 +1,17 @@
-.formWrapper{
-  width:400px;
+.formWrapper {
+  max-width: 600px;
   margin: 40px auto;
-  padding:20px;
-  background-color: var(--sub-color);
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap:60px;
+  gap: 20px;
   border-radius: 10px;
+  background-color: white;
+  border: 1px solid lightgray;
+}
+.wrapper {
+  background-color: var(--background);
+  height: 100vh;
+  width: 100%;
+  border: 1px solid var(--background);
 }

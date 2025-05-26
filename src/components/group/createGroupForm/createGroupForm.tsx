@@ -26,10 +26,10 @@ const errorElements = (errors: string[]) => {
 };
 
 type Props = {
-  onPendingChange: (value: boolean) => void;
+  onPendingChange?: (value: boolean) => void;
 };
 
-export default function CreateGroupForm({ onPendingChange }: Props) {
+export default function CreateGroupForm({ onPendingChange = () => {} }: Props) {
   const [, formAction, isPending] = useActionState(createGroup, undefined);
   const [groupName, setGroupName] = useState("");
   const [form, fields] = useForm({

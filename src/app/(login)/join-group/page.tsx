@@ -39,9 +39,11 @@ export default async function Page() {
     redirect(`group/${groups[0].groupId}/home`);
   }
   return (
-    <div className={styles.formWrapper}>
-      <CreateGroupForm onPendingChange={() => {}} />
-      <JoinGroupForm />
+    <div className={styles.wrapper}>
+      <div className={styles.formWrapper}>
+        <CreateGroupForm />
+        <JoinGroupForm />
+      </div>
     </div>
   );
 }

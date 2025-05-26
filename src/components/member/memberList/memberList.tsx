@@ -11,13 +11,16 @@ type Props = {
     image: string | null;
     role: string | null;
   }[];
+  groupId: string;
+  viewerIsAdmin: boolean;
 };
-export default function MemberList({ members }: Props) {
+export default function MemberList({ members, groupId, viewerIsAdmin }: Props) {
   const memberCards = members?.map((member) => (
     <MemberCard
       key={member.userId}
       userProfile={member!}
-      viewerIsAdmin={true}
+      viewerIsAdmin={viewerIsAdmin}
+      groupId={groupId}
     />
   ));
   return (

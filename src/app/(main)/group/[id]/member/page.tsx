@@ -3,6 +3,7 @@ import { getClient } from "@/libs/hono";
 import InviteLinkViewModel from "@/components/invite/inviteLinkViewModal/InviteLinkViewModal";
 import { AppShellAside, Flex } from "@mantine/core";
 import styles from "./page.module.scss";
+import { getSessionUserId } from "@/libs/getSessionUserId";
 
 export const dynamic = "force-dynamic";
 
@@ -54,13 +55,19 @@ export default async function Member({ params }: Props) {
   const { id } = await params;
   const members = await getMembers(id);
   const inviteToken = await getInviteData(id);
+  const userId = await getSessionUserId();
+  const viewer = members?.find((member) => member.userId === userId);
 
   return (
     <div className={styles.wrapper}>
       <Flex justify="flex-end">
         <InviteLinkViewModel inviteToken={inviteToken} />
       </Flex>
-      <MemberList members={members!} />
+      <MemberList
+        members={members!}
+        groupId={id}
+        viewerIsAdmin={(viewer && viewer.role === "admin") ?? false}
+      />
       <AppShellAside p={20} withBorder={false} zIndex={-1} bg={"#f8fbff"}>
         <></>
       </AppShellAside>

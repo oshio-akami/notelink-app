@@ -17,9 +17,5 @@ export default async function Page() {
   if (session?.user?.id) {
     redirect(`/join-group`);
   }
-  return (
-    <div>
-      <LoginForm />
-    </div>
-  );
+  return <LoginForm />;
 }
