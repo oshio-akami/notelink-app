@@ -10,7 +10,11 @@ export default function Page() {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.header}>
-        <Image w={200} src="sample2.png" alt="" />
+        <Image
+          w={200}
+          src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
+          alt=""
+        />
       </div>
       <div className={styles.contentWrapper}>
         <div className={styles.leftSection}>
@@ -34,7 +38,10 @@ export default function Page() {
         </div>
         {matches && (
           <div className={styles.rightSection}>
-            <Image src="sample1.png" alt="" />
+            <Image
+              src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_image.png"
+              alt=""
+            />
           </div>
         )}
       </div>
