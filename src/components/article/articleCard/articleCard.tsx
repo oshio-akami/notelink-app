@@ -3,16 +3,22 @@
 import { Card, Text, Avatar, TextInput } from "@mantine/core";
 import styles from "./articleCard.module.scss";
 import IconButton from "@/components/shared/iconButton/iconButton";
-import { IconThumbUp, IconBookmark } from "@tabler/icons-react";
+import {
+  IconThumbUp,
+  IconBookmark,
+  IconBookmarkFilled,
+} from "@tabler/icons-react";
 import { formatDate } from "@/libs/utils";
 import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
+import { addBookmark, removeBookmark } from "@/actions/article/bookmarkActions";
 
 type Props = {
   article: Article;
+  onBookmarkChange: (articleId: string, isBookmark: boolean) => void;
 };
 
-export default function ArticleCard({ article }: Props) {
+export default function ArticleCard({ article, onBookmarkChange }: Props) {
   if (!article) {
     return <></>;
   }
@@ -41,7 +47,19 @@ export default function ArticleCard({ article }: Props) {
       </div>
       <div className={styles.actions}>
         <IconButton icon={<IconThumbUp />} />
-        <IconButton icon={<IconBookmark />} />
+        <IconButton
+          icon={<IconBookmark />}
+          activeIcon={<IconBookmarkFilled color="red" />}
+          defaultActive={article.isBookmark}
+          onClick={(isActive) => {
+            if (isActive) {
+              addBookmark(article.id);
+            } else {
+              removeBookmark(article.id);
+            }
+            onBookmarkChange(article.id, isActive);
+          }}
+        />
         <TextInput
           className={styles.comment}
           variant="filled"
