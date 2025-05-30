@@ -29,7 +29,7 @@ export default function Page() {
             </Text>
           </div>
           <Link href="/login">
-            <Button size="lg">アプリを始める</Button>
+            <Button size="lg">今すぐ始める</Button>
           </Link>
         </div>
         {matches && (

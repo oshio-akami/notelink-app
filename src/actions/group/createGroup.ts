@@ -3,6 +3,7 @@
 import { getClient } from "@/libs/hono";
 import { parseWithZod } from "@conform-to/zod";
 import { createGroupFormSchema } from "@/utils/types/formSchema";
+import { redirect } from "next/navigation";
 
 export async function createGroup(_: unknown, formData: FormData) {
   const submission = parseWithZod(formData, { schema: createGroupFormSchema });
@@ -26,5 +27,5 @@ export async function createGroup(_: unknown, formData: FormData) {
       groupId: groupId,
     },
   });
-  return { success: true };
+  redirect(`${process.env.NEXT_PUBLIC_URL}/group/${groupId}/home`);
 }
