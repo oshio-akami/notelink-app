@@ -143,6 +143,28 @@ export const articles = pgTable("articles", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const bookmarks = pgTable(
+  "bookmarks",
+  {
+    userId: uuid("user_id")
+      .references(() => users.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    articleId: uuid("article_id")
+      .references(() => articles.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => {
+    return {
+      pk: primaryKey(table.userId, table.articleId),
+    };
+  }
+);
+
 export const schema = {
   users,
   userProfiles,
@@ -151,4 +173,5 @@ export const schema = {
   groupMembers,
   groupInvites,
   articles,
+  bookmarks,
 };
