@@ -2,6 +2,7 @@ import { hc } from "hono/client";
 import type { AppType } from "@/app/api/[...route]/route";
 import { headers } from "next/headers";
 
+/**サーバー用のクライアント関数 */
 export const getClient = async () => {
   const headerList = await headers();
   const cookie = headerList.get("cookie");
