@@ -5,6 +5,7 @@ import { Button, Text, Modal } from "@mantine/core";
 import { useState } from "react";
 import styles from "./deleteMemberModal.module.scss";
 import { UserProfile } from "@/utils/types/profileType";
+import { useRouter } from "next/navigation";
 
 type Props = {
   groupId: string;
@@ -19,11 +20,13 @@ export default function DeleteMemberModal({
   onClose,
   userProfile,
 }: Props) {
+  const router = useRouter();
   const handleClick = async () => {
     setIsPending(true);
     await deleteMember(groupId, userProfile.userId!);
     window.location.reload();
     onClose();
+    router.refresh();
   };
 
   const [isPending, setIsPending] = useState(false);
