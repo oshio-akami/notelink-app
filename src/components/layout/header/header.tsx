@@ -44,7 +44,11 @@ export async function Header({ id }: Props) {
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
-        <p>アプリ名 </p>
+        <Image
+          w={150}
+          src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
+          alt="logo"
+        />
         <p>|</p>
         {groups ? (
           <GroupsWindow groups={groups}>
