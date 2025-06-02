@@ -3,12 +3,14 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
 import { db } from "@/db";
-import { articles, bookmarks, userProfiles } from "@/db/schema";
+import { articles, bookmarks, groupMembers, userProfiles } from "@/db/schema";
 import { hasJoinedGroup, withGroupMemberCheck } from "@/libs/apiUtils";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, or, exists } from "drizzle-orm";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 
 export const runtime = "edge";
+
+const admin = 1;
 
 const article = new Hono()
   .get(
@@ -198,20 +200,99 @@ const article = new Hono()
       }
     }
   )
+  .get(
+    "/:groupId/:articleId",
+    zValidator(
+      "param",
+      z.object({
+        articleId: z.string().uuid(),
+        groupId: z.string().uuid(),
+      })
+    ),
+    async (c) => {
+      try {
+        const { articleId, groupId } = c.req.valid("param");
+
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ article: null }, check.status);
+        }
+
+        const article = await db
+          .select({
+            userProfiles: {
+              userId: userProfiles.userId,
+              displayName: userProfiles.displayName,
+              image: userProfiles.image,
+            },
+            id: articles.id,
+            title: articles.title,
+            content: articles.content,
+            image: articles.image,
+            createdAt: articles.createdAt,
+            isBookmark: bookmarks.articleId,
+          })
+          .from(articles)
+          .where(and(eq(articles.id, articleId), eq(articles.groupId, groupId)))
+          .innerJoin(userProfiles, eq(articles.userId, userProfiles.userId))
+          .leftJoin(
+            bookmarks,
+            and(
+              eq(articles.id, bookmarks.articleId),
+              eq(bookmarks.userId, check.userId)
+            )
+          )
+          .limit(1);
+        if (article.length <= 0) {
+          return c.json({ article: null }, 404);
+        }
+        const replaceArticle = {
+          ...article[0],
+          isBookmark: article[0].isBookmark != null,
+        };
+        return c.json({ article: replaceArticle }, 200);
+      } catch (error) {
+        return handleApiError(c, error, { article: null });
+      }
+    }
+  )
   .delete(
     "/:articleId",
     zValidator(
       "param",
       z.object({
         articleId: z.string().uuid(),
+        groupId: z.string().uuid(),
       })
     ),
     async (c) => {
       try {
-        const { articleId } = c.req.valid("param");
-        const deleted = await db
-          .delete(articles)
-          .where(eq(articles.id, articleId));
+        const { articleId, groupId } = c.req.valid("param");
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ article: null }, check.status);
+        }
+        //投稿者本人か管理者の場合削除
+        const deleted = await db.delete(articles).where(
+          and(
+            eq(articles.id, articleId),
+            or(
+              eq(articles.userId, check.userId),
+              exists(
+                db
+                  .select()
+                  .from(groupMembers)
+                  .where(
+                    and(
+                      eq(groupMembers.userId, check.userId),
+                      eq(groupMembers.groupId, articles.groupId),
+                      eq(groupMembers.roleId, admin)
+                    )
+                  )
+              )
+            )
+          )
+        );
         return c.json({ deleted: deleted }, 200);
       } catch (error) {
         return handleApiError(c, error, { article: false });
