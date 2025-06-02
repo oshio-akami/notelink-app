@@ -1,27 +1,33 @@
 "use client";
 
-import { Card, Text, Avatar, TextInput } from "@mantine/core";
+import { Card, Text, Avatar, Spoiler } from "@mantine/core";
 import styles from "./articleCard.module.scss";
 import IconButton from "@/components/shared/iconButton/iconButton";
 import {
   IconThumbUp,
   IconBookmark,
   IconBookmarkFilled,
+  IconMessageCircle,
 } from "@tabler/icons-react";
-import { formatDate } from "@/libs/utils";
+import { formatDate, withShortPress } from "@/libs/utils";
 import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
 import { addBookmark, removeBookmark } from "@/actions/article/bookmarkActions";
+import { useRouter } from "next/navigation";
+import { useGroupId } from "@/libs/context/groupContext";
 
 type Props = {
   article: Article;
   onBookmarkChange: (articleId: string, isBookmark: boolean) => void;
 };
 
+/**投稿を表示するカードコンポーネント */
 export default function ArticleCard({ article, onBookmarkChange }: Props) {
-  if (!article) {
-    return <></>;
-  }
+  const router = useRouter();
+  const groupId = useGroupId();
+  const shortPress = withShortPress(() => {
+    router.push(`/group/${groupId}/article/${article.id}`);
+  });
   const sanitizeContent = DOMPurify.sanitize(article.content!);
   return (
     <Card withBorder className={styles.card}>
@@ -36,14 +42,19 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
         </div>
       </div>
       <div className={styles.contents}>
-        <Text size="1.5rem" fw={600} lh={1.5} mb={10}>
-          {article.title}
-        </Text>
-        <Text
-          size="1.2rem"
-          lh={1.3}
-          dangerouslySetInnerHTML={{ __html: sanitizeContent }}
-        />
+        <Spoiler maxHeight={250} showLabel="続きを見る" hideLabel="折りたたむ">
+          <div {...shortPress}>
+            <Text size="1.5rem" fw={600} lh={1.5} mb={10}>
+              {article.title}
+            </Text>
+
+            <Text
+              size="1.2rem"
+              lh={1.3}
+              dangerouslySetInnerHTML={{ __html: sanitizeContent }}
+            />
+          </div>
+        </Spoiler>
       </div>
       <div className={styles.actions}>
         <IconButton icon={<IconThumbUp />} />
@@ -60,12 +71,7 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
             onBookmarkChange(article.id, isActive);
           }}
         />
-        <TextInput
-          className={styles.comment}
-          variant="filled"
-          placeholder="コメントをする"
-          radius="xl"
-        ></TextInput>
+        <IconButton icon={<IconMessageCircle></IconMessageCircle>} />
       </div>
     </Card>
   );

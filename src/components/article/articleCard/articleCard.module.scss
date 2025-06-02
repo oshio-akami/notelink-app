@@ -23,11 +23,15 @@
     padding-right: 50px;
     padding-left: 50px;
     max-width: 100%;
+    cursor: pointer;
     img {
       max-width: 100%;
       height: auto;
       padding: 0;
     }
+  }
+  .readMoreButton {
+    color: blue;
   }
   .actions {
     padding-right: 50px;
