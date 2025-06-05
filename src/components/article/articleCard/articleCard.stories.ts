@@ -19,6 +19,7 @@ const meta: Meta<typeof ArticleCard> = {
       image: null,
       createdAt: "2023-10-10T12:00:00Z",
       isBookmark: false,
+      commentCount: 0,
     },
   },
 };
