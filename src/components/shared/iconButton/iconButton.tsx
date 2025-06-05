@@ -7,6 +7,8 @@ type Props = {
   activeIcon?: React.ReactElement<IconProps>;
   onClick?: (isActive: boolean) => void;
   defaultActive?: boolean;
+  leftSection?: React.ReactElement;
+  rightSection?: React.ReactElement;
 };
 
 export default function IconButton({
@@ -14,6 +16,8 @@ export default function IconButton({
   activeIcon = icon,
   onClick = () => {},
   defaultActive = false,
+  leftSection,
+  rightSection,
 }: Props) {
   const [isActive, setActive] = useState(defaultActive);
   return (
@@ -24,7 +28,9 @@ export default function IconButton({
         onClick(!isActive);
       }}
     >
+      {rightSection && leftSection}
       {isActive && activeIcon ? activeIcon : icon}
+      {rightSection && rightSection}
     </div>
   );
 }
