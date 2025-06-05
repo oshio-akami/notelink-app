@@ -3,9 +3,15 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
 import { db } from "@/db";
-import { articles, bookmarks, groupMembers, userProfiles } from "@/db/schema";
+import {
+  articles,
+  bookmarks,
+  comments,
+  groupMembers,
+  userProfiles,
+} from "@/db/schema";
 import { hasJoinedGroup, withGroupMemberCheck } from "@/libs/apiUtils";
-import { eq, desc, and, or, exists } from "drizzle-orm";
+import { eq, desc, and, or, exists, sql } from "drizzle-orm";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 
 export const runtime = "edge";
@@ -54,6 +60,7 @@ const article = new Hono()
             image: articles.image,
             createdAt: articles.createdAt,
             isBookmark: bookmarks.articleId,
+            commentCount: sql<number>`COUNT(comments.id)`,
           })
           .from(articles)
           .innerJoin(userProfiles, eq(articles.userId, userProfiles.userId))
@@ -64,7 +71,19 @@ const article = new Hono()
               eq(bookmarks.userId, userId)
             )
           )
+          .leftJoin(comments, eq(articles.id, comments.articleId))
           .where(and(...whereConditions))
+          .groupBy(
+            articles.id,
+            userProfiles.userId,
+            userProfiles.displayName,
+            userProfiles.image,
+            articles.title,
+            articles.content,
+            articles.image,
+            articles.createdAt,
+            bookmarks.articleId
+          )
           .orderBy(desc(articles.createdAt));
         const replaceArticleList = articleList.map((article) => ({
           ...article,
@@ -76,6 +95,7 @@ const article = new Hono()
       }
     }
   )
+  /**ブックマークの追加 */
   .post(
     "/bookmark/:articleId",
     zValidator(
@@ -107,6 +127,7 @@ const article = new Hono()
       }
     }
   )
+  /**ブックマークの削除 */
   .delete(
     "/bookmark/:articleId",
     zValidator(
@@ -140,6 +161,7 @@ const article = new Hono()
       }
     }
   )
+  /**ブックマーク一覧の取得 */
   .get(
     "/:groupId/bookmarks",
     zValidator(
@@ -200,6 +222,7 @@ const article = new Hono()
       }
     }
   )
+  /**投稿の取得 */
   .get(
     "/:groupId/:articleId",
     zValidator(
@@ -231,6 +254,7 @@ const article = new Hono()
             image: articles.image,
             createdAt: articles.createdAt,
             isBookmark: bookmarks.articleId,
+            commentCount: sql<number>`COUNT(comments.id)`,
           })
           .from(articles)
           .where(and(eq(articles.id, articleId), eq(articles.groupId, groupId)))
@@ -241,6 +265,18 @@ const article = new Hono()
               eq(articles.id, bookmarks.articleId),
               eq(bookmarks.userId, check.userId)
             )
+          )
+          .leftJoin(comments, eq(articles.id, comments.articleId))
+          .groupBy(
+            articles.id,
+            userProfiles.userId,
+            userProfiles.displayName,
+            userProfiles.image,
+            articles.title,
+            articles.content,
+            articles.image,
+            articles.createdAt,
+            bookmarks.articleId
           )
           .limit(1);
         if (article.length <= 0) {
@@ -256,6 +292,7 @@ const article = new Hono()
       }
     }
   )
+  /**投稿の削除 */
   .delete(
     "/:articleId",
     zValidator(
@@ -294,6 +331,124 @@ const article = new Hono()
           )
         );
         return c.json({ deleted: deleted }, 200);
+      } catch (error) {
+        return handleApiError(c, error, { article: false });
+      }
+    }
+  )
+  /**コメントの一覧を取得するAPI */
+  .get(
+    "/comments/:groupId/:articleId",
+    zValidator(
+      "param",
+      z.object({
+        articleId: z.string().uuid(),
+        groupId: z.string().uuid(),
+      })
+    ),
+    async (c) => {
+      try {
+        const { groupId, articleId } = await c.req.valid("param");
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ comments: null }, check.status);
+        }
+        const commentList = await db
+          .select({
+            userProfiles: {
+              userId: userProfiles.userId,
+              displayName: userProfiles.displayName,
+              image: userProfiles.image,
+            },
+            id: comments.id,
+            articleId: comments.articleId,
+            groupId: comments.groupId,
+            userId: comments.userId,
+            createdAt: comments.createdAt,
+            content: comments.comment,
+          })
+          .from(comments)
+          .innerJoin(userProfiles, eq(comments.userId, userProfiles.userId))
+          .where(
+            and(
+              eq(comments.articleId, articleId),
+              eq(comments.groupId, groupId)
+            )
+          )
+          .orderBy(desc(comments.createdAt));
+        return c.json({ comments: commentList }, 200);
+      } catch (error) {
+        return handleApiError(c, error, { comments: null });
+      }
+    }
+  )
+  /**コメントを送信するAPI */
+  .post(
+    "/comment/:groupId/:articleId",
+    zValidator(
+      "param",
+      z.object({
+        articleId: z.string().uuid(),
+        groupId: z.string().uuid(),
+      })
+    ),
+    zValidator(
+      "json",
+      z.object({
+        comment: z.string(),
+      })
+    ),
+    async (c) => {
+      try {
+        const { comment } = await c.req.valid("json");
+        const { groupId, articleId } = await c.req.valid("param");
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ success: false }, check.status);
+        }
+        const post = await db
+          .insert(comments)
+          .values({
+            userId: check.userId,
+            articleId: articleId,
+            groupId: groupId,
+            comment: comment,
+          })
+          .execute();
+        if (post.rowCount === 0) {
+          return c.json({ success: false }, 500);
+        }
+        return c.json({ success: true }, 200);
+      } catch (error) {
+        return handleApiError(c, error, { article: false });
+      }
+    }
+  )
+  /**コメントを削除するAPI */
+  .delete(
+    "/comment/:groupId/:commentId",
+    zValidator(
+      "param",
+      z.object({
+        commentId: z.string().uuid(),
+        groupId: z.string().uuid(),
+      })
+    ),
+    async (c) => {
+      try {
+        const { groupId, commentId } = await c.req.valid("param");
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ success: false }, check.status);
+        }
+        const deleted = await db
+          .delete(comments)
+          .where(eq(comments.id, commentId))
+          .execute();
+        if (deleted.rowCount === 0) {
+          return c.json({ success: false }, 404);
+        }
+        return c.json({ success: true }, 200);
       } catch (error) {
         return handleApiError(c, error, { article: false });
       }
