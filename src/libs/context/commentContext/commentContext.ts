@@ -10,6 +10,7 @@ export const CommentContext = createContext<CommentContextType | null>(null);
 
 export const useCommentContext = () => {
   const ctx = useContext(CommentContext);
-  if (!ctx) throw new Error("useCommentContext must be used within Provider");
+  if (!ctx)
+    throw new Error("useCommentContext はプロバイダ内で使用する必要があります");
   return ctx;
 };
