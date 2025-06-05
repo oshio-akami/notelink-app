@@ -23,13 +23,7 @@ export default function ArticleDetailPageView({ hasJoined, article }: Props) {
   return (
     <>
       <div className={styles.header}>
-        <IconArrowLeft
-          cursor="pointer"
-          size="2rem"
-          onClick={() => {
-            router.back();
-          }}
-        />
+        <IconArrowLeft cursor="pointer" size="2rem" onClick={handleGoHome} />
       </div>
       <div className={styles.content}>
         {hasJoined && article ? (
