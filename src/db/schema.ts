@@ -165,6 +165,30 @@ export const bookmarks = pgTable(
   }
 );
 
+export const comments = pgTable("comments", {
+  id: uuid("id")
+    .notNull()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  userId: uuid("user_id")
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  groupId: uuid("group_id")
+    .references(() => groups.groupId, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  articleId: uuid("article_id")
+    .references(() => articles.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  comment: text("comment").default(""),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const schema = {
   users,
   userProfiles,
@@ -174,4 +198,5 @@ export const schema = {
   groupInvites,
   articles,
   bookmarks,
+  comments,
 };
