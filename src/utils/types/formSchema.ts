@@ -16,3 +16,9 @@ export const PostFormSchema = z.object({
   image: z.string().default(""),
   content: z.string().default(""),
 });
+
+export const postCommentSchema = z.object({
+  groupId: z.string().uuid(),
+  articleId: z.string().uuid(),
+  comment: z.string(),
+});

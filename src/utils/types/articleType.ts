@@ -10,4 +10,5 @@ export type Article = {
   image: string | null;
   createdAt: string;
   isBookmark: boolean;
+  commentCount: number;
 };
