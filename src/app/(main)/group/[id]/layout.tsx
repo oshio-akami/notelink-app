@@ -9,7 +9,7 @@ import {
 } from "@mantine/core";
 import { NavBar } from "@/components/layout/navbar/navbar";
 import { Header } from "@/components/layout/header/header";
-import { GroupContextProvider } from "@/libs/context/groupContextProvider";
+import { GroupContextProvider } from "@/libs/context/groupContext/groupContextProvider";
 
 export const runtime = "edge";
 
