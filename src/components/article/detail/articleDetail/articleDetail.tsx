@@ -5,6 +5,8 @@ import styles from "./articleDetail.module.scss";
 import { formatDate } from "@/libs/utils";
 import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
+import ArticleCommentView from "../articleCommentView/articleCommentView";
+import { useEffect, useRef } from "react";
 
 type Props = {
   article: Article;
@@ -12,10 +14,15 @@ type Props = {
 
 /**コメントも含めた投稿の詳細表示 */
 export default function ArticleDetail({ article }: Props) {
+  const commentRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    commentRef.current?.scrollIntoView();
+  }, []);
   if (!article) {
     return <></>;
   }
   const sanitizeContent = DOMPurify.sanitize(article.content!);
+
   return (
     <>
       <Card withBorder className={styles.card}>
@@ -38,6 +45,9 @@ export default function ArticleDetail({ article }: Props) {
             lh={1.3}
             dangerouslySetInnerHTML={{ __html: sanitizeContent }}
           />
+        </div>
+        <div className={styles.comments} ref={commentRef}>
+          <ArticleCommentView articleId={article.id} />
         </div>
       </Card>
     </>

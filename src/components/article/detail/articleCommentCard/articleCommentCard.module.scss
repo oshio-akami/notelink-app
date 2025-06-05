@@ -1,0 +1,25 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  .header {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    text-indent: 0.5rem;
+    .date {
+      text-indent: 1rem;
+      color: gray;
+    }
+    .menu {
+      margin-left: auto;
+    }
+  }
+  .contents {
+    padding: 0 60px;
+    max-width: 100%;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+}

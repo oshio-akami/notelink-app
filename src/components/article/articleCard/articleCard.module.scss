@@ -20,14 +20,24 @@
     }
   }
   .contents {
-    padding-right: 50px;
-    padding-left: 50px;
+    padding: 0 50px;
     max-width: 100%;
     cursor: pointer;
     img {
       max-width: 100%;
       height: auto;
       padding: 0;
+    }
+    pre {
+      background-color: #333333;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid lightgray;
+    }
+    ol,
+    ul {
+      padding-left: 1.5rem;
     }
   }
   .readMoreButton {
@@ -42,16 +52,5 @@
     .comment {
       width: 90%;
     }
-  }
-  pre {
-    background-color: #333333;
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid lightgray;
-  }
-  ol,
-  ul {
-    padding-left: 1.5rem;
   }
 }

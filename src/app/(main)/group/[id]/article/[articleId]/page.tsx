@@ -3,7 +3,7 @@ import { AppShellAside, ScrollArea } from "@mantine/core";
 import styles from "./page.module.scss";
 import { hasJoinedGroup } from "@/libs/apiUtils";
 import { getClient } from "@/libs/hono";
-import ArticleDetailPageView from "@/components/article/articleDetailPageView/articleDetailPageView";
+import ArticleDetailPageView from "@/components/article/detail/articleDetailPageView/articleDetailPageView";
 
 type Props = {
   params: Promise<{ id: string; articleId: string }>;

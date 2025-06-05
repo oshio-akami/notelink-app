@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import ArticleDetail from "../articleDetail/articleDetail";
 import { Button, Text } from "@mantine/core";
 import { Article } from "@/utils/types/articleType";
-import { useGroupId } from "@/libs/context/groupContext";
+import { useGroupId } from "@/libs/context/groupContext/groupContext";
 
 type Props = {
   hasJoined: boolean;
@@ -33,7 +33,10 @@ export default function ArticleDetailPageView({ hasJoined, article }: Props) {
       </div>
       <div className={styles.content}>
         {hasJoined && article ? (
-          <ArticleDetail article={article} />
+          <>
+            <ArticleDetail article={article} />
+            <div style={{ height: "50vh" }} />
+          </>
         ) : !hasJoined ? (
           <div className={styles.notFound}>
             <Text size="1.5rem">投稿はグループメンバーだけが閲覧できます</Text>

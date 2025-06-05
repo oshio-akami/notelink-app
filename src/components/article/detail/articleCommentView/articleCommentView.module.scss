@@ -1,0 +1,23 @@
+.comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  .avatar {
+    margin-bottom: auto;
+  }
+  .textarea {
+    flex: 1;
+  }
+  .input {
+    font-size: 1.2rem;
+    border-bottom: 2px solid lightgray;
+  }
+  button {
+    margin-top: auto;
+  }
+}
+.comments {
+  min-height: 50px;
+  padding: 20px;
+}

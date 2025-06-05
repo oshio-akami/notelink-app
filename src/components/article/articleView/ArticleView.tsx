@@ -5,13 +5,15 @@ import styles from "./articleView.module.scss";
 import useSWR from "swr";
 import { Tabs, Text } from "@mantine/core";
 import client from "@/libs/honoClient";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Loading from "@/components/shared/loading/loading";
 
 type Props = {
   groupId: string;
 };
 
 export default function ArticleView({ groupId }: Props) {
+  const [tab, setTab] = useState("default");
   const fetcher = async () => {
     const res = await client.api.article[":groupId"].articles[":mine?"].$get({
       param: {
@@ -32,10 +34,10 @@ export default function ArticleView({ groupId }: Props) {
       false
     );
   };
-  const articleElements = (articles: Article[], tabName: string) => {
+  const articleElements = (articles: Article[]) => {
     return articles.map((article) => (
       <ArticleCard
-        key={`${article.id}-${tabName}-${article.isBookmark}'`}
+        key={article.id}
         article={article}
         onBookmarkChange={onBookmarkChange}
       />
@@ -47,14 +49,27 @@ export default function ArticleView({ groupId }: Props) {
 
   return (
     <>
-      <Tabs defaultValue="default">
+      <Tabs
+        defaultValue="default"
+        onChange={(value) => {
+          setTab(value as "default" | "bookmark");
+        }}
+      >
         <Tabs.List grow classNames={{ list: styles.list }}>
           <Tabs.Tab value="default">新着</Tabs.Tab>
           <Tabs.Tab value="bookmark">ブックマーク</Tabs.Tab>
         </Tabs.List>
-        <Tabs.Panel value="default" className={styles.articles}>
-          {articles && articles?.length > 0 ? (
-            articleElements(articles, "default")
+        <Tabs.Panel
+          value="default"
+          className={styles.articles}
+          key={tab === "default" ? "default" : "other"}
+        >
+          {articles == undefined ? (
+            <div className={styles.noArticles}>
+              <Loading text="読み込み中" size="1.5rem" />
+            </div>
+          ) : articles && articles?.length > 0 ? (
+            articleElements(articles)
           ) : (
             <div className={styles.noArticles}>
               <Text size="1.5rem" mb={20}>
@@ -64,9 +79,13 @@ export default function ArticleView({ groupId }: Props) {
             </div>
           )}
         </Tabs.Panel>
-        <Tabs.Panel value="bookmark" className={styles.articles}>
+        <Tabs.Panel
+          value="bookmark"
+          className={styles.articles}
+          key={tab === "bookmark" ? "bookmark" : "other"}
+        >
           {bookmarkedArticles.length > 0 ? (
-            articleElements(bookmarkedArticles, "bookmark")
+            articleElements(bookmarkedArticles)
           ) : (
             <div className={styles.noArticles}>
               <Text size="1.5rem" mb={20}>

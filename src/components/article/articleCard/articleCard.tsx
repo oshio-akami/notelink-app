@@ -4,7 +4,6 @@ import { Card, Text, Avatar, Spoiler } from "@mantine/core";
 import styles from "./articleCard.module.scss";
 import IconButton from "@/components/shared/iconButton/iconButton";
 import {
-  IconThumbUp,
   IconBookmark,
   IconBookmarkFilled,
   IconMessageCircle,
@@ -14,7 +13,7 @@ import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
 import { addBookmark, removeBookmark } from "@/actions/article/bookmarkActions";
 import { useRouter } from "next/navigation";
-import { useGroupId } from "@/libs/context/groupContext";
+import { useGroupId } from "@/libs/context/groupContext/groupContext";
 
 type Props = {
   article: Article;
@@ -25,9 +24,10 @@ type Props = {
 export default function ArticleCard({ article, onBookmarkChange }: Props) {
   const router = useRouter();
   const groupId = useGroupId();
-  const shortPress = withShortPress(() => {
+  const shortPress = withShortPress(() => pushArticleRoute());
+  const pushArticleRoute = () => {
     router.push(`/group/${groupId}/article/${article.id}`);
-  });
+  };
   const sanitizeContent = DOMPurify.sanitize(article.content!);
   return (
     <Card withBorder className={styles.card}>
@@ -57,7 +57,6 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
         </Spoiler>
       </div>
       <div className={styles.actions}>
-        <IconButton icon={<IconThumbUp />} />
         <IconButton
           icon={<IconBookmark />}
           activeIcon={<IconBookmarkFilled color="red" />}
@@ -71,7 +70,11 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
             onBookmarkChange(article.id, isActive);
           }}
         />
-        <IconButton icon={<IconMessageCircle></IconMessageCircle>} />
+        <IconButton
+          onClick={pushArticleRoute}
+          icon={<IconMessageCircle />}
+          rightSection={<Text>{article.commentCount}</Text>}
+        />
       </div>
     </Card>
   );
