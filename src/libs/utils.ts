@@ -1,6 +1,6 @@
 /**dateからフォーマットを生成する関数 */
-export const formatDate = (dateString: string) => {
-  const date = new Date(dateString);
+export const formatDate = (dateInput: string | Date) => {
+  const date = typeof dateInput === "string" ? new Date(dateInput) : dateInput;
   const now = new Date();
   const diff = (now.getTime() - date.getTime()) / 1000;
   const rtf = new Intl.RelativeTimeFormat("ja", { numeric: "auto" });
