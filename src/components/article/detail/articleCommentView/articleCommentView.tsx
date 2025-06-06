@@ -1,18 +1,14 @@
 "use client";
 
-import { Textarea, Avatar, Button, TextInput } from "@mantine/core";
+import { Textarea, Avatar, Button } from "@mantine/core";
 import styles from "./articleCommentView.module.scss";
 import { useGroupId } from "@/libs/context/groupContext/groupContext";
 import Loading from "@/components/shared/loading/loading";
-import { postComment } from "@/actions/article/articleActions";
-import { useActionState, useEffect } from "react";
-import { useForm, getFormProps } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { postCommentSchema } from "@/utils/types/formSchema";
-import { useArticleComments } from "@/libs/hooks/comment";
+import { useState } from "react";
+import { useArticleComment } from "@/libs/hooks/comment";
 import ArticleCommentCard from "../articleCommentCard/articleCommentCard";
 import { useProfile } from "@/libs/hooks/user";
-import { deleteComment } from "@/actions/article/articleActions";
+
 import { CommentContext } from "@/libs/context/commentContext/commentContext";
 
 type Props = {
@@ -22,29 +18,11 @@ type Props = {
 /**コメント一覧を表示するコンポーネント */
 export default function ArticleCommentView({ articleId }: Props) {
   const groupId = useGroupId() ?? "";
-  const { profile } = useProfile();
-  const { comments, mutate } = useArticleComments(groupId, articleId);
-  const [actionResult, formAction, isPending] = useActionState(
-    postComment,
-    undefined
-  );
-  const [form, fields] = useForm({
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: postCommentSchema });
-    },
-    shouldValidate: "onBlur",
-  });
-  const handleDeleteComment = async (commentId: string) => {
-    mutate(
-      (prev) => prev?.filter((comment) => comment.id !== commentId), // 即座に画面更新
-      false
-    );
-    try {
-      await deleteComment(commentId, groupId);
-    } catch {
-      mutate();
-    }
-  };
+  const { profile, isLoading } = useProfile();
+  const [comment, setComment] = useState("");
+  const { comments, handleDeleteComment, handlePostComment } =
+    useArticleComment(groupId, articleId);
+  /**コメント一覧をコメントカードコンポーネントに変換 */
   const commentElements = () => {
     if (comments === undefined) {
       return <Loading />;
@@ -60,53 +38,42 @@ export default function ArticleCommentView({ articleId }: Props) {
       />
     ));
   };
-  useEffect(() => {
-    if (actionResult?.status === "success") {
-      mutate();
-    }
-  }, [actionResult, mutate]);
   return (
     <>
       <CommentContext.Provider
         value={{ groupId, articleId, handleDeleteComment }}
       >
-        <form {...getFormProps(form)} action={formAction}>
-          <div className={styles.comment}>
-            <Avatar className={styles.avatar} src={profile?.image} />
+        <div className={styles.comment}>
+          <Avatar className={styles.avatar} src={profile?.image} />
 
-            <Textarea
-              name={fields.comment.name}
-              className={styles.textarea}
-              classNames={{ input: styles.input }}
-              disabled={isPending}
-              placeholder="コメントをする..."
-              autosize
-              minRows={1}
-              maxRows={20}
-              variant="unstyled"
-            />
-            <TextInput
-              type="hidden"
-              name={fields.groupId.name}
-              value={groupId}
-            />
-            <TextInput
-              type="hidden"
-              name={fields.articleId.name}
-              value={articleId}
-            />
-            <Button
-              type="submit"
-              disabled={
-                isPending ||
-                !fields.comment.value ||
-                fields.comment.value === ""
-              }
-            >
-              送信
-            </Button>
-          </div>
-        </form>
+          <Textarea
+            className={styles.textarea}
+            classNames={{ input: styles.input }}
+            placeholder="コメントをする..."
+            autosize
+            minRows={1}
+            maxRows={20}
+            variant="unstyled"
+            value={comment}
+            onChange={(e) => setComment(e.currentTarget.value)}
+          />
+          <Button
+            onClick={() => {
+              handlePostComment(
+                {
+                  userId: profile!.userId,
+                  displayName: profile!.displayName,
+                  image: profile!.image ?? "",
+                },
+                comment
+              );
+              setComment("");
+            }}
+            disabled={isLoading || comment === ""}
+          >
+            送信
+          </Button>
+        </div>
         <div className={styles.comments}>{commentElements()}</div>
       </CommentContext.Provider>
     </>

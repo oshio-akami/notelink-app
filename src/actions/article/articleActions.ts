@@ -33,12 +33,11 @@ export const postArticle = async (_: unknown, formData: FormData) => {
 };
 
 /**コメントを投稿する非同期関数 */
-export const postComment = async (_: unknown, fromData: FormData) => {
-  const submission = parseWithZod(fromData, { schema: postCommentSchema });
-  if (submission.status !== "success") {
-    return submission.reply();
-  }
-  const { groupId, articleId, comment } = submission.value;
+export const postComment = async (
+  comment: string,
+  groupId: string,
+  articleId: string
+) => {
   const client = await getClient();
   const res = await client.api.article.comment[":groupId"][":articleId"].$post({
     param: {

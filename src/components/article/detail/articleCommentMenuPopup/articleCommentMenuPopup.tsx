@@ -24,7 +24,7 @@ export default function ArticleCommentMenuPopup({
               handleDeleteComment(commentId);
             }}
           >
-            投稿を削除
+            コメントを削除
           </Text>
         </Popover.Dropdown>
       </Popover>
