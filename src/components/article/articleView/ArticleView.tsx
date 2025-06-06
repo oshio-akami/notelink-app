@@ -2,29 +2,21 @@
 import { Article } from "@/utils/types/articleType";
 import ArticleCard from "../articleCard/articleCard";
 import styles from "./articleView.module.scss";
-import useSWR from "swr";
 import { Tabs, Text } from "@mantine/core";
-import client from "@/libs/honoClient";
 import { useMemo, useState } from "react";
 import Loading from "@/components/shared/loading/loading";
+import { useArticles } from "@/libs/hooks/article";
 
 type Props = {
   groupId: string;
 };
 
+/**投稿一覧を表示するコンポーネント */
 export default function ArticleView({ groupId }: Props) {
   const [tab, setTab] = useState("default");
-  const fetcher = async () => {
-    const res = await client.api.article[":groupId"].articles[":mine?"].$get({
-      param: {
-        groupId: groupId,
-      },
-    });
-    const body = await res.json();
-    return body.articles!;
-  };
-  const { data: articles, mutate } = useSWR("/articles", fetcher);
+  const { articles, mutate } = useArticles(groupId);
 
+  /**ブックマーク変更時の処理をする関数 */
   const onBookmarkChange = (id: string, isBookmark: boolean) => {
     mutate(
       (prevArticles) =>
@@ -34,6 +26,8 @@ export default function ArticleView({ groupId }: Props) {
       false
     );
   };
+
+  /** 投稿データの配列ををArtickeCardコンポーネントの配列に変換する関数*/
   const articleElements = (articles: Article[]) => {
     return articles.map((article) => (
       <ArticleCard
@@ -43,6 +37,7 @@ export default function ArticleView({ groupId }: Props) {
       />
     ));
   };
+  /**ブックマーク一覧を取得する関数 */
   const bookmarkedArticles = useMemo(() => {
     return articles?.filter((article) => article.isBookmark) ?? [];
   }, [articles]);
