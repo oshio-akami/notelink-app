@@ -3,7 +3,6 @@
 import useSWR from "swr";
 import client from "@/libs/honoClient";
 import { deleteComment, postComment } from "@/actions/article/articleActions";
-import { formatDate } from "../utils";
 import { Comment } from "@/utils/types/articleType";
 
 /**コメントのカスタムフック */

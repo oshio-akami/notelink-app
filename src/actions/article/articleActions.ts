@@ -1,7 +1,7 @@
 "use server";
 
 import { getClient } from "@/libs/hono";
-import { postCommentSchema, PostFormSchema } from "@/utils/types/formSchema";
+import { PostFormSchema } from "@/utils/types/formSchema";
 import { parseWithZod } from "@conform-to/zod";
 
 /**
