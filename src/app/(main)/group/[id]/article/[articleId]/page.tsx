@@ -27,7 +27,7 @@ export default async function Home({ params }: Props) {
   const article = await getArticle();
   return (
     <>
-      <div className={styles.wrapper}>
+      <div className={styles.wrapper} id="top">
         <ScrollArea h="calc(100vh - 60px)" w="100%" type="never">
           <ArticleDetailPageView hasJoined={hasJoined} article={article} />
         </ScrollArea>

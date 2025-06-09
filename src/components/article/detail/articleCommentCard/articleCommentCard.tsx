@@ -9,6 +9,7 @@ import ArticleCommentMenuPopup from "../articleCommentMenuPopup/articleCommentMe
 
 type Props = {
   id: string;
+  hasDeletePermission: boolean;
   displayName: string;
   createdAt: string;
   avatar: string;
@@ -18,6 +19,7 @@ type Props = {
 /**コメントを表示するカードコンポーネント */
 export default function ArticleCommentCard({
   id,
+  hasDeletePermission,
   displayName,
   createdAt,
   avatar,
@@ -29,11 +31,13 @@ export default function ArticleCommentCard({
         <Avatar className={styles.avatar} src={avatar}></Avatar>
         <Text fw={700}>{displayName}</Text>
         <Text className={styles.date}>{formatDate(createdAt)}</Text>
-        <div className={styles.menu}>
-          <ArticleCommentMenuPopup commentId={id}>
-            <IconDotsVertical />
-          </ArticleCommentMenuPopup>
-        </div>
+        {hasDeletePermission && (
+          <div className={styles.menu}>
+            <ArticleCommentMenuPopup commentId={id}>
+              <IconDotsVertical />
+            </ArticleCommentMenuPopup>
+          </div>
+        )}
       </div>
       <div className={styles.contents}>
         <pre>{content}</pre>

@@ -13,12 +13,16 @@ import { CommentContext } from "@/libs/context/commentContext/commentContext";
 
 type Props = {
   articleId: string;
+  articlePostUserId: string;
 };
 
 /**コメント一覧を表示するコンポーネント */
-export default function ArticleCommentView({ articleId }: Props) {
+export default function ArticleCommentView({
+  articleId,
+  articlePostUserId,
+}: Props) {
   const groupId = useGroupId() ?? "";
-  const { profile, isLoading } = useProfile();
+  const { profile, isRoleAdmin, isLoading } = useProfile(groupId);
   const [comment, setComment] = useState("");
   const { comments, handleDeleteComment, handlePostComment } =
     useArticleComment(groupId, articleId);
@@ -31,6 +35,11 @@ export default function ArticleCommentView({ articleId }: Props) {
       <ArticleCommentCard
         key={comment.id}
         id={comment.id}
+        hasDeletePermission={
+          isRoleAdmin ||
+          comment.userId === profile?.userId ||
+          articlePostUserId === profile?.userId
+        }
         displayName={comment.userProfiles.displayName}
         avatar={comment.userProfiles.image ?? ""}
         createdAt={comment.createdAt}
@@ -43,7 +52,7 @@ export default function ArticleCommentView({ articleId }: Props) {
       <CommentContext.Provider
         value={{ groupId, articleId, handleDeleteComment }}
       >
-        <div className={styles.comment}>
+        <div className={styles.comment} id="comment">
           <Avatar className={styles.avatar} src={profile?.image} />
 
           <Textarea

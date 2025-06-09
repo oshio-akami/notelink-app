@@ -25,8 +25,8 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
   const router = useRouter();
   const groupId = useGroupId();
   const shortPress = withShortPress(() => pushArticleRoute());
-  const pushArticleRoute = () => {
-    router.push(`/group/${groupId}/article/${article.id}`);
+  const pushArticleRoute = (anchor: string = "") => {
+    router.push(`/group/${groupId}/article/${article.id}#${anchor}`);
   };
   const sanitizeContent = DOMPurify.sanitize(article.content!);
   return (
@@ -71,7 +71,9 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
           }}
         />
         <IconButton
-          onClick={pushArticleRoute}
+          onClick={() => {
+            pushArticleRoute("comment");
+          }}
           icon={<IconMessageCircle />}
           rightSection={<Text>{article.commentCount}</Text>}
         />

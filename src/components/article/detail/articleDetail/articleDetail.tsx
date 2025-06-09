@@ -6,7 +6,7 @@ import { formatDate } from "@/libs/utils";
 import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
 import ArticleCommentView from "../articleCommentView/articleCommentView";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 
 type Props = {
   article: Article;
@@ -15,13 +15,10 @@ type Props = {
 /**コメントも含めた投稿の詳細表示 */
 export default function ArticleDetail({ article }: Props) {
   const commentRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    commentRef.current?.scrollIntoView();
-  }, []);
   if (!article) {
     return <></>;
   }
-  const sanitizeContent = DOMPurify.sanitize(article.content!);
+  const sanitizeContent = DOMPurify.sanitize(article.content);
 
   return (
     <>
@@ -47,7 +44,10 @@ export default function ArticleDetail({ article }: Props) {
           />
         </div>
         <div className={styles.comments} ref={commentRef}>
-          <ArticleCommentView articleId={article.id} />
+          <ArticleCommentView
+            articleId={article.id}
+            articlePostUserId={article.userProfiles.userId}
+          />
         </div>
       </Card>
     </>
