@@ -8,6 +8,13 @@
       "when": 1748926949819,
       "tag": "0005_amazing_blacklash",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749435168490,
+      "tag": "0002_unusual_nightshade",
+      "breakpoints": true
     }
   ]
 }

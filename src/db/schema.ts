@@ -58,12 +58,11 @@ export const sessions = pgTable("session", {
 /*ユーザーのprofile情報*/
 export const userProfiles = pgTable("user_profiles", {
   userId: uuid("user_id")
-    .notNull()
     .references(() => users.id, { onDelete: "cascade" })
     .primaryKey(),
   displayName: text("display_name").notNull(),
-  image: text("image"),
-  about: text("about"),
+  image: text("image").notNull().default(""),
+  about: text("about").notNull().default(""),
   currentGroupId: uuid("current_group_id").references(() => groups.groupId, {
     onDelete: "set null",
   }),
@@ -98,7 +97,7 @@ export const groupMembers = pgTable(
         onDelete: "cascade",
       })
       .notNull(),
-    roleId: integer("role_id").notNull().default(2),
+    roleId: integer("role_id").notNull().default(2).notNull(),
   },
   (table) => {
     return {
@@ -138,8 +137,8 @@ export const articles = pgTable("articles", {
     })
     .notNull(),
   title: text("title").notNull().default("タイトル"),
-  image: text("image").default(""),
-  content: text("content").default(""),
+  image: text("image").notNull().default(""),
+  content: text("content").notNull().default(""),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -185,7 +184,7 @@ export const comments = pgTable("comments", {
       onDelete: "cascade",
     })
     .notNull(),
-  comment: text("comment").default(""),
+  comment: text("comment").default("").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
