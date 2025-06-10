@@ -60,7 +60,7 @@ export default function InviteWindow({
           <IconUsersGroup className={styles.icon} />
           <div>
             <Text>参加者</Text>
-            <Text>{members.length}人</Text>
+            <Text ta="right">{members.length}人</Text>
           </div>
           <div className={styles.memberElements}>
             {memberElements()}
