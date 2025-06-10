@@ -13,10 +13,9 @@ import {
 import { hasJoinedGroup, withGroupMemberCheck } from "@/libs/apiUtils";
 import { eq, desc, and, or, exists, sql } from "drizzle-orm";
 import { getSessionUserId } from "@/libs/getSessionUserId";
+import { ROLE_ADMIN } from "@/libs/roleUtils";
 
 export const runtime = "edge";
-
-const admin = 1;
 
 const article = new Hono()
   .get(
@@ -294,20 +293,20 @@ const article = new Hono()
   )
   /**投稿の削除 */
   .delete(
-    "/:articleId",
+    "/:groupId/:articleId",
     zValidator(
       "param",
       z.object({
-        articleId: z.string().uuid(),
         groupId: z.string().uuid(),
+        articleId: z.string().uuid(),
       })
     ),
     async (c) => {
       try {
-        const { articleId, groupId } = c.req.valid("param");
+        const { groupId, articleId } = c.req.valid("param");
         const check = await withGroupMemberCheck(groupId);
         if (!check.success) {
-          return c.json({ article: null }, check.status);
+          return c.json({ success: false }, check.status);
         }
         //投稿者本人か管理者の場合削除
         const deleted = await db.delete(articles).where(
@@ -322,17 +321,21 @@ const article = new Hono()
                   .where(
                     and(
                       eq(groupMembers.userId, check.userId),
-                      eq(groupMembers.groupId, articles.groupId),
-                      eq(groupMembers.roleId, admin)
+                      eq(groupMembers.groupId, groupId),
+                      eq(groupMembers.roleId, ROLE_ADMIN)
                     )
                   )
               )
             )
           )
         );
-        return c.json({ deleted: deleted }, 200);
+        const success = deleted.rowCount > 0;
+        if (!success) {
+          return c.json({ success: false }, 404);
+        }
+        return c.json({ success: true }, 200);
       } catch (error) {
-        return handleApiError(c, error, { article: false });
+        return handleApiError(c, error, { success: false });
       }
     }
   )
