@@ -1,3 +1,4 @@
+import { deleteArticle } from "@/actions/article/articleActions";
 import client from "@/libs/honoClient";
 import useSWR from "swr";
 
@@ -17,12 +18,37 @@ export const useArticles = (groupId: string) => {
 
   const { data, error, isLoading, mutate } = useSWR(key, fetcher);
 
+  const handleUpdateArticle = async () => {};
+  /**投稿を削除する関数 */
+  const handleDeleteArticle = async (articleId: string) => {
+    mutate(
+      (prev) => prev?.filter((article) => article.id !== articleId),
+      false
+    );
+    try {
+      await deleteArticle(groupId, articleId);
+    } catch {
+      mutate();
+    }
+  };
+  /**ブックマーク変更時の処理をする関数 */
+  const onBookmarkChange = (id: string, isBookmark: boolean) => {
+    mutate(
+      (prevArticles) =>
+        prevArticles?.map((article) =>
+          article.id === id ? { ...article, isBookmark } : article
+        ),
+      false
+    );
+  };
+
   return {
     articles: data,
     isLoading,
     error,
     mutate,
+    handleUpdateArticle,
+    handleDeleteArticle,
+    onBookmarkChange,
   };
 };
-
-/**投稿を取得するカスタムフック */
