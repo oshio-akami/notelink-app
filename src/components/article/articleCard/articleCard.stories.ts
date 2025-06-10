@@ -16,7 +16,7 @@ const meta: Meta<typeof ArticleCard> = {
       title: "First Article",
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi nec justo eget dolor pretium tempor. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.",
-      image: null,
+      image: "",
       createdAt: "2023-10-10T12:00:00Z",
       isBookmark: false,
       commentCount: 0,

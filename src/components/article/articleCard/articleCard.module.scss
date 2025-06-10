@@ -18,6 +18,9 @@
       text-indent: 1rem;
       color: gray;
     }
+    .menu {
+      margin-left: auto;
+    }
   }
   .contents {
     padding: 0 50px;
@@ -34,6 +37,8 @@
       padding: 10px;
       border-radius: 5px;
       border: 1px solid lightgray;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
     ol,
     ul {
