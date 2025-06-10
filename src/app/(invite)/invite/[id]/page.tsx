@@ -3,6 +3,7 @@ import { hasJoinedGroup } from "@/libs/apiUtils";
 import setCurrentGroup from "@/actions/user/setCurrentGroup";
 import { getClient } from "@/libs/hono";
 import InviteWindow from "@/components/invite/inviteWindow/inviteWindow";
+import { UserProfile } from "@/utils/types/profileType";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -26,7 +27,20 @@ const getGroupName = async (groupId: string) => {
     },
   });
   const body = await res.json();
-  return body.groupName;
+  return body.groupName ?? "";
+};
+
+const getMembers = async (groupId: string): Promise<UserProfile[]> => {
+  console.log(groupId);
+  const client = await getClient();
+  const res = await client.api.group.members[":groupId"].$get({
+    param: {
+      groupId: groupId,
+    },
+  });
+  const body = await res.json();
+  console.log(body.members);
+  return body.members ?? [];
 };
 
 export default async function Invite({ params }: Props) {
@@ -47,5 +61,8 @@ export default async function Invite({ params }: Props) {
     await setCurrentGroup(groupId);
   }
   const groupName = await getGroupName(groupId);
-  return <InviteWindow groupName={groupName!} inviteToken={id} />;
+  const members = await getMembers(groupId);
+  return (
+    <InviteWindow groupName={groupName!} inviteToken={id} members={members} />
+  );
 }

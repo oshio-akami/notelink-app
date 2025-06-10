@@ -1,8 +1,10 @@
 "use client";
 
 import joinInviteGroup from "@/actions/group/joinInviteGroup";
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
+import { IconArrowRight } from "@tabler/icons-react";
 import { useState } from "react";
+import styles from "./joinButotn.module.scss";
 
 type Props = {
   inviteToken: string;
@@ -19,6 +21,9 @@ export default function JoinButton({ inviteToken }: Props) {
     setLoading(false);
   };
   return (
-    <Button onClick={handleClick}>{loading ? "参加中..." : "参加する"}</Button>
+    <Button onClick={handleClick} className={styles.button}>
+      <Text>{loading ? "参加中..." : "グループに参加する "}</Text>
+      <IconArrowRight />
+    </Button>
   );
 }

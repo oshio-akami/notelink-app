@@ -30,7 +30,7 @@ export default function InsertImageControl({ blobToFileRef }: Props) {
         aria-label="画像"
         title="画像"
       >
-        <IconPhoto />
+        <IconPhoto color="gray" />
       </RichTextEditor.Control>
       <input
         type="file"
