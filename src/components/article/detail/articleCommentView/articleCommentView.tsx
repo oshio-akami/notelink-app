@@ -2,7 +2,7 @@
 
 import { Textarea, Avatar, Button } from "@mantine/core";
 import styles from "./articleCommentView.module.scss";
-import { useGroupId } from "@/libs/context/groupContext/groupContext";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
 import Loading from "@/components/shared/loading/loading";
 import { useState } from "react";
 import { useArticleComment } from "@/libs/hooks/comment";
@@ -21,7 +21,7 @@ export default function ArticleCommentView({
   articleId,
   articlePostUserId,
 }: Props) {
-  const groupId = useGroupId() ?? "";
+  const { groupId } = useGroup();
   const { profile, isRoleAdmin, isLoading } = useProfile(groupId);
   const [comment, setComment] = useState("");
   const { comments, handleDeleteComment, handlePostComment } =
@@ -49,9 +49,7 @@ export default function ArticleCommentView({
   };
   return (
     <>
-      <CommentContext.Provider
-        value={{ groupId, articleId, handleDeleteComment }}
-      >
+      <CommentContext.Provider value={{ articleId, handleDeleteComment }}>
         <div className={styles.comment} id="comment">
           <Avatar className={styles.avatar} src={profile?.image} />
 

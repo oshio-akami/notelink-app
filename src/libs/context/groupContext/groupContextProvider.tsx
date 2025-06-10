@@ -11,6 +11,8 @@ export const GroupContextProvider = ({
   children: ReactNode;
 }) => {
   return (
-    <GroupContext.Provider value={groupId}>{children}</GroupContext.Provider>
+    <GroupContext.Provider value={{ groupId }}>
+      {children}
+    </GroupContext.Provider>
   );
 };

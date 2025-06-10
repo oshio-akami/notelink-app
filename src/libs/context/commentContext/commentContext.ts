@@ -2,7 +2,6 @@ import { createContext, useContext } from "react";
 
 type CommentContextType = {
   articleId: string;
-  groupId: string;
   handleDeleteComment: (commentId: string) => void;
 };
 

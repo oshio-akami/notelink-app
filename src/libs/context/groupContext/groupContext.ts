@@ -2,8 +2,12 @@
 
 import { createContext, useContext } from "react";
 
-export const GroupContext = createContext<string | null>(null);
-export const useGroupId = () => {
+type GroupContextType = {
+  groupId: string;
+};
+
+export const GroupContext = createContext<GroupContextType | null>(null);
+export const useGroup = () => {
   const ctx = useContext(GroupContext);
   if (!ctx)
     throw new Error("useGroupContext はプロバイダ内で使用する必要があります");

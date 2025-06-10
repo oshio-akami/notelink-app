@@ -6,6 +6,7 @@ import IconButton from "@/components/shared/iconButton/iconButton";
 import {
   IconBookmark,
   IconBookmarkFilled,
+  IconDotsVertical,
   IconMessageCircle,
 } from "@tabler/icons-react";
 import { formatDate, withShortPress } from "@/libs/utils";
@@ -13,17 +14,19 @@ import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
 import { addBookmark, removeBookmark } from "@/actions/article/bookmarkActions";
 import { useRouter } from "next/navigation";
-import { useGroupId } from "@/libs/context/groupContext/groupContext";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
+import ArticleMenuPopup from "../articleMenuPopup/articleMenuPopup";
+import { useArticleActionsContext } from "@/libs/context/articleContext/articleActionsContext";
 
 type Props = {
   article: Article;
-  onBookmarkChange: (articleId: string, isBookmark: boolean) => void;
 };
 
 /**投稿を表示するカードコンポーネント */
-export default function ArticleCard({ article, onBookmarkChange }: Props) {
+export default function ArticleCard({ article }: Props) {
+  const { onBookmarkChange } = useArticleActionsContext();
   const router = useRouter();
-  const groupId = useGroupId();
+  const { groupId } = useGroup();
   const shortPress = withShortPress(() => pushArticleRoute());
   const pushArticleRoute = (anchor: string = "") => {
     router.push(`/group/${groupId}/article/${article.id}#${anchor}`);
@@ -39,6 +42,11 @@ export default function ArticleCard({ article, onBookmarkChange }: Props) {
         <div>
           <Text fw={700}>{article.userProfiles.displayName}</Text>
           <Text className={styles.date}>{formatDate(article.createdAt)}</Text>
+        </div>
+        <div className={styles.menu}>
+          <ArticleMenuPopup articleId={article.id}>
+            <IconDotsVertical />
+          </ArticleMenuPopup>
         </div>
       </div>
       <div className={styles.contents}>

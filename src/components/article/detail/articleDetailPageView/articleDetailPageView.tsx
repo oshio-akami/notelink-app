@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import ArticleDetail from "../articleDetail/articleDetail";
 import { Button, Text } from "@mantine/core";
 import { Article } from "@/utils/types/articleType";
-import { useGroupId } from "@/libs/context/groupContext/groupContext";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
 
 type Props = {
   hasJoined: boolean;
@@ -16,7 +16,7 @@ type Props = {
 /**投稿の詳細ページ */
 export default function ArticleDetailPageView({ hasJoined, article }: Props) {
   const router = useRouter();
-  const groupId = useGroupId();
+  const { groupId } = useGroup();
   const handleGoHome = () => {
     router.push(`/group/${groupId}/home`);
   };
