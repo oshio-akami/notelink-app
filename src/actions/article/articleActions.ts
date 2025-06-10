@@ -4,12 +4,7 @@ import { getClient } from "@/libs/hono";
 import { PostFormSchema } from "@/utils/types/formSchema";
 import { parseWithZod } from "@conform-to/zod";
 
-/**
- * 記事を投稿する非同期関数
- * @param {unknown} _ - 使用されない引数（将来の拡張のため）
- * @param {FormData} formData - 投稿フォームのデータ
- * @returns {Promise<{status: string, message: string}>} - 操作の結果（成功または失敗のメッセージ）
- */
+/**投稿を投稿する非同期関数*/
 export const postArticle = async (_: unknown, formData: FormData) => {
   const submission = parseWithZod(formData, { schema: PostFormSchema });
   if (submission.status !== "success") {
@@ -32,6 +27,27 @@ export const postArticle = async (_: unknown, formData: FormData) => {
   return { status: "success", message: "投稿しました" };
 };
 
+/**投稿を削除する非同期関数 */
+export const deleteArticle = async (groupId: string, articleId: string) => {
+  const client = await getClient();
+  console.log(groupId);
+  console.log(articleId);
+  const res = await client.api.article[":groupId"][":articleId"].$delete({
+    param: {
+      groupId: groupId,
+      articleId: articleId,
+    },
+  });
+  if (!res.ok) {
+    throw new Error("投稿の削除に失敗しました");
+  }
+  const body = await res.json();
+  if (body.success) {
+    throw new Error("サーバーから失敗レスポンスが返されました");
+  }
+  return { success: true };
+};
+
 /**コメントを投稿する非同期関数 */
 export const postComment = async (
   comment: string,
@@ -46,11 +62,14 @@ export const postComment = async (
     },
     json: { comment: comment },
   });
+  if (!res.ok) {
+    throw new Error("コメントの送信に失敗しました");
+  }
   const body = await res.json();
   if (body.success) {
-    return { status: "success", message: "コメントを送信しました" };
+    return { success: true };
   } else {
-    return { status: "error", message: "コメントを送信に失敗しました" };
+    throw new Error("サーバーから失敗レスポンスが返されました");
   }
 };
 
