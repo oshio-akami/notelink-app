@@ -4,6 +4,7 @@ import InviteLinkViewModel from "@/components/invite/inviteLinkViewModal/InviteL
 import { AppShellAside, Flex } from "@mantine/core";
 import styles from "./page.module.scss";
 import { getSessionUserId } from "@/libs/getSessionUserId";
+import { UserProfile } from "@/utils/types/profileType";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +41,7 @@ const getInviteData = async (groupId: string) => {
   }
   return token;
 };
-const getMembers = async (groupId: string) => {
+const getMembers = async (groupId: string): Promise<UserProfile[]> => {
   const client = await getClient();
   const res = await client.api.group.members[":groupId"].$get({
     param: {
@@ -48,7 +49,7 @@ const getMembers = async (groupId: string) => {
     },
   });
   const body = await res.json();
-  return body.members;
+  return body.members ?? [];
 };
 
 export default async function Member({ params }: Props) {
@@ -64,8 +65,7 @@ export default async function Member({ params }: Props) {
         <InviteLinkViewModel inviteToken={inviteToken} />
       </Flex>
       <MemberList
-        members={members!}
-        groupId={id}
+        members={members}
         viewerIsAdmin={(viewer && viewer.role === "admin") ?? false}
       />
       <AppShellAside p={20} withBorder={false} zIndex={-1} bg={"#f8fbff"}>

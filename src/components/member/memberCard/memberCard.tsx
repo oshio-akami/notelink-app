@@ -5,25 +5,16 @@ import styles from "./memberCard.module.scss";
 import { IconDotsVertical } from "@tabler/icons-react";
 import MemberPopup from "../memberPopup/memberPopup";
 import { useSession } from "next-auth/react";
+import { UserProfile } from "@/utils/types/profileType";
 
 type Props = {
-  userProfile: {
-    userId: string | null;
-    displayName: string | null;
-    image: string | null;
-    role: string | null;
-  };
+  userProfile: UserProfile;
   viewerIsAdmin: boolean;
-  groupId: string;
 };
 
-export default function MemberCard({
-  userProfile,
-  viewerIsAdmin,
-  groupId,
-}: Props) {
+export default function MemberCard({ userProfile, viewerIsAdmin }: Props) {
   const session = useSession();
-  if (!userProfile && !session.data?.user?.id) {
+  if (!session.data?.user?.id) {
     return <></>;
   }
   const isOwnProfile = () => {
@@ -42,8 +33,7 @@ export default function MemberCard({
         <MemberPopup
           viewerIsAdmin={viewerIsAdmin}
           isOwnProfile={isOwnProfile()}
-          groupId={groupId}
-          userProfile={userProfile!}
+          userProfile={userProfile}
         >
           <IconDotsVertical />
         </MemberPopup>

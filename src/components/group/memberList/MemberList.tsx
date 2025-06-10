@@ -1,18 +1,29 @@
-"use client"
+"use client";
 
-import { Table, TableTd, TableTr ,Avatar , TableThead,TableTh, TableTbody,Text, Flex} from "@mantine/core";
+import {
+  Table,
+  TableTd,
+  TableTr,
+  Avatar,
+  TableThead,
+  TableTh,
+  TableTbody,
+  Text,
+  Flex,
+} from "@mantine/core";
 
-type Props={
-  members: {
-    userId: string | null;
-    displayName: string |null;
-    image: string | null;
-    role: string |null;
-  }[]|null
-}
+type Props = {
+  members:
+    | {
+        userId: string;
+        displayName: string;
+        image: string;
+        role: string;
+      }[];
+};
 
-export default function MemberList({members}:Props){
-  const rows=members?.map(member=>(
+export default function MemberList({ members }: Props) {
+  const rows = members?.map((member) => (
     <TableTr key={member.displayName}>
       <TableTd>
         <Flex gap={20} align="center">
@@ -23,7 +34,7 @@ export default function MemberList({members}:Props){
       <TableTd>{member.role}</TableTd>
     </TableTr>
   ));
-  return(
+  return (
     <>
       <Table>
         <TableThead>
@@ -35,5 +46,5 @@ export default function MemberList({members}:Props){
         <TableTbody>{rows}</TableTbody>
       </Table>
     </>
-  )
+  );
 }
