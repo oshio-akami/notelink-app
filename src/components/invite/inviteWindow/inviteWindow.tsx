@@ -4,7 +4,7 @@ import styles from "./inviteWindow.module.scss";
 import JoinButton from "../JoinButton/joinButton";
 import { UserProfile } from "@/utils/types/profileType";
 import { IconUsersGroup } from "@tabler/icons-react";
-import { Text, Avatar } from "@mantine/core";
+import { Text, Avatar, Image } from "@mantine/core";
 
 type Props = {
   groupName: string;
@@ -44,7 +44,18 @@ export default function InviteWindow({
   return (
     <div className={styles.page}>
       <div className={styles.box}>
-        <p>【{groupName}】に招待されています</p>
+        <Image
+          mr="auto"
+          w={120}
+          src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
+          alt="logo"
+        />
+        <div className={styles.description}>
+          <Text>グループに招待されています</Text>
+          <Text fw={700} size="1.2rem">
+            {groupName}
+          </Text>
+        </div>
         <div className={styles.membersList}>
           <IconUsersGroup className={styles.icon} />
           <div>
