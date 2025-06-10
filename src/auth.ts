@@ -102,7 +102,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       await db.insert(userProfiles).values({
         userId: user.id,
         displayName: user.name ?? "ユーザー",
-        image: user.image,
+        image: user.image ?? "",
         about: "",
       });
     },
