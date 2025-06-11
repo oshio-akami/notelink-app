@@ -10,9 +10,12 @@ export default async function deleteMember(groupId: string, userId: string) {
       userId: userId,
     },
   });
-  const body = await res.json();
-  if (!body.deleted || body.deleted.length === 0) {
-    return false;
+  if (!res.ok) {
+    throw new Error("メンバーの削除に失敗しました");
   }
-  return true;
+  const body = await res.json();
+  if (!body.success) {
+    return new Error("サーバーから失敗レスポンスが返されました");
+  }
+  return { success: true };
 }

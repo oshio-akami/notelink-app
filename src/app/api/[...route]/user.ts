@@ -183,27 +183,27 @@ const user = new Hono()
     ),
     async (c) => {
       try {
-        const userId = await getSessionUserId();
-        if (!userId) {
-          return c.json({ deleted: null }, 401);
+        const { groupId } = await c.req.valid("param");
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ success: false }, check.status);
         }
-        const body = await c.req.valid("param");
-        const { groupId } = body;
         const deleted = await db
           .delete(groupMembers)
           .where(
             and(
-              eq(groupMembers.userId, userId),
+              eq(groupMembers.userId, check.userId),
               eq(groupMembers.groupId, groupId)
             )
-          )
-          .returning();
-        if (deleted.length === 0) {
-          return c.json({ deleted: null }, 404);
+          );
+        console.log(deleted.rowCount);
+        const success = deleted.rowCount > 0;
+        if (!success) {
+          return c.json({ success: false }, 404);
         }
-        return c.json({ deleted: deleted }, 200);
+        return c.json({ success: true }, 200);
       } catch (error) {
-        return handleApiError(c, error, { deleted: null });
+        return handleApiError(c, error, { success: false });
       }
     }
   )

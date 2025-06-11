@@ -6,8 +6,9 @@ import { eq, and } from "drizzle-orm";
 import { getClient } from "@/libs/hono";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
-import { hasJoinedGroup } from "@/libs/apiUtils";
+import { hasJoinedGroup, withGroupMemberCheck } from "@/libs/apiUtils";
 import { getSessionUserId } from "@/libs/getSessionUserId";
+import { ROLE_ADMIN } from "@/libs/roleUtils";
 
 export const runtime = "edge";
 
@@ -157,27 +158,27 @@ const group = new Hono()
         const body = await c.req.valid("param");
         const { groupId, userId } = body;
         //ユーザの役職取得
-        const ownUserId = await getSessionUserId();
-        if (!ownUserId) {
-          return c.json({ deleted: null }, 401);
+        const check = await withGroupMemberCheck(groupId);
+        if (!check.success) {
+          return c.json({ success: false }, check.status);
         }
         const role = await db
           .select({ roleId: groupMembers.roleId })
           .from(groupMembers)
           .where(
             and(
-              eq(groupMembers.userId, ownUserId),
+              eq(groupMembers.userId, check.userId),
               eq(groupMembers.groupId, groupId)
             )
           )
           .limit(1);
         if (role.length === 0) {
-          return c.json({ deleted: null }, 404);
+          return c.json({ success: false }, 404);
         }
         const roleId = role[0].roleId;
         //役職がadminの場合のみ削除
-        if (roleId !== 1) {
-          return c.json({ deleted: null }, 401);
+        if (roleId !== ROLE_ADMIN) {
+          return c.json({ success: false }, 401);
         }
 
         const deleted = await db
@@ -187,14 +188,14 @@ const group = new Hono()
               eq(groupMembers.userId, userId),
               eq(groupMembers.groupId, groupId)
             )
-          )
-          .returning();
-        if (deleted.length === 0) {
-          return c.json({ deleted: null }, 404);
+          );
+        const success = deleted.rowCount > 0;
+        if (!success) {
+          return c.json({ success: false }, 404);
         }
-        return c.json({ deleted: deleted }, 200);
+        return c.json({ success: true }, 200);
       } catch (error) {
-        return handleApiError(c, error, { deleted: null });
+        return handleApiError(c, error, { success: false });
       }
     }
   );

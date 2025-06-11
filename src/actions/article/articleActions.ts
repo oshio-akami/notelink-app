@@ -30,8 +30,6 @@ export const postArticle = async (_: unknown, formData: FormData) => {
 /**投稿を削除する非同期関数 */
 export const deleteArticle = async (groupId: string, articleId: string) => {
   const client = await getClient();
-  console.log(groupId);
-  console.log(articleId);
   const res = await client.api.article[":groupId"][":articleId"].$delete({
     param: {
       groupId: groupId,

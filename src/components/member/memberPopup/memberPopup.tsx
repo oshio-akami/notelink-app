@@ -6,7 +6,6 @@ import styles from "./memberPopup.module.scss";
 import { useDisclosure } from "@mantine/hooks";
 import DeleteMemberModal from "../deleteMemberModal/deleteMemberModal";
 import { UserProfile } from "@/utils/types/profileType";
-import { useGroup } from "@/libs/context/groupContext/groupContext";
 
 type Props = {
   children: ReactNode;
@@ -21,7 +20,6 @@ export default function MemberPopup({
   isOwnProfile,
   userProfile,
 }: Props) {
-  const { groupId } = useGroup();
   const [
     leaveGroupModalOpened,
     { open: openLeaveGroupModal, close: closeLeaveGroupModal },
@@ -60,12 +58,10 @@ export default function MemberPopup({
         children
       )}
       <LeaveGroupModal
-        groupId={groupId}
         opened={leaveGroupModalOpened}
         onClose={closeLeaveGroupModal}
       />
       <DeleteMemberModal
-        groupId={groupId}
         opened={deleteMemberModalOpened}
         onClose={closeDeleteMemberModal}
         userProfile={userProfile}

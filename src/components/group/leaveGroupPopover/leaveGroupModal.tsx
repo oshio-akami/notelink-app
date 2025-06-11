@@ -5,14 +5,15 @@ import { Button, Text, Modal } from "@mantine/core";
 import { useState } from "react";
 import styles from "./leaveGroupModal.module.scss";
 import { useRouter } from "next/navigation";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
 
 type Props = {
-  groupId: string;
   opened: boolean;
   onClose: () => void;
 };
 
-export default function LeaveGroupModal({ groupId, opened, onClose }: Props) {
+export default function LeaveGroupModal({ opened, onClose }: Props) {
+  const { groupId } = useGroup();
   const router = useRouter();
   const handleClick = async () => {
     setIsPending(true);

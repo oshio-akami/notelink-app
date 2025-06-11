@@ -1,42 +1,26 @@
 "use client";
 
-import deleteMember from "@/actions/group/deleteMember";
 import { Button, Text, Modal } from "@mantine/core";
-import { useState } from "react";
 import styles from "./deleteMemberModal.module.scss";
 import { UserProfile } from "@/utils/types/profileType";
-import { useRouter } from "next/navigation";
+import { useMemberActionsContext } from "@/libs/context/memberActionsContext/memberActionsContext";
 
 type Props = {
-  groupId: string;
   opened: boolean;
   onClose: () => void;
   userProfile: UserProfile;
 };
 
 export default function DeleteMemberModal({
-  groupId,
   opened,
   onClose,
   userProfile,
 }: Props) {
-  const router = useRouter();
-  const handleClick = async () => {
-    setIsPending(true);
-    await deleteMember(groupId, userProfile.userId!);
-    window.location.reload();
-    onClose();
-    router.refresh();
-  };
-
-  const [isPending, setIsPending] = useState(false);
+  const { handleDeleteMember } = useMemberActionsContext();
   return (
     <Modal
       opened={opened}
       onClose={onClose}
-      closeOnClickOutside={!isPending}
-      closeOnEscape={!isPending}
-      withCloseButton={!isPending}
       centered
       title={
         <Text size="lg" fw={700}>
@@ -62,12 +46,17 @@ export default function DeleteMemberModal({
             variant="default"
             c="black"
             onClick={onClose}
-            disabled={!isPending}
           >
             閉じる
           </Button>
-          <Button size="md" w="45%" bg="red" onClick={handleClick}>
-            {isPending ? "削除中..." : "削除"}
+          <Button
+            size="md"
+            w="45%"
+            bg="red"
+            c="white"
+            onClick={() => handleDeleteMember(userProfile.userId)}
+          >
+            削除する
           </Button>
         </div>
       </div>
