@@ -5,6 +5,7 @@ import JoinButton from "../JoinButton/joinButton";
 import { UserProfile } from "@/utils/types/profileType";
 import { IconUsersGroup } from "@tabler/icons-react";
 import { Text, Avatar, Image } from "@mantine/core";
+import Loading from "@/components/shared/loading/loading";
 
 type Props = {
   groupName: string;
@@ -81,6 +82,7 @@ export default function InviteWindow({
         </div>
         <JoinButton inviteToken={inviteToken} />
       </div>
+      <Loading size="3rem" type="wave" />
     </div>
   );
 }
