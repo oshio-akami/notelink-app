@@ -2,19 +2,25 @@
 
 import JoinGroupForm from "@/components/group/joinGroupForm/joinGroupForm";
 import CreateGroupForm from "@/components/group/createGroupForm/createGroupForm";
-import { Button, Modal, Text, Tabs } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Modal, Text, Tabs } from "@mantine/core";
 import { useState } from "react";
 import { IconPlus, IconUserPlus } from "@tabler/icons-react";
 
-export default function CreateGroupModal() {
-  const [opened, { open, close }] = useDisclosure(false);
+type Props = {
+  opened: boolean;
+  onClose?: () => void;
+};
+
+export default function GroupAccessModal({
+  opened = false,
+  onClose = () => {},
+}: Props) {
   const [disable, setDisable] = useState(false);
   return (
     <>
       <Modal
         opened={opened}
-        onClose={close}
+        onClose={onClose}
         closeOnClickOutside={!disable}
         closeOnEscape={!disable}
         withCloseButton={!disable}
@@ -27,10 +33,18 @@ export default function CreateGroupModal() {
       >
         <Tabs defaultValue="create">
           <Tabs.List grow>
-            <Tabs.Tab value="create" leftSection={<IconPlus />}>
+            <Tabs.Tab
+              value="create"
+              leftSection={<IconPlus />}
+              disabled={disable}
+            >
               グループを作成
             </Tabs.Tab>
-            <Tabs.Tab value="join" leftSection={<IconUserPlus />}>
+            <Tabs.Tab
+              value="join"
+              leftSection={<IconUserPlus />}
+              disabled={disable}
+            >
               グループに参加
             </Tabs.Tab>
           </Tabs.List>
@@ -42,7 +56,6 @@ export default function CreateGroupModal() {
           </Tabs.Panel>
         </Tabs>
       </Modal>
-      <Button onClick={open}>グループの作成・参加</Button>
     </>
   );
 }

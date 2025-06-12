@@ -1,19 +1,21 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import CreateGroupModal from "./createGroupModal";
+import GroupAccessModal from "./groupAccessModal";
 import { within } from "@storybook/testing-library";
 
-const meta: Meta<typeof CreateGroupModal> = {
-  title: "Group/CreateGroupModal",
-  component: CreateGroupModal,
+const meta: Meta<typeof GroupAccessModal> = {
+  title: "Group/GroupAccessModal",
+  component: GroupAccessModal,
   tags: ["autodocs"],
-} satisfies Meta<typeof CreateGroupModal>;
+} satisfies Meta<typeof GroupAccessModal>;
 
 export default meta;
 
-type Story = StoryObj<typeof CreateGroupModal>;
+type Story = StoryObj<typeof GroupAccessModal>;
 
 export const Default: Story = {
-  args: {},
+  args: {
+    opened: true,
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const button = await canvas.getByRole("button", {
