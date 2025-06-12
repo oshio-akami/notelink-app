@@ -18,8 +18,8 @@ export default function LeaveGroupModal({ opened, onClose }: Props) {
   const handleClick = async () => {
     setIsPending(true);
     await leaveGroup(groupId);
+    router.push("/group/");
     onClose();
-    router.refresh();
   };
 
   const [isPending, setIsPending] = useState(false);
