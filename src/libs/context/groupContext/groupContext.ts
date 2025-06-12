@@ -4,6 +4,7 @@ import { createContext, useContext } from "react";
 
 type GroupContextType = {
   groupId: string;
+  groupName: string;
 };
 
 export const GroupContext = createContext<GroupContextType | null>(null);
