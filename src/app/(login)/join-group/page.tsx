@@ -1,9 +1,9 @@
-import styles from "./page.module.css";
+import styles from "./page.module.scss";
 import { redirect } from "next/navigation";
 import { hasJoinedGroup } from "@/libs/apiUtils";
 import { getClient } from "@/libs/hono";
-import CreateGroupForm from "@/components/group/createGroupForm/createGroupForm";
-import JoinGroupForm from "@/components/group/joinGroupForm/joinGroupForm";
+import GroupAccessWindow from "@/components/group/groupAccessWindow/groupAccessWindow";
+import { Image, Text } from "@mantine/core";
 
 export const runtime = "edge";
 
@@ -40,10 +40,16 @@ export default async function Page() {
   }
   return (
     <div className={styles.wrapper}>
-      <div className={styles.formWrapper}>
-        <CreateGroupForm />
-        <JoinGroupForm />
+      <Image src="sample_logo.png" alt="logo" w={150} />
+      <div className={styles.description}>
+        <Text>NoteLinkへようこそ！</Text>
+        <Text>あなたはまだグループに参加していません。</Text>
+        <Text>
+          グループを作成するか、招待コードを使って既存のグループに参加してください。
+        </Text>
       </div>
+
+      <GroupAccessWindow />
     </div>
   );
 }
