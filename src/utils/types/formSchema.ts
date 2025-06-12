@@ -8,6 +8,10 @@ export const createGroupFormSchema = z.object({
     .string({ required_error: "*グループ名は必須です" })
     .min(1)
     .max(20),
+  description: z
+    .string({ required_error: "*グループの説明文は必須です" })
+    .min(1)
+    .max(100),
 });
 
 export const PostFormSchema = z.object({

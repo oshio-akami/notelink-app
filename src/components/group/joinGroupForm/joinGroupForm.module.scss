@@ -1,11 +1,16 @@
-
-.form{
+.form {
   display: flex;
   flex-direction: column;
-  gap:20px
+  gap: 20px;
+  padding: 0px;
 }
 
-.button{
-  width:100%;
+.button {
+  width: 100%;
   margin: 0 auto;
+}
+
+.error {
+  color: red;
+  font-size: 0.8rem;
 }

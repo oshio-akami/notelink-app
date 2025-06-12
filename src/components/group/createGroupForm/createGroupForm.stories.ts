@@ -14,9 +14,7 @@ const meta: Meta<typeof CreateGroupForm> = {
 export default meta;
 
 export const Default: StoryObj<typeof CreateGroupForm> = {
-  args: {
-    onPendingChange: (pending: boolean) => console.log("pending:", pending),
-  },
+  args: {},
   parameters: {
     moduleMock: {
       mock: () => {
