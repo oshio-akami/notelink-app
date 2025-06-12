@@ -7,11 +7,12 @@
   margin-left: 40px;
 }
 .pageWrapper {
-  width: 100vw;
+  width: 90vw;
   height: 100vh;
   background-color: var(--background);
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
 }
 .contentWrapper {
   width: 100%;
@@ -29,11 +30,22 @@
       flex-direction: column;
       gap: 20px;
       align-items: center;
+      p {
+        color: #191970;
+        font-size: 4rem;
+        font-weight: bold;
+        @media (max-width: 1200px) {
+          font-size: 3rem;
+        }
+      }
     }
   }
   .rightSection {
     flex: 1;
     margin: auto;
     max-height: 100%;
+    @media (max-width: 1200px) {
+      display: none;
+    }
   }
 }
