@@ -11,7 +11,6 @@ const meta: Meta<typeof ProfileWindow> = {
   tags: ["autodocs"],
   args: {
     name: "John Doe",
-    about: "Software Developer",
     icon: "https://via.placeholder.com/40",
     children: <button>プロフィールを開く</button>,
   },
