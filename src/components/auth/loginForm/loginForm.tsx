@@ -42,7 +42,9 @@ export function LoginForm() {
             </li>
             <li
               className={styles.googleLogin}
-              onClick={() => signIn("credentials")}
+              onClick={() =>
+                signIn("credentials", { callbackUrl: callbackUrl })
+              }
             >
               <p>ゲストとして参加</p>
             </li>
