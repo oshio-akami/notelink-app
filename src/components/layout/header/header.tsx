@@ -1,46 +1,21 @@
+"use client";
+
 import styles from "./header.module.scss";
 import { IconBell } from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
-import { Image } from "@mantine/core";
-import GroupsWindow from "@/components/group/groupsWindow/groupsWindow";
-import CreateGroupModal from "@/components/group/createGroupModal/createGroupModal";
-import { getClient } from "@/libs/hono";
+import { Button, Image, Text } from "@mantine/core";
+import GroupAccessModal from "@/components/group/groupAccessModal/groupAccessModal";
+import { useDisclosure } from "@mantine/hooks";
+import { useProfile } from "@/libs/hooks/user";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
+import IconButton from "@/components/shared/iconButton/iconButton";
 
 export const runtime = "edge";
 
-type Props = {
-  id: string;
-};
-
-const getCurrentGroupName = async (
-  groups: { groupId: string; groupName: string }[],
-  currentGroupId: string
-) => {
-  const currentGroup = groups.find((c) => c.groupId === currentGroupId);
-  if (!currentGroup) {
-    return "グループが存在しません";
-  }
-  return currentGroup.groupName;
-};
-const getJoinedGroups = async () => {
-  const client = await getClient();
-  const res = await client.api.user.groups.$get();
-  const body = await res.json();
-  return body.groups;
-};
-const getUserProfile = async () => {
-  const client = await getClient();
-  const res = await client.api.user.profile.$get();
-  const body = await res.json();
-  return body.profile;
-};
-
-export async function Header({ id }: Props) {
-  const groups = await getJoinedGroups();
-  const userProfile = await getUserProfile();
-  const groupName = groups
-    ? await getCurrentGroupName(groups, id)
-    : "グループが存在しません";
+export function Header() {
+  const { groupId, groupName } = useGroup();
+  const { profile } = useProfile(groupId);
+  const [opened, { open, close }] = useDisclosure(false);
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
@@ -49,30 +24,14 @@ export async function Header({ id }: Props) {
           src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
           alt="logo"
         />
-        <p>|</p>
-        {groups ? (
-          <GroupsWindow groups={groups}>
-            <div className={styles.groupIcon}>
-              <p>{groupName}</p>
-            </div>
-          </GroupsWindow>
-        ) : (
-          <p>group error</p>
-        )}
+        <Text>|</Text>
+        <Text>{groupName}</Text>
       </div>
       <div className={styles.rightSection}>
-        {userProfile && (
-          <ProfileWindow
-            name={userProfile.displayName || "ユーザー"}
-            about={userProfile.about || ""}
-            icon={userProfile.image || ""}
-          >
-            {userProfile.image && userProfile.image !== "" ? (
-              <Image
-                className={styles.userIcon}
-                alt=""
-                src={userProfile.image}
-              />
+        {profile && profile !== undefined && (
+          <ProfileWindow name={profile.displayName} icon={profile.image}>
+            {profile.image !== "" ? (
+              <Image className={styles.userIcon} alt="" src={profile.image} />
             ) : (
               <Image
                 className={styles.userIcon}
@@ -82,8 +41,9 @@ export async function Header({ id }: Props) {
             )}
           </ProfileWindow>
         )}
-        <IconBell className={styles.setting}></IconBell>
-        <CreateGroupModal />
+        <IconButton icon={<IconBell />} />
+        <Button onClick={open}>グループの作成・参加</Button>
+        <GroupAccessModal opened={opened} onClose={close} />
       </div>
     </div>
   );
