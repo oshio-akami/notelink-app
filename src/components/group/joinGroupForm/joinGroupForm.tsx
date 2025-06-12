@@ -45,13 +45,14 @@ export default function JoinGroupForm({ disable, setDisable }: Props) {
         overlayProps={{ radius: "sm", blur: 2 }}
       />
       <form className={styles.form} onSubmit={handleSubmit}>
+        <Text ta="center" c="gray" pt={10} pb={10}>
+          招待コードを入力してグループに参加しましょう
+        </Text>
         <div>
-          <Text ta="center" c="gray" pt={10} pb={40}>
-            招待コードを入力してグループに参加しましょう
-          </Text>
           <Text>招待コード*</Text>
           <Text className={styles.error}>{message}</Text>
           <TextInput
+            pb={20}
             placeholder="招待コードを入力してください"
             onChange={(e) => setToken(e.target.value)}
           ></TextInput>

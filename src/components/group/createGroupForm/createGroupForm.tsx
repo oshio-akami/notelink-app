@@ -68,7 +68,7 @@ export default function CreateGroupForm({ disable, setDisable }: Props) {
           className={styles.form}
           action={formAction}
         >
-          <Text ta="center" c="gray" pt={10} pb={40}>
+          <Text ta="center" c="gray" pt={10} pb={10}>
             新しいグループを作成して他のメンバーを招待しましょう
           </Text>
           <div className={styles.label}>
