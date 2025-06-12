@@ -4,7 +4,6 @@ import styles from "./loginForm.module.scss";
 import { signIn } from "next-auth/react";
 import { Image } from "@mantine/core";
 import { useSearchParams } from "next/navigation";
-import createPreviewGroup from "@/actions/group/createPreviewGroup";
 
 export function LoginForm() {
   const searchParams =
@@ -43,9 +42,7 @@ export function LoginForm() {
             </li>
             <li
               className={styles.googleLogin}
-              onClick={() =>
-                signIn("credentials").then(() => createPreviewGroup())
-              }
+              onClick={() => signIn("credentials")}
             >
               <p>ゲストとして参加</p>
             </li>
