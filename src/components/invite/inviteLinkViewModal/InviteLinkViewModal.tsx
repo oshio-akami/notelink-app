@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Modal } from "@mantine/core";
+import { Button, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import InviteLinkView from "../inviteLinkView/inviteLinkView";
 
@@ -12,7 +12,12 @@ export default function InviteLinkViewModel({ inviteToken }: Props) {
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <>
-      <Modal opened={opened} onClose={close} size={"lg"}>
+      <Modal
+        opened={opened}
+        onClose={close}
+        size={"lg"}
+        title={<Text fw={700}>他のユーザーを招待する</Text>}
+      >
         <InviteLinkView inviteToken={inviteToken} />
       </Modal>
       <Button onClick={open} size="md">
