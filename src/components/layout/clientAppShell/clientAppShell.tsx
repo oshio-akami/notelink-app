@@ -9,19 +9,26 @@ import {
 import { NavBar } from "@/components/layout/navbar/navbar";
 import { Header } from "@/components/layout/header/header";
 import { useDisclosure } from "@mantine/hooks";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 
 type Props = {
   children: Readonly<React.ReactNode>;
 };
 export default function ClientAppShell({ children }: Props) {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure(true);
+  const [mobileOpened, { toggle: toggleMobile, close }] = useDisclosure(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    close();
+  }, [pathname, close]);
   return (
     <AppShell
       header={{ height: "60px" }}
       navbar={{
         width: "300px",
         breakpoint: "sm",
-        collapsed: { desktop: false, mobile: !mobileOpened },
+        collapsed: { mobile: !mobileOpened },
       }}
       aside={{
         width: "500px",
