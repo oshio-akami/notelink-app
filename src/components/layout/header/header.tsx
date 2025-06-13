@@ -3,7 +3,7 @@
 import styles from "./header.module.scss";
 import { IconBell } from "@tabler/icons-react";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
-import { Button, Image, Text } from "@mantine/core";
+import { Burger, Button, Image, Text } from "@mantine/core";
 import GroupAccessModal from "@/components/group/groupAccessModal/groupAccessModal";
 import { useDisclosure } from "@mantine/hooks";
 import { useProfile } from "@/libs/hooks/user";
@@ -12,14 +12,26 @@ import IconButton from "@/components/shared/iconButton/iconButton";
 
 export const runtime = "edge";
 
-export function Header() {
+type Props = {
+  burgerOpened: boolean;
+  onClickBurger: () => void;
+};
+
+export function Header({ burgerOpened, onClickBurger }: Props) {
   const { groupId, groupName } = useGroup();
   const { profile } = useProfile(groupId);
   const [opened, { open, close }] = useDisclosure(false);
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
+        <Burger
+          opened={burgerOpened}
+          onClick={onClickBurger}
+          hiddenFrom="sm"
+          size="sm"
+        />
         <Image
+          className={styles.logo}
           w={150}
           src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
           alt="logo"
