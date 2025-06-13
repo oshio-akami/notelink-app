@@ -1,16 +1,9 @@
 import type { Metadata } from "next";
 import "@/styles/globals.css";
 import "@mantine/core/styles.css";
-import {
-  AppShell,
-  AppShellHeader,
-  AppShellNavbar,
-  AppShellMain,
-} from "@mantine/core";
-import { NavBar } from "@/components/layout/navbar/navbar";
-import { Header } from "@/components/layout/header/header";
 import { GroupContextProvider } from "@/libs/context/groupContext/groupContextProvider";
 import { getClient } from "@/libs/hono";
+import ClientAppShell from "@/components/layout/clientAppShell/clientAppShell";
 
 export const runtime = "edge";
 
@@ -39,27 +32,7 @@ export default async function RootLayout(props: Props) {
   const groupName = await getGroupName();
   return (
     <GroupContextProvider groupId={id} groupName={groupName!}>
-      <AppShell
-        header={{ height: "60px" }}
-        navbar={{
-          width: "300px",
-          breakpoint: "600px",
-          collapsed: { desktop: false, mobile: true },
-        }}
-        aside={{
-          width: "500px",
-          breakpoint: "1400px",
-          collapsed: { desktop: false, mobile: true },
-        }}
-      >
-        <AppShellHeader>
-          <Header />
-        </AppShellHeader>
-        <AppShellNavbar>
-          <NavBar id={id} />
-        </AppShellNavbar>
-        <AppShellMain bg={"#f8fbff"}>{props.children}</AppShellMain>
-      </AppShell>
+      <ClientAppShell>{props.children}</ClientAppShell>
     </GroupContextProvider>
   );
 }
