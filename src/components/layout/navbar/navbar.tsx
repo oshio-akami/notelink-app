@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "./navbar.module.scss";
 import {
   IconDashboard,
@@ -6,7 +8,9 @@ import {
 } from "@tabler/icons-react";
 import HomeMenu from "@/components/navbar/homeMenu/homeMenu";
 import GroupMenu from "@/components/navbar/groupMenu/groupMenu";
-import { getClient } from "@/libs/hono";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
+import useSWR from "swr";
+import client from "@/libs/honoClient";
 
 const iconSize = 24;
 
@@ -28,26 +32,20 @@ const homeMenuData = [
   },
 ];
 
-type Props = {
-  id: string;
-};
-
-/**API からユーザーの現在のグループの情報を取得する非同期関数 */
-const getGroups = async () => {
-  const client = await getClient();
-  const res = await client.api.user.groups.$get();
-  const body = await res.json();
-  return body.groups;
-};
-
 /**ナビゲーションバーコンポーネント */
-export async function NavBar({ id }: Props) {
-  const groups = await getGroups();
+export function NavBar() {
+  const { groupId } = useGroup();
+  const { data: groups, isLoading } = useSWR("/groups", async () => {
+    const res = await client.api.user.groups.$get();
+    const body = await res.json();
+    return body.groups;
+  });
+
   return (
     <>
       <nav className={styles.navbar}>
-        <HomeMenu menus={homeMenuData} groupId={id} />
-        {groups && <GroupMenu groups={groups} />}
+        <HomeMenu menus={homeMenuData} groupId={groupId} />
+        {!isLoading && groups && <GroupMenu groups={groups} />}
       </nav>
     </>
   );
