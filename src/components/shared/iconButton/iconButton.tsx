@@ -9,6 +9,7 @@ type Props = {
   defaultActive?: boolean;
   leftSection?: React.ReactElement;
   rightSection?: React.ReactElement;
+  border?: boolean;
 };
 
 export default function IconButton({
@@ -18,11 +19,13 @@ export default function IconButton({
   defaultActive = false,
   leftSection,
   rightSection,
+  border = false,
 }: Props) {
   const [isActive, setActive] = useState(defaultActive);
   return (
     <div
       className={styles.button}
+      style={{ border: border ? "1px solid lightgray" : undefined }}
       onClick={() => {
         setActive(!isActive);
         onClick(!isActive);
