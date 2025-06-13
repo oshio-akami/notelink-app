@@ -1,6 +1,6 @@
 "use client";
 
-import { TextInput, Text, Flex } from "@mantine/core";
+import { TextInput, Text } from "@mantine/core";
 import CopyButton from "@/components/shared/copyButton/CopyButton";
 import styles from "./inviteInfo.module.scss";
 
