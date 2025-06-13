@@ -9,8 +9,6 @@ import {
 import HomeMenu from "@/components/navbar/homeMenu/homeMenu";
 import GroupMenu from "@/components/navbar/groupMenu/groupMenu";
 import { useGroup } from "@/libs/context/groupContext/groupContext";
-import useSWR from "swr";
-import client from "@/libs/honoClient";
 
 const iconSize = 24;
 
@@ -35,17 +33,12 @@ const homeMenuData = [
 /**ナビゲーションバーコンポーネント */
 export function NavBar() {
   const { groupId } = useGroup();
-  const { data: groups, isLoading } = useSWR("/groups", async () => {
-    const res = await client.api.user.groups.$get();
-    const body = await res.json();
-    return body.groups;
-  });
 
   return (
     <>
       <nav className={styles.navbar}>
         <HomeMenu menus={homeMenuData} groupId={groupId} />
-        {!isLoading && groups && <GroupMenu groups={groups} />}
+        <GroupMenu />
       </nav>
     </>
   );

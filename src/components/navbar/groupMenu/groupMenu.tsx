@@ -5,13 +5,8 @@ import styles from "./groupMenu.module.scss";
 import { usePathname, useRouter } from "next/navigation";
 import SearchBar from "@/components/shared/searchBar/SearchBar";
 import { useState } from "react";
-
-type Props = {
-  groups: {
-    groupId: string;
-    groupName: string;
-  }[];
-};
+import useSWR from "swr";
+import client from "@/libs/honoClient";
 
 /**指定されたグループIDからホームへのリンクを生成する関数 */
 const createLink = (id: string) => {
@@ -19,13 +14,22 @@ const createLink = (id: string) => {
 };
 
 /**検索バーを備えたグループ一覧のメニューを表示するコンポーネント*/
-export default function GroupMenu({ groups }: Props) {
+export default function GroupMenu() {
+  const { data: groups, isLoading } = useSWR("/groups", async () => {
+    const res = await client.api.user.groups.$get();
+    const body = await res.json();
+    return body.groups;
+  });
   const router = useRouter();
   const path = usePathname();
   const [searchValue, setSearchValue] = useState("");
-  const filterGroups = groups.filter(
-    (group) => searchValue === "" || group.groupName.indexOf(searchValue) !== -1
-  );
+  const filterGroups =
+    groups && !isLoading
+      ? groups.filter(
+          (group) =>
+            searchValue === "" || group.groupName.indexOf(searchValue) !== -1
+        )
+      : [];
   const links = filterGroups.map((group) => (
     <NavLink
       className={styles.menu}
