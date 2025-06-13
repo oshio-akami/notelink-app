@@ -1,6 +1,6 @@
 "use client";
 
-import { TextInput, Text } from "@mantine/core";
+import { TextInput, Text, Flex } from "@mantine/core";
 import CopyButton from "@/components/shared/copyButton/CopyButton";
 import styles from "./inviteInfo.module.scss";
 
@@ -17,20 +17,19 @@ export default function InviteInfo({ inviteToken }: Props) {
 
   return (
     <div className={styles.page}>
-      <div className={styles.info}>
-        <Text w={100}>招待URL : </Text>
-        <TextInput width={400} value={link} readOnly flex={1}></TextInput>
-        <CopyButton text={link}></CopyButton>
+      <div>
+        <Text>招待用URL</Text>
+        <div className={styles.info}>
+          <TextInput value={link} readOnly flex={1}></TextInput>
+          <CopyButton text={link}></CopyButton>
+        </div>
       </div>
-      <div className={styles.info}>
-        <Text w={100}>招待コード : </Text>
-        <TextInput
-          width={400}
-          value={inviteToken}
-          readOnly
-          flex={1}
-        ></TextInput>
-        <CopyButton text={inviteToken}></CopyButton>
+      <div>
+        <Text>招待用コード</Text>
+        <div className={styles.info}>
+          <TextInput value={inviteToken} readOnly flex={1}></TextInput>
+          <CopyButton text={inviteToken}></CopyButton>
+        </div>
       </div>
     </div>
   );
