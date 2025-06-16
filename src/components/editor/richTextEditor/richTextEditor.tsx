@@ -13,45 +13,7 @@ import Image from "@tiptap/extension-image";
 import InsertImageControl from "../control/insertImageControl";
 import { useRef } from "react";
 
-const content = `これは <strong>テスト用の文章</strong> です。RichTextEditor の各種スタイルを確認する目的で作成されています。  
-
-以下は、いくつかの<strong>機能</strong>の確認です。
-
-<br /><br />
-
-<strong>リスト:</strong>  
-
-<ul>
-
-  <li>太字</li>
-
-  <li>下線<u>（例）</u></li>
-
-  <li>取り消し線<s>（例）</s></li>
-
-</ul>
-
-<br />
-
-<strong>コードスニペット:</strong>  
-
-<pre><code>function greet(name) {
-
-  return Hello!;
-
-}</code></pre>
-
-<br />
-
-<strong>段落:</strong><br />
-
-これは文章の改行をテストするための段落です。  
-
-2行目も正常に表示されるか確認してください。
-
-<br /><br />
-
-最後に、<strong>重要なメッセージ</strong>としてこの文章を締めくくります。`;
+const content = "";
 
 type Props = {
   onChange: (html: string, blobToFile?: Map<string, File>) => void;
