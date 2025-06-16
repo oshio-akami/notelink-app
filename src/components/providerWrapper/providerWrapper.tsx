@@ -7,8 +7,7 @@ import {
   mantineHtmlProps,
 } from "@mantine/core";
 import { Noto_Sans_JP } from "next/font/google";
-import "@/styles/globals.css";
-import "@mantine/core/styles.css";
+
 import "@mantine/tiptap/styles.css";
 
 const font = Noto_Sans_JP({

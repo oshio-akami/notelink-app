@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import "@/styles/globals.css";
-import "@mantine/core/styles.css";
 import React from "react";
 export const metadata: Metadata = {
   title: "project",
@@ -12,9 +10,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return(
-    <div>
-      {children}
-    </div>
-  )
+  return <div>{children}</div>;
 }
