@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import "@/styles/globals.css";
-import "@mantine/core/styles.css";
 import { GroupContextProvider } from "@/libs/context/groupContext/groupContextProvider";
 import { getClient } from "@/libs/hono";
 import ClientAppShell from "@/components/layout/clientAppShell/clientAppShell";

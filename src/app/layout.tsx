@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "@/styles/globals.css";
+import "@/styles/globals.scss";
 import "@mantine/core/styles.css";
 import "@mantine/tiptap/styles.css";
 import {
