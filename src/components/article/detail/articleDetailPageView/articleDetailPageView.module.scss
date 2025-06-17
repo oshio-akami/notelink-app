@@ -1,3 +1,5 @@
+@use "@/styles/breakpoints" as bp;
+
 .notFound {
   display: flex;
   flex-direction: column;
@@ -16,14 +18,14 @@
   padding-left: 40px;
   display: flex;
   gap: 20px;
-  height: 50px;
+  height: 5rem;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 .content {
-  padding: 20px 20px 20px 40px;
+  padding: 0 20px 20px 40px;
 }
 .sidebar {
   height: 100%;
