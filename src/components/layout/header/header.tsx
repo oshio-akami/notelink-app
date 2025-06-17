@@ -65,7 +65,11 @@ export function Header({ burgerOpened, onClickBurger }: Props) {
           </ProfileWindow>
         )}
         {isMobile ? (
-          <IconButton icon={<IconUsersGroup />} onClick={open} border />
+          <IconButton
+            icon={<IconUsersGroup size="1rem" />}
+            onClick={open}
+            border
+          />
         ) : (
           <Button onClick={open}>グループの作成・参加</Button>
         )}
