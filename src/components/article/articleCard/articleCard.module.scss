@@ -1,9 +1,10 @@
+@use "@/styles/breakpoints" as bp;
+
 .card {
-  border: 1px solid lightgray;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  border-radius: 20px;
+  border-radius: 10px;
   .header {
     display: flex;
     gap: 10px;
@@ -23,8 +24,11 @@
     }
   }
   .contents {
-    padding: 0 5%;
+    padding: 0 20px;
     max-width: 100%;
+    @media (max-width: bp.$sm) {
+      padding: 0 5px;
+    }
     cursor: pointer;
     img {
       max-width: 100%;
@@ -49,8 +53,6 @@
     color: blue;
   }
   .actions {
-    padding-right: 50px;
-    padding-left: 50px;
     display: flex;
     gap: 10px;
     align-items: center;
