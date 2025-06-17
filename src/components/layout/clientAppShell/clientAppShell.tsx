@@ -31,7 +31,7 @@ export default function ClientAppShell({ children }: Props) {
         collapsed: { mobile: !mobileOpened },
       }}
       aside={{
-        width: "500px",
+        width: "600px",
         breakpoint: "1400px",
         collapsed: { desktop: false, mobile: true },
       }}
