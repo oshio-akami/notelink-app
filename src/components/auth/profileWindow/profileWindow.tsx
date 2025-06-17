@@ -1,12 +1,11 @@
 "use client";
 
 import styles from "./profileWindow.module.scss";
-import { Popover, List } from "@mantine/core";
+import { Popover, List, Avatar, Text } from "@mantine/core";
 import { ReactNode } from "react";
 import { signIn } from "next-auth/react";
 import signOut from "@/actions/user/signOut";
 import { IconLogout, IconUserPlus } from "@tabler/icons-react";
-import { Image } from "@mantine/core";
 
 type Props = {
   name: string;
@@ -21,10 +20,8 @@ export function ProfileWindow({ name, icon, children }: Props) {
         <Popover.Target>{children}</Popover.Target>
         <Popover.Dropdown className={styles.window}>
           <div className={styles.profile}>
-            <Image className={styles.icon} alt="" src={icon} />
-            <ul>
-              <li>{name}</li>
-            </ul>
+            <Avatar size="2rem" alt="avatar" src={icon} />
+            <Text>{name}</Text>
           </div>
           <div className={styles.setting}>
             <List>
