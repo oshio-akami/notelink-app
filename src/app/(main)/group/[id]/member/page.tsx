@@ -1,7 +1,7 @@
 import MemberList from "@/components/member/memberList/memberList";
 import { getClient } from "@/libs/hono";
 import InviteLinkViewModel from "@/components/invite/inviteLinkViewModal/InviteLinkViewModal";
-import { AppShellAside, Flex } from "@mantine/core";
+import { AppShellAside } from "@mantine/core";
 import styles from "./page.module.scss";
 
 export const dynamic = "force-dynamic";
@@ -46,9 +46,10 @@ export default async function Member({ params }: Props) {
 
   return (
     <div className={styles.wrapper}>
-      <Flex justify="flex-end">
+      <div className={styles.right}>
         <InviteLinkViewModel inviteToken={inviteToken} />
-      </Flex>
+      </div>
+
       <MemberList />
       <AppShellAside p={20} withBorder={false} zIndex={-1} bg={"#f8fbff"}>
         <></>

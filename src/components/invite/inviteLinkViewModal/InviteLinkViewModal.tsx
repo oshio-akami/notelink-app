@@ -20,7 +20,7 @@ export default function InviteLinkViewModel({ inviteToken }: Props) {
       >
         <InviteLinkView inviteToken={inviteToken} />
       </Modal>
-      <Button onClick={open} size="md">
+      <Button onClick={open} size="md" w="100%">
         他のユーザーを招待する
       </Button>
     </>
