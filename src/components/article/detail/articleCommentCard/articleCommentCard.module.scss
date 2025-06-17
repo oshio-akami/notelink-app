@@ -1,3 +1,5 @@
+@use "@/styles/breakpoints" as bp;
+
 .card {
   display: flex;
   flex-direction: column;
@@ -15,8 +17,11 @@
     }
   }
   .contents {
-    padding: 0 60px;
+    padding: 0 50px;
     max-width: 100%;
+    @media (max-width: bp.$sm) {
+      padding: 0 5px;
+    }
   }
   pre {
     white-space: pre-wrap;

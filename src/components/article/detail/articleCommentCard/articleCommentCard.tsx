@@ -28,7 +28,7 @@ export default function ArticleCommentCard({
   return (
     <Card className={styles.card}>
       <div className={styles.header}>
-        <Avatar className={styles.avatar} src={avatar}></Avatar>
+        <Avatar className={styles.avatar} src={avatar} size="1.5rem"></Avatar>
         <Text fw={700}>{displayName}</Text>
         <Text className={styles.date}>{formatDate(createdAt)}</Text>
         {hasDeletePermission && (

@@ -7,6 +7,9 @@ import { Article } from "@/utils/types/articleType";
 import DOMPurify from "dompurify";
 import ArticleCommentView from "../articleCommentView/articleCommentView";
 import { useRef } from "react";
+import IconButton from "@/components/shared/iconButton/iconButton";
+import { IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
+import { addBookmark, removeBookmark } from "@/actions/article/bookmarkActions";
 
 type Props = {
   article: Article;
@@ -27,10 +30,25 @@ export default function ArticleDetail({ article }: Props) {
           <Avatar
             className={styles.avatar}
             src={article.userProfiles.image}
+            size="3rem"
           ></Avatar>
           <div>
             <Text fw={700}>{article.userProfiles.displayName}</Text>
             <Text className={styles.date}>{formatDate(article.createdAt)}</Text>
+          </div>
+          <div className={styles.rightSection}>
+            <IconButton
+              icon={<IconBookmark size="2rem" />}
+              activeIcon={<IconBookmarkFilled size="2rem" color="red" />}
+              defaultActive={article.isBookmark}
+              onClick={(isActive) => {
+                if (isActive) {
+                  addBookmark(article.id);
+                } else {
+                  removeBookmark(article.id);
+                }
+              }}
+            />
           </div>
         </div>
         <div className={styles.contents}>
