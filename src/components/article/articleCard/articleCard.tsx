@@ -38,6 +38,7 @@ export default function ArticleCard({ article }: Props) {
         <Avatar
           className={styles.avatar}
           src={article.userProfiles.image}
+          size="3rem"
         ></Avatar>
         <div>
           <Text fw={700}>{article.userProfiles.displayName}</Text>

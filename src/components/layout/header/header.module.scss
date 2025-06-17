@@ -32,14 +32,6 @@
   border-radius: 100vh;
   width: 300px;
 }
-.userIcon {
-  height: 80%;
-  border-radius: 50%;
-  cursor: pointer;
-  &:hover {
-    box-shadow: 0 0 8px gray;
-  }
-}
 
 .guestIcon {
   display: flex;

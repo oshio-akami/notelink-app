@@ -2,7 +2,14 @@
 
 import styles from "./header.module.scss";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
-import { Burger, Button, Image, Text, useMantineTheme } from "@mantine/core";
+import {
+  Avatar,
+  Burger,
+  Button,
+  Image,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import GroupAccessModal from "@/components/group/groupAccessModal/groupAccessModal";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useProfile } from "@/libs/hooks/user";
@@ -54,19 +61,19 @@ export function Header({ burgerOpened, onClickBurger }: Props) {
         {profile && profile !== undefined && (
           <ProfileWindow name={profile.displayName} icon={profile.image}>
             {profile.image !== "" ? (
-              <Image className={styles.userIcon} alt="" src={profile.image} />
+              <Avatar alt="userIcon" src={profile.image} size="2.5rem" />
             ) : (
-              <Image
-                className={styles.userIcon}
+              <Avatar
                 src="https://ui-avatars.com/api/?name=Guest&background=cccccc&color=ffffff&rounded=true"
-                alt="ゲストアイコン"
+                alt="guestIcon"
+                size="2.5rem"
               />
             )}
           </ProfileWindow>
         )}
         {isMobile ? (
           <IconButton
-            icon={<IconUsersGroup size="1rem" />}
+            icon={<IconUsersGroup size="2rem" />}
             onClick={open}
             border
           />
