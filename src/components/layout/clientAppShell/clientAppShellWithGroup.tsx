@@ -6,8 +6,8 @@ import {
   AppShellNavbar,
   AppShellMain,
 } from "@mantine/core";
-import { NavBar } from "../navbar/navbar";
-import { Header } from "@/components/layout/header/header";
+import { NavBarWithGroup } from "../navbar/navbarWithGroup";
+import { HeaderWithGroup } from "@/components/layout/header/headerWithGroup";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
@@ -15,7 +15,7 @@ import { usePathname } from "next/navigation";
 type Props = {
   children: Readonly<React.ReactNode>;
 };
-export default function ClientAppShell({ children }: Props) {
+export default function ClientAppShellWithGroup({ children }: Props) {
   const [mobileOpened, { toggle: toggleMobile, close }] = useDisclosure(false);
   const pathname = usePathname();
 
@@ -30,12 +30,20 @@ export default function ClientAppShell({ children }: Props) {
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
+      aside={{
+        width: "600px",
+        breakpoint: "1400px",
+        collapsed: { desktop: false, mobile: true },
+      }}
     >
       <AppShellHeader>
-        <Header burgerOpened={mobileOpened} onClickBurger={toggleMobile} />
+        <HeaderWithGroup
+          burgerOpened={mobileOpened}
+          onClickBurger={toggleMobile}
+        />
       </AppShellHeader>
       <AppShellNavbar>
-        <NavBar />
+        <NavBarWithGroup />
       </AppShellNavbar>
       <AppShellMain bg={"#f8fbff"}>{children}</AppShellMain>
     </AppShell>

@@ -1,6 +1,6 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import HomeMenu from "./homeMenu";
+import SidebarMenu from "./sidebarMenu";
 import {
   IconDashboard,
   IconClipboardText,
@@ -25,10 +25,10 @@ const menusMock = [
   },
 ];
 
-const meta: Meta<typeof HomeMenu> = {
+const meta: Meta<typeof SidebarMenu> = {
   title: "Menu/HomeMenu",
   tags: ["autodocs"],
-  component: HomeMenu,
+  component: SidebarMenu,
   parameters: {
     nextjs: {
       navigation: {
@@ -41,9 +41,9 @@ const meta: Meta<typeof HomeMenu> = {
 
 export default meta;
 
-export const Default: StoryObj<typeof HomeMenu> = {
+export const Default: StoryObj<typeof SidebarMenu> = {
   args: {
+    title: "グループメニュー",
     menus: menusMock,
-    groupId: "sample-group-id",
   },
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { Accordion, NavLink, Text } from "@mantine/core";
-import styles from "./groupMenu.module.scss";
+import styles from "./switchGroupMenu.module.scss";
 import { usePathname, useRouter } from "next/navigation";
 import SearchBar from "@/components/shared/searchBar/SearchBar";
 import { useState } from "react";
@@ -14,7 +14,7 @@ const createLink = (id: string) => {
 };
 
 /**検索バーを備えたグループ一覧のメニューを表示するコンポーネント*/
-export default function GroupMenu() {
+export default function SwitchGroupMenu() {
   const { data: groups, isLoading } = useSWR("/groups", async () => {
     const res = await client.api.user.groups.$get();
     const body = await res.json();

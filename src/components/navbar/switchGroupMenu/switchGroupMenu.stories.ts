@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import GroupMenu from "./groupMenu";
+import GroupMenu from "./switchGroupMenu";
 
 // モック（サンプル）のグループデータ
 const groupsMock = [

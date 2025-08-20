@@ -2,26 +2,45 @@
 
 import styles from "./header.module.scss";
 import { ProfileWindow } from "@/components/auth/profileWindow/profileWindow";
-import { Avatar, Burger, Button, Image, useMantineTheme } from "@mantine/core";
+import {
+  Avatar,
+  Burger,
+  Button,
+  Image,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import GroupAccessModal from "@/components/group/groupAccessModal/groupAccessModal";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useGroupProfile } from "@/libs/hooks/user";
+import { useGroup } from "@/libs/context/groupContext/groupContext";
 import IconButton from "@/components/shared/iconButton/iconButton";
 import { IconUsersGroup } from "@tabler/icons-react";
-import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 
 export const runtime = "edge";
+
+function sliceText(text: string, maxLength: number) {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  if (maxLength <= 3) {
+    return text.slice(0, maxLength);
+  }
+  return text.slice(0, maxLength - 3) + "...";
+}
+
 type Props = {
   burgerOpened: boolean;
   onClickBurger: () => void;
 };
 
-export function Header({ burgerOpened, onClickBurger }: Props) {
+export function HeaderWithGroup({ burgerOpened, onClickBurger }: Props) {
+  const { groupId, groupName } = useGroup();
+  const { profile } = useGroupProfile(groupId);
   const [opened, { open, close }] = useDisclosure(false);
   const theme = useMantineTheme();
   const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-
-  const { data: session } = useSession();
   return (
     <div className={styles.header}>
       <div className={styles.leftSection}>
@@ -38,12 +57,13 @@ export function Header({ burgerOpened, onClickBurger }: Props) {
           src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
           alt="logo"
         />
+        <Text>{sliceText(groupName, 10)}</Text>
       </div>
       <div className={styles.rightSection}>
-        {session?.user && session.user !== undefined && (
-          <ProfileWindow name={session.user.name!} icon={session.user.image!}>
-            {session.user.image !== "" ? (
-              <Avatar alt="userIcon" src={session.user.image} size="2.5rem" />
+        {profile && profile !== undefined && (
+          <ProfileWindow name={profile.displayName} icon={profile.image}>
+            {profile.image !== "" ? (
+              <Avatar alt="userIcon" src={profile.image} size="2.5rem" />
             ) : (
               <Avatar
                 src="https://ui-avatars.com/api/?name=Guest&background=cccccc&color=ffffff&rounded=true"
