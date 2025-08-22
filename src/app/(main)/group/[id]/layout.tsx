@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { GroupContextProvider } from "@/libs/context/groupContext/groupContextProvider";
 import { getClient } from "@/libs/hono";
-import ClientAppShell from "@/components/layout/clientAppShell/clientAppShell";
+import ClientAppShellWithGroup from "@/components/layout/clientAppShell/clientAppShellWithGroup";
 
 export const runtime = "edge";
 
@@ -30,7 +30,7 @@ export default async function RootLayout(props: Props) {
   const groupName = await getGroupName();
   return (
     <GroupContextProvider groupId={id} groupName={groupName!}>
-      <ClientAppShell>{props.children}</ClientAppShell>
+      <ClientAppShellWithGroup>{props.children}</ClientAppShellWithGroup>
     </GroupContextProvider>
   );
 }

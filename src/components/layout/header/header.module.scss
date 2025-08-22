@@ -12,6 +12,7 @@
     align-items: center;
     gap: 30px;
     .logo {
+      cursor: pointer;
       @media (max-width: bp.$sm) {
         display: none;
       }

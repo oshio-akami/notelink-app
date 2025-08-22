@@ -4,7 +4,7 @@ import useSWR from "swr";
 import client from "@/libs/honoClient";
 import { isRoleAdmin, ROLE_MEMBER } from "../roleUtils";
 
-export const useProfile = (groupId: string) => {
+export const useGroupProfile = (groupId: string) => {
   const fetcher = async () => {
     const res = await client.api.user[":groupId"].profile.$get({
       param: {

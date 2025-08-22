@@ -22,10 +22,10 @@
   .contents {
     padding: 0 20px;
     max-width: 100%;
+    cursor: pointer;
     @media (max-width: bp.$sm) {
       padding: 0 5px;
     }
-    cursor: pointer;
     img {
       max-width: 100%;
       height: auto;

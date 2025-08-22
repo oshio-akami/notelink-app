@@ -1,0 +1,17 @@
+.card {
+  width: 100%;
+  cursor: pointer;
+  &:hover {
+    scale: 1.02;
+  }
+  .main {
+    border-bottom: 1px solid #555555;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10;
+  }
+  .sub {
+    padding: 10px;
+  }
+}

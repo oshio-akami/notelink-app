@@ -10,7 +10,7 @@ import client from "@/libs/honoClient";
 
 /**指定されたグループIDからホームへのリンクを生成する関数 */
 const createLink = (id: string) => {
-  return `/group/${id}/home`;
+  return `/group/${id}/articles`;
 };
 
 /**検索バーを備えたグループ一覧のメニューを表示するコンポーネント*/

@@ -27,5 +27,5 @@ export async function createGroup(_: unknown, formData: FormData) {
       groupId: groupId,
     },
   });
-  redirect(`${process.env.NEXT_PUBLIC_URL}/group/${groupId}/home`);
+  redirect("/home");
 }

@@ -13,7 +13,7 @@ export default function InsertImageControl({ blobToFileRef }: Props) {
   const uploadImage = () => inputRef?.current?.click();
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !editor) {
+    if (!file || !editor || editor === undefined) {
       return;
     }
     if (file.size > maxSize) {

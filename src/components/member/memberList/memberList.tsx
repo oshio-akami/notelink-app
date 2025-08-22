@@ -5,14 +5,14 @@ import MemberCard from "../memberCard/memberCard";
 import styles from "./memberList.module.scss";
 import { useMember } from "@/libs/hooks/member";
 import { useGroup } from "@/libs/context/groupContext/groupContext";
-import { useProfile } from "@/libs/hooks/user";
+import { useGroupProfile } from "@/libs/hooks/user";
 import { MemberActionsContext } from "@/libs/context/memberActionsContext/memberActionsContext";
 import Loading from "@/components/shared/loading/loading";
 
 export default function MemberList() {
   const { groupId } = useGroup();
   const { members, handleDeleteMember } = useMember(groupId);
-  const { isRoleAdmin } = useProfile(groupId);
+  const { isRoleAdmin } = useGroupProfile(groupId);
   const memberCards = members?.map((member) => (
     <MemberCard
       key={member.userId}

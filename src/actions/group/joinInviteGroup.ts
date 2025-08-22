@@ -35,5 +35,5 @@ export default async function joinInviteGroup(inviteToken: string) {
       roleId: 2,
     },
   });
-  redirect(`/group/${validate.message}/home`);
+  redirect("/home");
 }

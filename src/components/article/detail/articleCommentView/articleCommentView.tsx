@@ -7,7 +7,7 @@ import Loading from "@/components/shared/loading/loading";
 import { useState } from "react";
 import { useArticleComment } from "@/libs/hooks/comment";
 import ArticleCommentCard from "../articleCommentCard/articleCommentCard";
-import { useProfile } from "@/libs/hooks/user";
+import { useGroupProfile } from "@/libs/hooks/user";
 
 import { CommentContext } from "@/libs/context/commentContext/commentContext";
 
@@ -22,7 +22,7 @@ export default function ArticleCommentView({
   articlePostUserId,
 }: Props) {
   const { groupId } = useGroup();
-  const { profile, isRoleAdmin, isLoading } = useProfile(groupId);
+  const { profile, isRoleAdmin, isLoading } = useGroupProfile(groupId);
   const [comment, setComment] = useState("");
   const { comments, handleDeleteComment, handlePostComment } =
     useArticleComment(groupId, articleId);

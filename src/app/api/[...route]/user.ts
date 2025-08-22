@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { db } from "@/db/index";
-import { groupMembers, userProfiles } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { articles, groupMembers, userProfiles } from "@/db/schema";
+import { eq, and, sql, max, count } from "drizzle-orm";
 import { zValidator } from "@hono/zod-validator";
 import { groups } from "@/db/schema";
 import { z } from "zod";
@@ -166,10 +166,38 @@ const user = new Hono()
         })
         .from(groupMembers)
         .innerJoin(groups, eq(groupMembers.groupId, groups.groupId))
-        .where(eq(groupMembers.userId, userId));
+        .where(eq(groupMembers.userId, userId))
+        .orderBy(groups.groupName);
       return c.json({ groups: groupList }, 200);
     } catch (error) {
       return handleApiError(c, error, { groups: null });
+    }
+  })
+  /**グループ一覧のサマリー */
+  .get("/groups/summary", async (c) => {
+    try {
+      const userId = await getSessionUserId();
+      if (!userId) {
+        return c.json({ summaries: null }, 401);
+      }
+      const summaries = await db
+        .select({
+          groupId: groups.groupId,
+          groupName: groups.groupName,
+          postCount: count(articles.id).mapWith(Number),
+          lastPostAt: max(articles.createdAt),
+          memberCount: sql<number>`(SELECT COUNT(*) FROM group_members gm WHERE gm.group_id = groups.group_id)`,
+        })
+        .from(groups)
+        .innerJoin(groupMembers, eq(groupMembers.groupId, groups.groupId))
+        .leftJoin(articles, eq(articles.groupId, groups.groupId))
+        .where(eq(groupMembers.userId, userId))
+        .groupBy(groups.groupId)
+        .orderBy(groups.groupName);
+      return c.json({ summaries: summaries }, 200);
+    } catch (error) {
+      console.log(error);
+      return handleApiError(c, error, { summaries: null });
     }
   })
   /**グループを退会するAPI */
@@ -270,7 +298,7 @@ const user = new Hono()
     }
   })
   .get(
-    "profile/",
+    "/profile",
     zValidator(
       "json",
       z.object({

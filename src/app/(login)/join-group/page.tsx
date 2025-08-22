@@ -25,7 +25,7 @@ export default async function Page() {
   if (currentGroup) {
     const hasJoined = await hasJoinedGroup(currentGroup);
     if (hasJoined) {
-      redirect(`/group/${currentGroup}/home`);
+      redirect("/home");
     }
   }
   const groups = await getGroups();
@@ -36,7 +36,7 @@ export default async function Page() {
         groupId: groups[0].groupId,
       },
     });
-    redirect(`group/${groups[0].groupId}/home`);
+    redirect("/home");
   }
   return (
     <div className={styles.wrapper}>
@@ -45,10 +45,9 @@ export default async function Page() {
         <Text>NoteLinkへようこそ！</Text>
         <Text>あなたはまだグループに参加していません。</Text>
         <Text>
-          グループを作成するか、招待コードを使って既存のグループに参加してください。
+          グループを作成するか、招待コードを使って既存のグループに参加してみましょう！
         </Text>
       </div>
-
       <GroupAccessWindow />
     </div>
   );
