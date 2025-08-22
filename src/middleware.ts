@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { match } from "path-to-regexp";
 import { getClient } from "./libs/hono";
 import { auth } from "./auth";
+import { determineRedirect } from "./libs/group/access";
 
+/**現在のurlのグループに参加しているかを返す非同期関数 */
 const hasJoinedGroup = async (groupId: string) => {
   const client = await getClient();
   const res = await client.api.user.hasJoined[":groupId"].$get({
@@ -13,19 +15,13 @@ const hasJoinedGroup = async (groupId: string) => {
   const body = await res.json();
   return body.hasJoinedGroup;
 };
+
+/**参加しているグループ一覧を取得する非同期関数 */
 const getJoinedGroups = async () => {
   const client = await getClient();
   const res = await client.api.user.groups.$get();
   const body = await res.json();
-  return body.groups;
-};
-const setCurrentGroup = async (groupId: string) => {
-  const client = await getClient();
-  await client.api.user.currentGroup[":groupId"].$patch({
-    param: {
-      groupId: groupId,
-    },
-  });
+  return body.groups ?? [];
 };
 
 export async function middleware(request: NextRequest) {
@@ -34,6 +30,7 @@ export async function middleware(request: NextRequest) {
   }
   const session = await auth();
   const userId = session?.user?.id;
+  //ユーザー情報がなければログインページにリダイレクト
   if (!userId) {
     const callbackUrl = request.nextUrl.pathname + request.nextUrl.search;
     const url = request.nextUrl.clone();
@@ -41,27 +38,23 @@ export async function middleware(request: NextRequest) {
     url.searchParams.set("callbackUrl", callbackUrl);
     return NextResponse.redirect(url);
   }
+
   const pathname = request.nextUrl.pathname;
-  const matcher = match("/group/:id/*splat", { decode: decodeURIComponent });
-  const matched = matcher(pathname);
-  if (matched) {
-    const { id } = matched.params;
-    if (id) {
-      const groupId = id.toString();
-      const hasJoined = await hasJoinedGroup(groupId);
-      if (!hasJoined) {
-        const joinedGroups = await getJoinedGroups();
-        if (joinedGroups && joinedGroups?.length !== 0) {
-          setCurrentGroup(joinedGroups[0].groupId);
-          const url = request.nextUrl.clone();
-          url.pathname = `/group/${joinedGroups[0].groupId}/home`;
-          return NextResponse.redirect(url);
-        }
-        const url = request.nextUrl.clone();
-        url.pathname = "/join-group";
-        return NextResponse.redirect(url);
-      }
-    }
+  const groupMatcher = match("/group/:id/*splat", {
+    decode: decodeURIComponent,
+  });
+  const matched = groupMatcher(pathname);
+  if (!matched) {
+    return;
+  }
+  const groupId = matched.params.id?.toString();
+  const hasJoinedCurrentGroup = groupId ? await hasJoinedGroup(groupId) : false;
+  const joinedGroups = await getJoinedGroups();
+  const redirectUrl = determineRedirect(hasJoinedCurrentGroup, joinedGroups);
+  if (redirectUrl) {
+    const url = request.nextUrl.clone();
+    url.pathname = redirectUrl;
+    return NextResponse.redirect(url);
   }
 }
 
