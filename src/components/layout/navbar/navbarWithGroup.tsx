@@ -25,7 +25,7 @@ export function NavBarWithGroup() {
   const groupMenuData = [
     {
       label: "投稿一覧",
-      link: `/group/${groupId}/home`,
+      link: `/group/${groupId}/articles`,
       icon: <IconDashboard size={iconSize} stroke={1.5} />,
     },
     {

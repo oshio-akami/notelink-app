@@ -18,7 +18,7 @@ export default function LeaveGroupModal({ opened, onClose }: Props) {
   const handleClick = async () => {
     setIsPending(true);
     await leaveGroup(groupId);
-    router.push("/group/00000/home");
+    router.push("/home");
     onClose();
   };
 

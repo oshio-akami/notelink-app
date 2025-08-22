@@ -18,7 +18,7 @@ export default function ArticleDetailPageView({ hasJoined, article }: Props) {
   const router = useRouter();
   const { groupId } = useGroup();
   const handleGoHome = () => {
-    router.push(`/group/${groupId}/home`);
+    router.push(`/group/${groupId}/articles`);
   };
   return (
     <>
