@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useGroup } from "@/libs/context/groupContext/groupContext";
 import ArticleMenuPopup from "../articleMenuPopup/articleMenuPopup";
 import { useArticleActionsContext } from "@/libs/context/articleContext/articleActionsContext";
+import { useGroupProfile } from "@/libs/hooks/user";
 
 type Props = {
   article: Article;
@@ -27,6 +28,7 @@ export default function ArticleCard({ article }: Props) {
   const { onBookmarkChange } = useArticleActionsContext();
   const router = useRouter();
   const { groupId } = useGroup();
+  const { profile, isRoleAdmin } = useGroupProfile(groupId);
   const shortPress = withShortPress(() => pushArticleRoute());
   const pushArticleRoute = (anchor: string = "") => {
     router.push(`/group/${groupId}/article/${article.id}#${anchor}`);
@@ -45,9 +47,11 @@ export default function ArticleCard({ article }: Props) {
           <Text className={styles.date}>{formatDate(article.createdAt)}</Text>
         </div>
         <div className={styles.menu}>
-          <ArticleMenuPopup articleId={article.id}>
-            <IconDotsVertical />
-          </ArticleMenuPopup>
+          {(isRoleAdmin || profile?.userId === article.userProfiles.userId) && (
+            <ArticleMenuPopup articleId={article.id}>
+              <IconDotsVertical />
+            </ArticleMenuPopup>
+          )}
         </div>
       </div>
       <div className={styles.contents}>
