@@ -13,8 +13,8 @@ import React from "react";
 export const runtime = "edge";
 
 export const metadata: Metadata = {
-  title: "project",
-  description: "project",
+  title: "NoteLink",
+  description: "NoteLink",
 };
 import { Noto_Sans_JP } from "next/font/google";
 
