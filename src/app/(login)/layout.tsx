@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import React from "react";
 export const metadata: Metadata = {
-  title: "project",
-  description: "project",
+  title: "ログイン - NoteLink",
+  description: "NoteLinkのログインページ",
 };
 
 export default function RootLayout({

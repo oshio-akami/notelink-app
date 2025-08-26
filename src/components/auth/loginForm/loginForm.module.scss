@@ -3,58 +3,71 @@
   background-color: var(--background);
   height: 100vh;
   padding-top: 80px;
-}
-
-.loginPage h1 {
-  margin-bottom: 20px;
-}
-
-.loginWindow {
-  width: 400px;
-  max-width: 90%;
-  padding: 40px;
-  background-color: white;
-  margin: 0 auto;
-  gap: 20px;
-  border-radius: 2%;
-  img {
-    cursor: pointer;
-    width: 50%;
+  h1 {
+    margin-bottom: 20px;
   }
-  ul {
-    list-style: none;
-    li {
-      margin-bottom: 20px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    .logo {
+      width: 300px;
+      height: 50px;
+      max-width: 90%;
+      display: flex;
+      align-items: center;
     }
   }
-}
 
-.split {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  &::after,
-  &::before {
-    background-color: gray;
-    content: "";
-    flex-grow: 1;
-    height: 1px;
-    margin: 0 5px;
+  .loginWindow {
+    width: 500px;
+    max-width: 90%;
+    padding: 40px;
+    background-color: white;
+    margin: 0 auto;
+    gap: 20px;
+    border-radius: 2%;
+    img {
+      cursor: pointer;
+      width: 50%;
+    }
+    ul {
+      list-style: none;
+      gap: 20px;
+      li {
+        margin-bottom: 40px;
+      }
+    }
   }
-}
 
-.googleLogin {
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-  height: 50px;
-  border: 1px solid black;
-  border-radius: 100vh;
-  cursor: pointer;
-}
+  .split {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    &::after,
+    &::before {
+      background-color: gray;
+      content: "";
+      flex-grow: 1;
+      height: 1px;
+      margin: 0 5px;
+    }
+  }
 
-.googleLogo {
-  max-width: 30px;
+  .googleLogin {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    height: 50px;
+    border: 1px solid black;
+    border-radius: 100vh;
+    cursor: pointer;
+  }
+
+  .googleLogo {
+    max-width: 30px;
+  }
 }

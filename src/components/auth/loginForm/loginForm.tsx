@@ -1,5 +1,4 @@
 "use client";
-import { Input, PasswordInput, Button } from "@mantine/core";
 import styles from "./loginForm.module.scss";
 import { signIn } from "next-auth/react";
 import { Image } from "@mantine/core";
@@ -14,20 +13,14 @@ export function LoginForm() {
       <script src="https://accounts.google.com/gsi/client" async></script>
 
       <div className={styles.loginPage}>
-        <h1>ログイン</h1>
+        <div className={styles.header}>
+          <Image className={styles.logo} src="/sample_logo.webp" alt="logo" />
+        </div>
         <div className={styles.loginWindow}>
+          <h1>ログイン</h1>
           <ul>
             <li>
-              <Input placeholder="メールドレス" disabled></Input>
-            </li>
-            <li>
-              <PasswordInput placeholder="パスワード" disabled></PasswordInput>
-            </li>
-            <li>
-              <Button>ログイン</Button>
-            </li>
-            <li>
-              <p className={styles.split}>他の方法でログイン</p>
+              <p className={styles.split}>Googleアカウントでログイン</p>
             </li>
             <li
               className={styles.googleLogin}
@@ -39,6 +32,9 @@ export function LoginForm() {
                 alt="login"
               />
               <p>Googleでログイン</p>
+            </li>
+            <li>
+              <p className={styles.split}>ゲスト用の一時アカウントでログイン</p>
             </li>
             <li
               className={styles.googleLogin}
