@@ -9,7 +9,7 @@ type Props = {
 };
 
 const createInviteLink = (inviteToken: string) => {
-  return `${process.env.NEXT_PUBLIC_DEFAULT_URL}/invite/${inviteToken}`;
+  return `${process.env.NEXT_PUBLIC_URL}/invite/${inviteToken}`;
 };
 
 export default function InviteInfo({ inviteToken }: Props) {
