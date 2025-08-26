@@ -6,8 +6,8 @@ import ClientAppShellWithGroup from "@/components/layout/clientAppShell/clientAp
 export const runtime = "edge";
 
 export const metadata: Metadata = {
-  title: "project",
-  description: "project",
+  title: "グループ - NoteLink",
+  description: "グループページ",
 };
 
 type Props = {

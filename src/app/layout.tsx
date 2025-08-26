@@ -14,7 +14,6 @@ export const runtime = "edge";
 
 export const metadata: Metadata = {
   title: "NoteLink",
-  description: "NoteLink",
 };
 import { Noto_Sans_JP } from "next/font/google";
 
