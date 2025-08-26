@@ -1,9 +1,9 @@
-import HomeSidebar from "@/components/layout/homeSidebar/HomeSidebar";
 import { AppShellAside, ScrollArea } from "@mantine/core";
 import styles from "./page.module.scss";
 import { hasJoinedGroup } from "@/libs/apiUtils";
 import { getClient } from "@/libs/hono";
 import ArticleDetailPageView from "@/components/article/detail/articleDetailPageView/articleDetailPageView";
+import MemberList from "@/components/member/memberList/memberList";
 
 type Props = {
   params: Promise<{ id: string; articleId: string }>;
@@ -33,7 +33,7 @@ export default async function Home({ params }: Props) {
         </ScrollArea>
         <AppShellAside p={20} withBorder={false} zIndex={-1} bg={"#f8fbff"}>
           <div className={styles.sidebar}>
-            <HomeSidebar />
+            <MemberList />
           </div>
         </AppShellAside>
       </div>

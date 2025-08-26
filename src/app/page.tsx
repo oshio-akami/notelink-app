@@ -8,7 +8,7 @@ export default function Page() {
   return (
     <div className={styles.pageWrapper}>
       <div className={styles.header}>
-        <Image w={200} src="sample_logo.png" alt="" />
+        <Image w={200} src="sample_logo.webp" alt="" />
       </div>
       <div className={styles.contentWrapper}>
         <div className={styles.leftSection}>
@@ -27,7 +27,7 @@ export default function Page() {
           </Link>
         </div>
         <div className={styles.rightSection}>
-          <Image src="sample_image.png" alt="" />
+          <Image src="/sample_image.webp" alt="" />
         </div>
       </div>
     </div>

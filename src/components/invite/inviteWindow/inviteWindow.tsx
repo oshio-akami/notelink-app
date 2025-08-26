@@ -45,12 +45,7 @@ export default function InviteWindow({
   return (
     <div className={styles.page}>
       <div className={styles.box}>
-        <Image
-          mr="auto"
-          w={120}
-          src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
-          alt="logo"
-        />
+        <Image mr="auto" w={120} src="/sample_logo.webp" alt="logo" />
         <div className={styles.description}>
           <Text>グループに招待されています</Text>
           <Text fw={700} size="1.2rem">

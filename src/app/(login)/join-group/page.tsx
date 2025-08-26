@@ -40,7 +40,7 @@ export default async function Page() {
   }
   return (
     <div className={styles.wrapper}>
-      <Image src="sample_logo.png" alt="logo" w={150} />
+      <Image src="/sample_logo.webp" alt="logo" w={150} />
       <div className={styles.description}>
         <Text>NoteLinkへようこそ！</Text>
         <Text>あなたはまだグループに参加していません。</Text>

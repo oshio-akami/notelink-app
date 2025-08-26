@@ -54,7 +54,7 @@ export function HeaderWithGroup({ burgerOpened, onClickBurger }: Props) {
           className={styles.logo}
           onClick={() => redirect("/home")}
           w={150}
-          src="https://pub-0e85cec67fe344ccb5094d3659571d7d.r2.dev/sample_logo.png"
+          src="/sample_logo.webp"
           alt="logo"
         />
         <Text>{sliceText(groupName, 10)}</Text>
