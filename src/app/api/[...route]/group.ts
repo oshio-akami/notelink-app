@@ -1,8 +1,5 @@
 import { Hono } from "hono";
-import { db } from "@/db/index";
 import { zValidator } from "@hono/zod-validator";
-import { groupMembers, roles, groups, userProfiles } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
 import { getClient } from "@/libs/hono";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
