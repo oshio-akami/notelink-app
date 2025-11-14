@@ -51,7 +51,7 @@ export async function insertGroup(groupName: string) {
 
 /**adminとしてグループに加入させる */
 export async function insertAdminToGroup(userId: string, groupId: string) {
-  await db
+  const result = await db
     .insert(groupMembers)
     .values({
       userId: userId,
@@ -59,10 +59,11 @@ export async function insertAdminToGroup(userId: string, groupId: string) {
       roleId: 1,
     })
     .returning();
+  return result[0] ?? null;
 }
 /**メンバーとしてグループに加入させる */
 export async function insertMemberToGroup(userId: string, groupId: string) {
-  await db
+  const result = await db
     .insert(groupMembers)
     .values({
       userId: userId,
@@ -70,6 +71,7 @@ export async function insertMemberToGroup(userId: string, groupId: string) {
       roleId: 2,
     })
     .returning();
+  return result[0] ?? null;
 }
 
 /**メンバーをグループから削除 */
