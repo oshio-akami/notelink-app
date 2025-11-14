@@ -39,7 +39,7 @@ export async function findGroupNameById(groupId: string) {
 }
 
 /**グループを作成 */
-export async function createGroup(groupName: string) {
+export async function insertGroup(groupName: string) {
   const result = await db
     .insert(groups)
     .values({
@@ -50,7 +50,7 @@ export async function createGroup(groupName: string) {
 }
 
 /**adminとしてグループに加入させる */
-export async function addAdminToGroup(userId: string, groupId: string) {
+export async function insertAdminToGroup(userId: string, groupId: string) {
   await db
     .insert(groupMembers)
     .values({
@@ -61,7 +61,7 @@ export async function addAdminToGroup(userId: string, groupId: string) {
     .returning();
 }
 /**メンバーとしてグループに加入させる */
-export async function addMemberToGroup(userId: string, groupId: string) {
+export async function insertMemberToGroup(userId: string, groupId: string) {
   await db
     .insert(groupMembers)
     .values({

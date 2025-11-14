@@ -7,8 +7,8 @@ import { hasJoinedGroup, withGroupMemberCheck } from "@/libs/apiUtils";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 import { ROLE_ADMIN } from "@/libs/roleUtils";
 import {
-  addAdminToGroup,
-  createGroup,
+  insertAdminToGroup,
+  insertGroup,
   deleteMemberToGroup,
   findGroupById,
   findGroupMembersById,
@@ -56,7 +56,7 @@ const group = new Hono()
     async (c) => {
       try {
         const { groupName } = await c.req.valid("json");
-        const createdGroup = await createGroup(groupName);
+        const createdGroup = await insertGroup(groupName);
         if (!createdGroup) {
           return c.json({ created: null }, 404);
         }
@@ -64,7 +64,7 @@ const group = new Hono()
         if (!userId) {
           return c.json({ created: null }, 401);
         }
-        await addAdminToGroup(userId, createdGroup.groupId);
+        await insertAdminToGroup(userId, createdGroup.groupId);
         return c.json({ created: createdGroup }, 200);
       } catch (error) {
         return handleApiError(c, error, { created: null });
