@@ -29,7 +29,9 @@ export async function findGroupById(groupId: string) {
 }
 
 /**グループIDからグループ名を取得 */
-export async function findGroupNameById(groupId: string) {
+export async function findGroupNameById(
+  groupId: string
+): Promise<{ groupName: string } | null> {
   const result = await db
     .select({ groupName: groups.groupName })
     .from(groups)
@@ -39,7 +41,9 @@ export async function findGroupNameById(groupId: string) {
 }
 
 /**グループを作成 */
-export async function insertGroup(groupName: string) {
+export async function insertGroup(
+  groupName: string
+): Promise<{ groupId: string; groupName: string } | null> {
   const result = await db
     .insert(groups)
     .values({
@@ -50,7 +54,10 @@ export async function insertGroup(groupName: string) {
 }
 
 /**adminとしてグループに加入させる */
-export async function insertAdminToGroup(userId: string, groupId: string) {
+export async function insertAdminToGroup(
+  userId: string,
+  groupId: string
+): Promise<{ userId: string; groupId: string; roleId: number } | null> {
   const result = await db
     .insert(groupMembers)
     .values({
@@ -62,7 +69,10 @@ export async function insertAdminToGroup(userId: string, groupId: string) {
   return result[0] ?? null;
 }
 /**メンバーとしてグループに加入させる */
-export async function insertMemberToGroup(userId: string, groupId: string) {
+export async function insertMemberToGroup(
+  userId: string,
+  groupId: string
+): Promise<{ userId: string; groupId: string; roleId: number } | null> {
   const result = await db
     .insert(groupMembers)
     .values({
@@ -84,7 +94,11 @@ export async function deleteMemberToGroup(userId: string, groupId: string) {
   return result;
 }
 
-export async function findUserRoleId(userId: string, groupId: string) {
+/**ユーザーのロールを取得 */
+export async function findUserRoleId(
+  userId: string,
+  groupId: string
+): Promise<{ roleId: number } | null> {
   const result = await db
     .select({ roleId: groupMembers.roleId })
     .from(groupMembers)
