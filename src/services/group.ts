@@ -18,7 +18,7 @@ export async function getGroupMembersService(groupId: string) {
     throw new ForbiddenError();
   }
   const members = await findGroupMembersById(groupId);
-  if (!members) {
+  if (!members || members.length == 0) {
     throw new NotFoundError();
   }
   return { members: members };
@@ -55,7 +55,7 @@ export async function deleteMembersService(userId: string, groupId: string) {
     throw new ForbiddenError();
   }
   const role = await findUserRoleId(check.userId, groupId);
-  if (!role.roleId) {
+  if (!role || !role.roleId === undefined) {
     throw new NotFoundError();
   }
   //役職がadminの場合のみ削除
