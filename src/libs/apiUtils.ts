@@ -14,7 +14,7 @@ export const hasJoinedGroup = async (groupId: string) => {
   return body.hasJoinedGroup;
 };
 
-type CheckResult =
+export type CheckResult =
   | { success: true; userId: string }
   | { success: false; status: ContentfulStatusCode };
 
