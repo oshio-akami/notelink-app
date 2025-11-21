@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-vi.mock("@/services/group", () => ({
+vi.mock("@/services/group/group", () => ({
   getGroupMembersService: vi.fn(),
   createGroupService: vi.fn(),
   getGroupService: vi.fn(),
@@ -8,7 +8,17 @@ vi.mock("@/services/group", () => ({
 }));
 
 import group from "../group.js";
-import * as groupService from "@/services/group";
+import {
+  createGroupService,
+  deleteMembersService,
+  getGroupMembersService,
+  getGroupService,
+} from "@/services/group/group.js";
+
+const mockedGetGroupMembersService = vi.mocked(getGroupMembersService);
+const mockedCreateGroupService = vi.mocked(createGroupService);
+const mockedGetGroupService = vi.mocked(getGroupService);
+const mockedDeleteMembersService = vi.mocked(deleteMembersService);
 
 describe("グループAPIのRoute", () => {
   const mockGroupId = "11111111-1111-1111-1111-111111111111";
@@ -19,7 +29,7 @@ describe("グループAPIのRoute", () => {
   });
 
   it("GET /members/:groupId メンバー一覧の取得", async () => {
-    vi.spyOn(groupService, "getGroupMembersService").mockResolvedValue({
+    mockedGetGroupMembersService.mockResolvedValue({
       members: [
         {
           userId: mockUserId,
@@ -47,7 +57,7 @@ describe("グループAPIのRoute", () => {
   });
 
   it("POST /create グループの作成", async () => {
-    vi.spyOn(groupService, "createGroupService").mockResolvedValue({
+    mockedCreateGroupService.mockResolvedValue({
       createdGroup: { groupId: mockGroupId, groupName: "Test Group" },
     });
 
@@ -70,7 +80,7 @@ describe("グループAPIのRoute", () => {
   });
 
   it("GET /:groupId グループ情報の取得", async () => {
-    vi.spyOn(groupService, "getGroupService").mockResolvedValue({
+    mockedGetGroupService.mockResolvedValue({
       group: { groupId: mockGroupId, groupName: "Test Group" },
     });
 
@@ -88,7 +98,7 @@ describe("グループAPIのRoute", () => {
   });
 
   it("DELETE /:groupId/user/:userId グループからメンバーを削除", async () => {
-    vi.spyOn(groupService, "deleteMembersService").mockResolvedValue({
+    mockedDeleteMembersService.mockResolvedValue({
       success: true,
     });
 

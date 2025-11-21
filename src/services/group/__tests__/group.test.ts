@@ -1,10 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import * as groupService from "@/services/group";
-import { ForbiddenError, NotFoundError } from "@/utils/errors";
+import { vi } from "vitest";
 
 vi.mock("@/db/queries/group", () => ({
-  findGroupMembersById: vi.fn(),
-  findGroupById: vi.fn(),
+  findGroupMembers: vi.fn(),
+  findGroup: vi.fn(),
   insertGroup: vi.fn(),
   insertAdminToGroup: vi.fn(),
   findUserRoleId: vi.fn(),
@@ -23,8 +21,12 @@ vi.mock("@/libs/roleUtils", () => ({
   ROLE_ADMIN: 1,
 }));
 
+import { describe, it, expect, beforeEach } from "vitest";
+import * as groupService from "@/services/group/group";
+import { ForbiddenError, NotFoundError } from "@/utils/errors";
+
 import {
-  findGroupMembersById,
+  findGroupMembers,
   insertGroup,
   insertAdminToGroup,
   findUserRoleId,
@@ -35,7 +37,7 @@ import { withGroupMemberCheck } from "@/libs/apiUtils";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 
 const mockedWithGroupMemberCheck = vi.mocked(withGroupMemberCheck);
-const mockedFindGroupMembersById = vi.mocked(findGroupMembersById);
+const mockedFindGroupMembers = vi.mocked(findGroupMembers);
 const mockedGetSessionUserId = vi.mocked(getSessionUserId);
 const mockedInsertGroup = vi.mocked(insertGroup);
 const mockedInsertAdminToGroup = vi.mocked(insertAdminToGroup);
@@ -56,7 +58,7 @@ describe("Group Service", () => {
       success: true,
       userId: mockAdminUserId,
     });
-    mockedFindGroupMembersById.mockResolvedValue([
+    mockedFindGroupMembers.mockResolvedValue([
       {
         userId: mockAdminUserId,
         displayName: "test display name",
@@ -66,16 +68,12 @@ describe("Group Service", () => {
     ]);
     const result = await groupService.getGroupMembersService(mockGroupId);
     expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedFindGroupMembersById).toHaveBeenCalledWith(mockGroupId);
+    expect(mockedFindGroupMembers).toHaveBeenCalledWith(mockGroupId);
     expect(result.members).toHaveLength(1);
     expect(result.members[0].userId).toBe(mockAdminUserId);
   });
-
   it("エラー: メンバー一覧の取得、ユーザー認証が失敗した場合はForbiddenErrorを投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: false,
-      status: 403,
-    });
+    mockedWithGroupMemberCheck.mockRejectedValue(new ForbiddenError());
     await expect(
       groupService.getGroupMembersService(mockGroupId)
     ).rejects.toBeInstanceOf(ForbiddenError);
@@ -86,7 +84,7 @@ describe("Group Service", () => {
       success: true,
       userId: mockAdminUserId,
     });
-    mockedFindGroupMembersById.mockResolvedValue([]);
+    mockedFindGroupMembers.mockResolvedValue([]);
     await expect(
       groupService.getGroupMembersService(mockGroupId)
     ).rejects.toBeInstanceOf(NotFoundError);
@@ -113,7 +111,7 @@ describe("Group Service", () => {
     expect(result.createdGroup.groupId).toBe(mockGroupId);
   });
 
-  it("エラー: グループ作成と管理者追加 ユーザーIDの取得に失敗ForbiddenErrorを投げる", async () => {
+  it("エラー: グループ作成と管理者追加 ユーザーIDの取得に失敗した安倍はForbiddenErrorを投げる", async () => {
     mockedGetSessionUserId.mockResolvedValue(undefined);
     await expect(
       groupService.createGroupService(mockGroupId)
@@ -152,10 +150,7 @@ describe("Group Service", () => {
   });
 
   it("エラー: メンバーの削除 ユーザーIDの取得に失敗した場合はForbiddenErrorを投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: false,
-      status: 403,
-    });
+    mockedWithGroupMemberCheck.mockRejectedValue(new ForbiddenError());
     await expect(
       groupService.deleteMembersService(mockAdminUserId, mockGroupId)
     ).rejects.toBeInstanceOf(ForbiddenError);

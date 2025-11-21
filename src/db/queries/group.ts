@@ -3,7 +3,7 @@ import { groupMembers, roles, groups, userProfiles } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 
 /**グループのメンバー一覧を取得 */
-export async function findGroupMembersById(groupId: string) {
+export async function findGroupMembers(groupId: string) {
   return await db
     .select({
       userId: groupMembers.userId,
@@ -19,7 +19,7 @@ export async function findGroupMembersById(groupId: string) {
 }
 
 /**グループIDからグループの情報取得 */
-export async function findGroupById(groupId: string) {
+export async function findGroup(groupId: string) {
   const result = await db
     .select()
     .from(groups)
@@ -29,7 +29,7 @@ export async function findGroupById(groupId: string) {
 }
 
 /**グループIDからグループ名を取得 */
-export async function findGroupNameById(
+export async function findGroupName(
   groupId: string
 ): Promise<{ groupName: string } | null> {
   const result = await db

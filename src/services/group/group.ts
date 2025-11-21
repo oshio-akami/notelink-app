@@ -1,7 +1,7 @@
 import {
   deleteMemberToGroup,
-  findGroupById,
-  findGroupMembersById,
+  findGroup,
+  findGroupMembers,
   findUserRoleId,
   insertAdminToGroup,
   insertGroup,
@@ -17,7 +17,7 @@ export async function getGroupMembersService(groupId: string) {
   if (!check.success) {
     throw new ForbiddenError();
   }
-  const members = await findGroupMembersById(groupId);
+  const members = await findGroupMembers(groupId);
   if (!members || members.length == 0) {
     throw new NotFoundError();
   }
@@ -40,7 +40,7 @@ export async function createGroupService(groupName: string) {
 
 /**指定したグループIDのグループ情報を取得する */
 export async function getGroupService(groupId: string) {
-  const group = await findGroupById(groupId);
+  const group = await findGroup(groupId);
   if (!group) {
     throw new NotFoundError();
   }

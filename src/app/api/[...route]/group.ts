@@ -7,7 +7,7 @@ import {
   deleteMembersService,
   getGroupMembersService,
   getGroupService,
-} from "@/services/group";
+} from "@/services/group/group";
 
 export const runtime = "edge";
 
