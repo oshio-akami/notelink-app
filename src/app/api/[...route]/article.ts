@@ -2,18 +2,18 @@ import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
-import { db } from "@/db";
 import {
-  articles,
-  bookmarks,
-  comments,
-  groupMembers,
-  userProfiles,
-} from "@/db/schema";
-import { hasJoinedGroup, withGroupMemberCheck } from "@/libs/apiUtils";
-import { eq, desc, and, or, exists, sql } from "drizzle-orm";
-import { getSessionUserId } from "@/libs/getSessionUserId";
-import { ROLE_ADMIN } from "@/libs/roleUtils";
+  addBookmarkService,
+  deleteArticleService,
+  deleteBookmarkService,
+  deleteCommentService,
+  getArticleService,
+  getArticlesService,
+  getBookmarksService,
+  getCommentsService,
+  insertArticleService,
+  postCommentService,
+} from "@/services/article/article";
 
 export const runtime = "edge";
 
@@ -34,61 +34,8 @@ const article = new Hono()
     async (c) => {
       try {
         const { groupId, mine } = await c.req.valid("param");
-        const hasJoined = await hasJoinedGroup(groupId);
-        if (!hasJoined) {
-          return c.json({ articles: null }, 404);
-        }
-        const userId = await getSessionUserId();
-        if (!userId) {
-          return c.json({ articles: null }, 401);
-        }
-        const whereConditions = [eq(articles.groupId, groupId)];
-        if (mine) {
-          whereConditions.push(eq(articles.userId, userId));
-        }
-        const articleList = await db
-          .select({
-            userProfiles: {
-              userId: userProfiles.userId,
-              displayName: userProfiles.displayName,
-              image: userProfiles.image,
-            },
-            id: articles.id,
-            title: articles.title,
-            content: articles.content,
-            image: articles.image,
-            createdAt: articles.createdAt,
-            isBookmark: bookmarks.articleId,
-            commentCount: sql<number>`COUNT(comments.id)`,
-          })
-          .from(articles)
-          .innerJoin(userProfiles, eq(articles.userId, userProfiles.userId))
-          .leftJoin(
-            bookmarks,
-            and(
-              eq(articles.id, bookmarks.articleId),
-              eq(bookmarks.userId, userId)
-            )
-          )
-          .leftJoin(comments, eq(articles.id, comments.articleId))
-          .where(and(...whereConditions))
-          .groupBy(
-            articles.id,
-            userProfiles.userId,
-            userProfiles.displayName,
-            userProfiles.image,
-            articles.title,
-            articles.content,
-            articles.image,
-            articles.createdAt,
-            bookmarks.articleId
-          )
-          .orderBy(desc(articles.createdAt));
-        const replaceArticleList = articleList.map((article) => ({
-          ...article,
-          isBookmark: article.isBookmark != null,
-        }));
-        return c.json({ articles: replaceArticleList }, 200);
+        const result = await getArticlesService(groupId, mine);
+        return c.json({ articles: result.articles }, 200);
       } catch (error) {
         return handleApiError(c, error, { articles: false });
       }
@@ -106,20 +53,7 @@ const article = new Hono()
     async (c) => {
       try {
         const { articleId } = await c.req.valid("param");
-        const userId = await getSessionUserId();
-        if (!userId) {
-          return c.json({ success: false }, 403);
-        }
-        const bookmark = await db
-          .insert(bookmarks)
-          .values({
-            userId: userId,
-            articleId: articleId,
-          })
-          .returning();
-        if (bookmark.length === 0) {
-          return c.json({ success: false });
-        }
+        await addBookmarkService(articleId);
         return c.json({ success: true }, 200);
       } catch (error) {
         return handleApiError(c, error, { success: false });
@@ -138,22 +72,7 @@ const article = new Hono()
     async (c) => {
       try {
         const { articleId } = await c.req.valid("param");
-        const userId = await getSessionUserId();
-        if (!userId) {
-          return c.json({ success: false }, 403);
-        }
-        const deleted = await db
-          .delete(bookmarks)
-          .where(
-            and(
-              eq(bookmarks.userId, userId),
-              eq(bookmarks.articleId, articleId)
-            )
-          )
-          .execute();
-        if (deleted.rowCount === 0) {
-          return c.json({ success: false }, 404);
-        }
+        await deleteBookmarkService(articleId);
         return c.json({ success: true }, 200);
       } catch (error) {
         return handleApiError(c, error, { success: false });
@@ -172,24 +91,14 @@ const article = new Hono()
     async (c) => {
       try {
         const { groupId } = await c.req.valid("param");
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ bookmarkList: null }, check.status);
-        }
-        const bookmarkList = await db
-          .select({
-            userId: bookmarks.userId,
-            articleId: bookmarks.articleId,
-          })
-          .from(bookmarks)
-          .where(and(eq(bookmarks.userId, check.userId)))
-          .orderBy(desc(bookmarks.createdAt));
-        return c.json({ bookmarkList: bookmarkList }, 200);
+        const result = await getBookmarksService(groupId);
+        return c.json({ bookmarkList: result.bookmarks }, 200);
       } catch (error) {
         return handleApiError(c, error, { bookmarkList: null });
       }
     }
   )
+  /**記事の投稿 */
   .post(
     "/",
     zValidator(
@@ -204,20 +113,15 @@ const article = new Hono()
     async (c) => {
       try {
         const { groupId, title, image, content } = c.req.valid("json");
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ created: null }, check.status);
-        }
-        const created = await db.insert(articles).values({
-          groupId: groupId,
-          userId: check.userId,
-          title: title,
-          content: content,
-          image: image,
-        });
-        return c.json({ created: created }, 200);
+        const result = await insertArticleService(
+          groupId,
+          title,
+          image,
+          content
+        );
+        return c.json({ created: result.postedArticle }, 200);
       } catch (error) {
-        return handleApiError(c, error, { article: false });
+        return handleApiError(c, error, { created: false });
       }
     }
   )
@@ -233,59 +137,9 @@ const article = new Hono()
     ),
     async (c) => {
       try {
-        const { articleId, groupId } = c.req.valid("param");
-
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ article: null }, check.status);
-        }
-
-        const article = await db
-          .select({
-            userProfiles: {
-              userId: userProfiles.userId,
-              displayName: userProfiles.displayName,
-              image: userProfiles.image,
-            },
-            id: articles.id,
-            title: articles.title,
-            content: articles.content,
-            image: articles.image,
-            createdAt: articles.createdAt,
-            isBookmark: bookmarks.articleId,
-            commentCount: sql<number>`COUNT(comments.id)`,
-          })
-          .from(articles)
-          .where(and(eq(articles.id, articleId), eq(articles.groupId, groupId)))
-          .innerJoin(userProfiles, eq(articles.userId, userProfiles.userId))
-          .leftJoin(
-            bookmarks,
-            and(
-              eq(articles.id, bookmarks.articleId),
-              eq(bookmarks.userId, check.userId)
-            )
-          )
-          .leftJoin(comments, eq(articles.id, comments.articleId))
-          .groupBy(
-            articles.id,
-            userProfiles.userId,
-            userProfiles.displayName,
-            userProfiles.image,
-            articles.title,
-            articles.content,
-            articles.image,
-            articles.createdAt,
-            bookmarks.articleId
-          )
-          .limit(1);
-        if (article.length <= 0) {
-          return c.json({ article: null }, 404);
-        }
-        const replaceArticle = {
-          ...article[0],
-          isBookmark: article[0].isBookmark != null,
-        };
-        return c.json({ article: replaceArticle }, 200);
+        const { articleId, groupId } = await c.req.valid("param");
+        const result = await getArticleService(groupId, articleId);
+        return c.json({ article: result.article }, 200);
       } catch (error) {
         return handleApiError(c, error, { article: null });
       }
@@ -303,36 +157,8 @@ const article = new Hono()
     ),
     async (c) => {
       try {
-        const { groupId, articleId } = c.req.valid("param");
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ success: false }, check.status);
-        }
-        //投稿者本人か管理者の場合削除
-        const deleted = await db.delete(articles).where(
-          and(
-            eq(articles.id, articleId),
-            or(
-              eq(articles.userId, check.userId),
-              exists(
-                db
-                  .select()
-                  .from(groupMembers)
-                  .where(
-                    and(
-                      eq(groupMembers.userId, check.userId),
-                      eq(groupMembers.groupId, groupId),
-                      eq(groupMembers.roleId, ROLE_ADMIN)
-                    )
-                  )
-              )
-            )
-          )
-        );
-        const success = deleted.rowCount > 0;
-        if (!success) {
-          return c.json({ success: false }, 404);
-        }
+        const { groupId, articleId } = await c.req.valid("param");
+        await deleteArticleService(groupId, articleId);
         return c.json({ success: true }, 200);
       } catch (error) {
         return handleApiError(c, error, { success: false });
@@ -352,34 +178,8 @@ const article = new Hono()
     async (c) => {
       try {
         const { groupId, articleId } = await c.req.valid("param");
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ comments: null }, check.status);
-        }
-        const commentList = await db
-          .select({
-            userProfiles: {
-              userId: userProfiles.userId,
-              displayName: userProfiles.displayName,
-              image: userProfiles.image,
-            },
-            id: comments.id,
-            articleId: comments.articleId,
-            groupId: comments.groupId,
-            userId: comments.userId,
-            createdAt: comments.createdAt,
-            content: comments.comment,
-          })
-          .from(comments)
-          .innerJoin(userProfiles, eq(comments.userId, userProfiles.userId))
-          .where(
-            and(
-              eq(comments.articleId, articleId),
-              eq(comments.groupId, groupId)
-            )
-          )
-          .orderBy(desc(comments.createdAt));
-        return c.json({ comments: commentList }, 200);
+        const result = await getCommentsService(groupId, articleId);
+        return c.json({ comments: result.comments }, 200);
       } catch (error) {
         return handleApiError(c, error, { comments: null });
       }
@@ -405,22 +205,7 @@ const article = new Hono()
       try {
         const { comment } = await c.req.valid("json");
         const { groupId, articleId } = await c.req.valid("param");
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ success: false }, check.status);
-        }
-        const post = await db
-          .insert(comments)
-          .values({
-            userId: check.userId,
-            articleId: articleId,
-            groupId: groupId,
-            comment: comment,
-          })
-          .execute();
-        if (post.rowCount === 0) {
-          return c.json({ success: false }, 500);
-        }
+        await postCommentService(groupId, articleId, comment);
         return c.json({ success: true }, 200);
       } catch (error) {
         return handleApiError(c, error, { article: false });
@@ -440,17 +225,7 @@ const article = new Hono()
     async (c) => {
       try {
         const { groupId, commentId } = await c.req.valid("param");
-        const check = await withGroupMemberCheck(groupId);
-        if (!check.success) {
-          return c.json({ success: false }, check.status);
-        }
-        const deleted = await db
-          .delete(comments)
-          .where(eq(comments.id, commentId))
-          .execute();
-        if (deleted.rowCount === 0) {
-          return c.json({ success: false }, 404);
-        }
+        await deleteCommentService(groupId, commentId);
         return c.json({ success: true }, 200);
       } catch (error) {
         return handleApiError(c, error, { article: false });
