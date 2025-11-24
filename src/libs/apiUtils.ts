@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { getClient } from "./hono";
 import { ContentfulStatusCode } from "hono/utils/http-status";
+import { ForbiddenError, UnauthorizedError } from "@/utils/errors";
 
 /**指定されたグループのメンバーであるかをチェックする関数 */
 export const hasJoinedGroup = async (groupId: string) => {
@@ -21,20 +22,18 @@ export type CheckResult =
 /**
  * 指定されたグループのメンバーであるかをチェックする関数
  * @returns
- * ユーザーが未認証、またはユーザーがグループに参加していない場合: { success: false, status:number }
+ * ユーザーが未認証、またはユーザーがグループに参加していない場合: エラー
  * チェックに成功した場合: { success: true, userId }
  */
-export const withGroupMemberCheck = async (
-  groupId: string
-): Promise<CheckResult> => {
+export const withGroupMemberCheck = async (groupId: string) => {
   const session = await auth();
   const userId = session?.user?.id;
   if (!userId) {
-    return { success: false, status: 401 };
+    throw new UnauthorizedError();
   }
   const hasJoined = await hasJoinedGroup(groupId);
   if (!hasJoined) {
-    return { success: false, status: 403 };
+    throw new ForbiddenError();
   }
   return { success: true, userId: userId };
 };
