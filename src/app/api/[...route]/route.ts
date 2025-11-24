@@ -12,7 +12,7 @@ const app = new Hono().basePath("/api");
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const route = app
   .route("/user", user)
-  .route("invite", invite)
+  .route("/invite", invite)
   .route("/group", group)
   .route("/article", article)
   .route("/upload", upload);
