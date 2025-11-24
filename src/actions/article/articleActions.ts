@@ -21,7 +21,7 @@ export const postArticle = async (_: unknown, formData: FormData) => {
   });
   const body = await res.json();
   const created = body.created;
-  if (!created || created.rowCount === 0) {
+  if (!created || created.length === 0) {
     return { status: "error", message: "投稿に失敗しました" };
   }
   return { status: "success", message: "投稿しました" };
