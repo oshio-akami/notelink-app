@@ -1,4 +1,8 @@
-import { ForbiddenError, NotFoundError } from "@/utils/errors";
+import {
+  ForbiddenError,
+  NotFoundError,
+  UnauthorizedError,
+} from "@/utils/errors";
 import { Context } from "hono";
 import { ZodError } from "zod";
 
@@ -11,6 +15,9 @@ export function handleApiError(
 ) {
   if (error instanceof ZodError) {
     return c.json({ ...fallback }, 422);
+  }
+  if (error instanceof UnauthorizedError) {
+    return c.json({ ...fallback }, 401);
   }
   if (error instanceof ForbiddenError) {
     return c.json({ ...fallback }, 403);
