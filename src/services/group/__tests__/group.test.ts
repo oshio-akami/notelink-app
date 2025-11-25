@@ -9,7 +9,7 @@ vi.mock("@/db/queries/group", () => ({
   deleteMemberToGroup: vi.fn(),
 }));
 
-vi.mock("@/libs/apiUtils", () => ({
+vi.mock("@/services/withGroupMemberCheck", () => ({
   withGroupMemberCheck: vi.fn(),
 }));
 
@@ -33,7 +33,7 @@ import {
   deleteMemberToGroup,
 } from "@/db/queries/group";
 
-import { withGroupMemberCheck } from "@/libs/apiUtils";
+import { withGroupMemberCheck } from "@/services/withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 
 const mockedWithGroupMemberCheck = vi.mocked(withGroupMemberCheck);
@@ -96,11 +96,13 @@ describe("Group Service", () => {
       groupId: mockGroupId,
       groupName: "test group",
     });
-    mockedInsertAdminToGroup.mockResolvedValue({
-      userId: mockAdminUserId,
-      groupId: mockGroupId,
-      roleId: 1,
-    });
+    mockedInsertAdminToGroup.mockResolvedValue([
+      {
+        groupId: mockGroupId,
+        userId: mockAdminUserId,
+        roleId: 1,
+      },
+    ]);
     const result = await groupService.createGroupService("test group");
     expect(mockedGetSessionUserId).toHaveBeenCalled();
     expect(mockedInsertGroup).toHaveBeenCalledWith("test group");
@@ -134,7 +136,7 @@ describe("Group Service", () => {
       success: true,
       userId: mockAdminUserId,
     });
-    mockedFindUserRoleId.mockResolvedValue({ roleId: 1 });
+    mockedFindUserRoleId.mockResolvedValue([{ roleId: 1 }]);
     mockedDeleteMemberToGroup.mockResolvedValue({
       rowCount: 1,
       rows: [],
@@ -161,7 +163,7 @@ describe("Group Service", () => {
       success: true,
       userId: mockAdminUserId,
     });
-    mockedFindUserRoleId.mockResolvedValue(null);
+    mockedFindUserRoleId.mockResolvedValue([]);
     await expect(
       groupService.deleteMembersService(mockAdminUserId, mockGroupId)
     ).rejects.toBeInstanceOf(NotFoundError);
@@ -172,7 +174,7 @@ describe("Group Service", () => {
       success: true,
       userId: mockMemberUserId,
     });
-    mockedFindUserRoleId.mockResolvedValue({ roleId: 2 });
+    mockedFindUserRoleId.mockResolvedValue([{ roleId: 2 }]);
 
     await expect(
       groupService.deleteMembersService(mockMemberUserId, mockGroupId)

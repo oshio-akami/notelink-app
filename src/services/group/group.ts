@@ -6,7 +6,7 @@ import {
   insertAdminToGroup,
   insertGroup,
 } from "@/db/queries/group";
-import { withGroupMemberCheck } from "@/libs/apiUtils";
+import { withGroupMemberCheck } from "../withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 import { ForbiddenError, NotFoundError } from "@/utils/errors";
 import { ROLE_ADMIN } from "@/libs/roleUtils";
@@ -51,15 +51,12 @@ export async function getGroupService(groupId: string) {
 export async function deleteMembersService(userId: string, groupId: string) {
   //ユーザの役職取得
   const check = await withGroupMemberCheck(groupId);
-  if (!check.success) {
-    throw new ForbiddenError();
-  }
   const role = await findUserRoleId(check.userId, groupId);
-  if (!role || !role.roleId === undefined) {
+  if (role.length === 0) {
     throw new NotFoundError();
   }
   //役職がadminの場合のみ削除
-  if (role.roleId !== ROLE_ADMIN) {
+  if (role[0].roleId !== ROLE_ADMIN) {
     throw new ForbiddenError();
   }
 

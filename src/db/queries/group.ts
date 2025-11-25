@@ -54,11 +54,8 @@ export async function insertGroup(
 }
 
 /**adminとしてグループに加入させる */
-export async function insertAdminToGroup(
-  userId: string,
-  groupId: string
-): Promise<{ userId: string; groupId: string; roleId: number } | null> {
-  const result = await db
+export async function insertAdminToGroup(userId: string, groupId: string) {
+  return await db
     .insert(groupMembers)
     .values({
       userId: userId,
@@ -66,14 +63,10 @@ export async function insertAdminToGroup(
       roleId: 1,
     })
     .returning();
-  return result[0] ?? null;
 }
 /**メンバーとしてグループに加入させる */
-export async function insertMemberToGroup(
-  userId: string,
-  groupId: string
-): Promise<{ userId: string; groupId: string; roleId: number } | null> {
-  const result = await db
+export async function insertMemberToGroup(userId: string, groupId: string) {
+  return await db
     .insert(groupMembers)
     .values({
       userId: userId,
@@ -81,30 +74,24 @@ export async function insertMemberToGroup(
       roleId: 2,
     })
     .returning();
-  return result[0] ?? null;
 }
 
 /**メンバーをグループから削除 */
 export async function deleteMemberToGroup(userId: string, groupId: string) {
-  const result = await db
+  return await db
     .delete(groupMembers)
     .where(
       and(eq(groupMembers.userId, userId), eq(groupMembers.groupId, groupId))
     );
-  return result;
 }
 
 /**ユーザーのロールを取得 */
-export async function findUserRoleId(
-  userId: string,
-  groupId: string
-): Promise<{ roleId: number } | null> {
-  const result = await db
+export async function findUserRoleId(userId: string, groupId: string) {
+  return await db
     .select({ roleId: groupMembers.roleId })
     .from(groupMembers)
     .where(
       and(eq(groupMembers.userId, userId), eq(groupMembers.groupId, groupId))
     )
     .limit(1);
-  return result[0] ?? null;
 }

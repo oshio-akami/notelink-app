@@ -4,8 +4,8 @@ import { groupInvites } from "@/db/schema";
 import { zValidator } from "@hono/zod-validator";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { hasJoinedGroup } from "@/libs/apiUtils";
 import { handleApiError } from "@/libs/handleApiError";
+import { hasJoinedGroupService } from "@/services/user/user";
 
 export const runtime = "edge";
 
@@ -61,7 +61,7 @@ const invite = new Hono()
     async (c) => {
       try {
         const { groupId } = await c.req.valid("param");
-        const hasJoined = await hasJoinedGroup(groupId);
+        const hasJoined = await hasJoinedGroupService(groupId);
         if (!hasJoined) {
           return c.json({ token: null }, 403);
         }
@@ -91,7 +91,7 @@ const invite = new Hono()
     async (c) => {
       try {
         const { groupId } = await c.req.valid("param");
-        const hasJoined = await hasJoinedGroup(groupId);
+        const hasJoined = await hasJoinedGroupService(groupId);
         if (!hasJoined) {
           return c.json({ token: null }, 403);
         }

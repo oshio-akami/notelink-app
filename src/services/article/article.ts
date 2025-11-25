@@ -10,7 +10,7 @@ import {
   insertBookmarkQuery,
   insertCommentQuery,
 } from "@/db/queries/article";
-import { withGroupMemberCheck } from "@/libs/apiUtils";
+import { withGroupMemberCheck } from "../withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 import { articleWhere } from "@/services/article/articleWhere";
 import { normalizeArticles } from "@/services/article/normalizeArticles";

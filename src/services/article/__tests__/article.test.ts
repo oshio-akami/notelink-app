@@ -13,7 +13,7 @@ vi.mock("@/db/queries/article", () => ({
   deleteCommentQuery: vi.fn(),
 }));
 
-vi.mock("@/libs/apiUtils", () => ({
+vi.mock("@/services/withGroupMemberCheck", () => ({
   withGroupMemberCheck: vi.fn(),
 }));
 
@@ -43,7 +43,7 @@ import {
   insertCommentQuery,
   deleteCommentQuery,
 } from "@/db/queries/article";
-import { withGroupMemberCheck } from "@/libs/apiUtils";
+import { withGroupMemberCheck } from "@/services/withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 import { articleWhere } from "@/services/article/articleWhere";
 import { normalizeArticles } from "@/services/article/normalizeArticles";
