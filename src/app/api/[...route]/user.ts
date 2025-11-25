@@ -7,7 +7,6 @@ import {
   getGroupsService,
   getGroupSummariesService,
   getGroupUserProfileService,
-  getUserProfileByIdService,
   getUserProfileService,
   hasJoinedGroupService,
   joinGroupService,
@@ -19,10 +18,6 @@ export const runtime = "edge";
 
 const groupIdParamsSchema = z.object({
   groupId: z.string().uuid(),
-});
-
-const userIdJsonSchema = z.object({
-  userId: z.string().uuid(),
 });
 
 const user = new Hono()
@@ -129,15 +124,6 @@ const user = new Hono()
   .get("/profile", async (c) => {
     try {
       const result = await getUserProfileService();
-      return c.json({ profile: result.profile }, 200);
-    } catch (error) {
-      return handleApiError(c, error, { profile: null });
-    }
-  })
-  .get("/profile", zValidator("json", userIdJsonSchema), async (c) => {
-    try {
-      const { userId } = c.req.valid("json");
-      const result = await getUserProfileByIdService(userId);
       return c.json({ profile: result.profile }, 200);
     } catch (error) {
       return handleApiError(c, error, { profile: null });

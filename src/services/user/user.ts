@@ -105,7 +105,7 @@ export async function getGroupUserProfileService(groupId: string) {
   if (profile.length === 0) {
     throw new NotFoundError();
   }
-  return { groupProfile: profile };
+  return { groupProfile: profile[0] };
 }
 
 export async function getUserProfileService() {
@@ -117,13 +117,5 @@ export async function getUserProfileService() {
   if (profile.length === 0) {
     throw new NotFoundError();
   }
-  return { profile: profile };
-}
-
-export async function getUserProfileByIdService(userId: string) {
-  const profile = await findUserProfileQuery(userId);
-  if (profile.length === 0) {
-    throw new NotFoundError();
-  }
-  return { profile: profile };
+  return { profile: profile[0] };
 }
