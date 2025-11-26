@@ -15,18 +15,7 @@ vi.mock("@/services/article/article", () => ({
 
 import article from "../article";
 import { Bookmark, Comment } from "@/utils/types/articleType.js";
-import {
-  addBookmarkService,
-  deleteArticleService,
-  deleteBookmarkService,
-  deleteCommentService,
-  getArticleService,
-  getArticlesService,
-  getBookmarksService,
-  getCommentsService,
-  insertArticleService,
-  postCommentService,
-} from "@/services/article/article";
+import * as articleService from "@/services/article/article";
 
 type Article = {
   userProfiles: {
@@ -65,16 +54,24 @@ type PostedComment = {
   comment: string;
 };
 
-const mockedGetArticlesService = vi.mocked(getArticlesService);
-const mockedAddBookmarkService = vi.mocked(addBookmarkService);
-const mockedDeleteBookmarkService = vi.mocked(deleteBookmarkService);
-const mockedGetBookmarksService = vi.mocked(getBookmarksService);
-const mockedInsertArticleService = vi.mocked(insertArticleService);
-const mockedGetArticleService = vi.mocked(getArticleService);
-const mockedDeleteArticleService = vi.mocked(deleteArticleService);
-const mockedGetCommentsService = vi.mocked(getCommentsService);
-const mockedPostCommentService = vi.mocked(postCommentService);
-const mockedDeleteCommentService = vi.mocked(deleteCommentService);
+const mockedGetArticlesService = vi.mocked(articleService.getArticlesService);
+const mockedAddBookmarkService = vi.mocked(articleService.addBookmarkService);
+const mockedDeleteBookmarkService = vi.mocked(
+  articleService.deleteBookmarkService
+);
+const mockedGetBookmarksService = vi.mocked(articleService.getBookmarksService);
+const mockedInsertArticleService = vi.mocked(
+  articleService.insertArticleService
+);
+const mockedGetArticleService = vi.mocked(articleService.getArticleService);
+const mockedDeleteArticleService = vi.mocked(
+  articleService.deleteArticleService
+);
+const mockedGetCommentsService = vi.mocked(articleService.getCommentsService);
+const mockedPostCommentService = vi.mocked(articleService.postCommentService);
+const mockedDeleteCommentService = vi.mocked(
+  articleService.deleteCommentService
+);
 
 describe("記事APIのRoute", () => {
   const mockGroupId = "11111111-1111-1111-1111-111111111111";
