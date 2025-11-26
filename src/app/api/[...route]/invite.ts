@@ -1,15 +1,17 @@
 import { Hono } from "hono";
-import { db } from "@/db/index";
-import { groupInvites } from "@/db/schema";
 import { zValidator } from "@hono/zod-validator";
-import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { handleApiError } from "@/libs/handleApiError";
-import { hasJoinedGroupService } from "@/services/user/user";
+import {
+  createInviteTokenService,
+  getInviteTokenService,
+  validateTokenService,
+} from "@/services/invite/invite";
 
 export const runtime = "edge";
 
 const invite = new Hono()
+  /**トークンが有効かどうか確認するAPI */
   .get(
     "/validate/:token",
     zValidator(
@@ -21,28 +23,10 @@ const invite = new Hono()
     async (c) => {
       try {
         const { token } = await c.req.valid("param");
-        const result = await db
-          .select({ groupInvites })
-          .from(groupInvites)
-          .where(eq(groupInvites.token, token))
-          .limit(1);
-        if (!result[0]) {
-          return c.json(
-            { success: false, message: "招待コードが存在しません" },
-            404
-          );
-        }
-        const { expiresAt } = result[0].groupInvites;
-        const currentDate = new Date();
-        if (expiresAt < currentDate) {
-          return c.json(
-            { success: false, message: "招待コードの期限が切れています" },
-            410
-          );
-        }
+        const result = await validateTokenService(token);
         return c.json({
           success: true,
-          message: result[0].groupInvites.groupId,
+          message: result.tokenData.groupId,
         });
       } catch (error) {
         return handleApiError(c, error, { success: false, message: "エラー" });
@@ -61,25 +45,14 @@ const invite = new Hono()
     async (c) => {
       try {
         const { groupId } = await c.req.valid("param");
-        const hasJoined = await hasJoinedGroupService(groupId);
-        if (!hasJoined) {
-          return c.json({ token: null }, 403);
-        }
-        const created = await db
-          .insert(groupInvites)
-          .values({
-            groupId: groupId,
-          })
-          .returning();
-        if (!created[0]) {
-          return c.json({ token: null }, 404);
-        }
-        return c.json({ token: created[0].token }, 200);
+        const result = await createInviteTokenService(groupId);
+        return c.json({ token: result.created.token }, 200);
       } catch (error) {
         return handleApiError(c, error, { token: null });
       }
     }
   )
+  /**グループIDから招待トークンを取得するAPI */
   .get(
     "/token/:groupId",
     zValidator(
@@ -91,28 +64,8 @@ const invite = new Hono()
     async (c) => {
       try {
         const { groupId } = await c.req.valid("param");
-        const hasJoined = await hasJoinedGroupService(groupId);
-        if (!hasJoined) {
-          return c.json({ token: null }, 403);
-        }
-        const inviteData = await db
-          .select({ groupInvites })
-          .from(groupInvites)
-          .where(eq(groupInvites.groupId, groupId))
-          .orderBy(groupInvites.createdAt)
-          .limit(1);
-        if (!inviteData[0]) {
-          return c.json({ token: null }, 404);
-        }
-        const { token, expiresAt } = inviteData[0].groupInvites;
-        const currentDate = new Date();
-        if (!token) {
-          return c.json({ token: null }, 404);
-        }
-        if (expiresAt < currentDate) {
-          return c.json({ token: null }, 410);
-        }
-        return c.json({ token: token });
+        const result = await getInviteTokenService(groupId);
+        return c.json({ token: result.token });
       } catch (error) {
         return handleApiError(c, error, { token: null });
       }
