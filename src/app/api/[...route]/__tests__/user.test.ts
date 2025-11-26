@@ -111,13 +111,11 @@ describe("ユーザーAPIのRoute", () => {
 
   it("POST /join/:groupId グループ参加", async () => {
     mockedJoinGroupService.mockResolvedValue({
-      joinedGroup: [
-        {
-          userId: mockUserId,
-          groupId: mockGroupId,
-          roleId: mockAdminId,
-        },
-      ],
+      joinedGroup: {
+        userId: mockUserId,
+        groupId: mockGroupId,
+        roleId: mockAdminId,
+      },
     });
 
     const req = new Request(`http://localhost/join/${mockGroupId}`, {

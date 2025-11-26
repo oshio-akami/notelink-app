@@ -31,18 +31,7 @@ vi.mock("@/services/article/normalizeArticles", () => ({
 
 import { describe, it, expect, beforeEach } from "vitest";
 import * as articleService from "@/services/article/article";
-import {
-  findGroupArticlesQuery,
-  insertBookmarkQuery,
-  deleteBookmarkQuery,
-  findBookmarksQuery,
-  insertArticleQuery,
-  findArticleQuery,
-  deleteArticleQuery,
-  findCommentsQuery,
-  insertCommentQuery,
-  deleteCommentQuery,
-} from "@/db/queries/article";
+import * as articleQuery from "@/db/queries/article";
 import { withGroupMemberCheck } from "@/services/withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 import { articleWhere } from "@/services/article/articleWhere";
@@ -57,16 +46,18 @@ import {
 } from "@/utils/types/articleType";
 
 const mockedWithGroupMemberCheck = vi.mocked(withGroupMemberCheck);
-const mockedFindGroupArticlesQuery = vi.mocked(findGroupArticlesQuery);
-const mockedInsertBookmarkQuery = vi.mocked(insertBookmarkQuery);
-const mockedDeleteBookmarkQuery = vi.mocked(deleteBookmarkQuery);
-const mockedFindBookmarksQuery = vi.mocked(findBookmarksQuery);
-const mockedInsertArticleQuery = vi.mocked(insertArticleQuery);
-const mockedFindArticleQuery = vi.mocked(findArticleQuery);
-const mockedDeleteArticleQuery = vi.mocked(deleteArticleQuery);
-const mockedFindCommentsQuery = vi.mocked(findCommentsQuery);
-const mockedInsertCommentQuery = vi.mocked(insertCommentQuery);
-const mockedDeleteCommentQuery = vi.mocked(deleteCommentQuery);
+const mockedFindGroupArticlesQuery = vi.mocked(
+  articleQuery.findGroupArticlesQuery
+);
+const mockedInsertBookmarkQuery = vi.mocked(articleQuery.insertBookmarkQuery);
+const mockedDeleteBookmarkQuery = vi.mocked(articleQuery.deleteBookmarkQuery);
+const mockedFindBookmarksQuery = vi.mocked(articleQuery.findBookmarksQuery);
+const mockedInsertArticleQuery = vi.mocked(articleQuery.insertArticleQuery);
+const mockedFindArticleQuery = vi.mocked(articleQuery.findArticleQuery);
+const mockedDeleteArticleQuery = vi.mocked(articleQuery.deleteArticleQuery);
+const mockedFindCommentsQuery = vi.mocked(articleQuery.findCommentsQuery);
+const mockedInsertCommentQuery = vi.mocked(articleQuery.insertCommentQuery);
+const mockedDeleteCommentQuery = vi.mocked(articleQuery.deleteCommentQuery);
 const mockedGetSessionUserId = vi.mocked(getSessionUserId);
 const mockedArticleWhere = vi.mocked(articleWhere);
 const mockedNormalizeArticles = vi.mocked(normalizeArticles);
