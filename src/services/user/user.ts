@@ -33,7 +33,7 @@ export async function joinGroupService(groupId: string, roleId: number) {
   if (length === 0) {
     throw new Error();
   }
-  return { joinedGroup: joinedGroup };
+  return { joinedGroup: joinedGroup[0] };
 }
 
 export async function setCurrentGroupService(groupId: string) {
