@@ -26,7 +26,7 @@ const invite = new Hono()
         const result = await validateTokenService(token);
         return c.json({
           success: true,
-          message: result.tokenData.groupId,
+          message: result.groupId,
         });
       } catch (error) {
         return handleApiError(c, error, { success: false, message: "エラー" });
@@ -46,7 +46,7 @@ const invite = new Hono()
       try {
         const { groupId } = await c.req.valid("param");
         const result = await createInviteTokenService(groupId);
-        return c.json({ token: result.created.token }, 200);
+        return c.json({ token: result.token }, 200);
       } catch (error) {
         return handleApiError(c, error, { token: null });
       }

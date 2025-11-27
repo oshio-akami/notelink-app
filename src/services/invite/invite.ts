@@ -6,7 +6,7 @@ import {
 import { NotFoundError, UnauthorizedError } from "@/utils/errors";
 import { hasJoinedGroupService } from "../user/user";
 
-/**トークンが有効か確認し有効ならトークンの情報を返す */
+/**トークンが有効か確認し有効ならグループIDを返す */
 export async function validateTokenService(token: string) {
   const tokenData = await findInviteTokenQuery(token);
   if (tokenData.length === 0) {
@@ -17,26 +17,26 @@ export async function validateTokenService(token: string) {
   if (expiresAt < currentDate) {
     throw new NotFoundError();
   }
-  return { tokenData: tokenData[0].groupInvites };
+  return { groupId: tokenData[0].groupInvites.groupId };
 }
 
 /**招待トークンを作成する */
 export async function createInviteTokenService(groupId: string) {
   const hasJoined = await hasJoinedGroupService(groupId);
-  if (!hasJoined) {
+  if (!hasJoined.hasJoinedGroup) {
     throw new UnauthorizedError();
   }
   const created = await insertInviteTokenQuery(groupId);
   if (created.length === 0) {
     throw new NotFoundError();
   }
-  return { created: created[0] };
+  return { token: created[0].token };
 }
 
 /**グループIDから招待トークンを取得する */
 export async function getInviteTokenService(groupId: string) {
   const hasJoined = await hasJoinedGroupService(groupId);
-  if (!hasJoined) {
+  if (!hasJoined.hasJoinedGroup) {
     throw new UnauthorizedError();
   }
   const inviteData = await findInviteDataQuery(groupId);
