@@ -130,11 +130,11 @@ describe("ユーザーAPIのRoute", () => {
         userId: string;
         groupId: string;
         roleId: number;
-      }[];
+      };
     }>();
 
     expect(res.status).toBe(200);
-    expect(body.joinedGroup[0].groupId).toBe(mockGroupId);
+    expect(body.joinedGroup.groupId).toBe(mockGroupId);
   });
 
   it("PATCH /currentGroup/:groupId 現在のグループを更新", async () => {

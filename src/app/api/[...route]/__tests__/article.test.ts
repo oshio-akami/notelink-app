@@ -201,8 +201,8 @@ describe("記事APIのRoute", () => {
       body: JSON.stringify({
         groupId: mockGroupId,
         title: "Test New Article",
-        content: "This is a test article",
-        image: "",
+        content: "Test Content",
+        image: "Test Image",
       }),
       headers: { "Content-Type": "application/json" },
     });
