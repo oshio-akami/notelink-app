@@ -9,6 +9,7 @@ import {
 import { ROLE_ADMIN } from "@/libs/roleUtils";
 import { eq, desc, and, or, exists, sql, SQL } from "drizzle-orm";
 
+/**グループ内の記事一覧の取得 */
 export async function findGroupArticlesQuery(
   userId: string,
   whereConditions: SQL<unknown>[]
@@ -51,6 +52,7 @@ export async function findGroupArticlesQuery(
   return result;
 }
 
+/**ブックマークを挿入 */
 export async function insertBookmarkQuery(userId: string, articleId: string) {
   return await db
     .insert(bookmarks)
@@ -61,6 +63,7 @@ export async function insertBookmarkQuery(userId: string, articleId: string) {
     .returning();
 }
 
+/**ブックマークの削除 */
 export async function deleteBookmarkQuery(userId: string, articleId: string) {
   return await db
     .delete(bookmarks)
@@ -70,6 +73,7 @@ export async function deleteBookmarkQuery(userId: string, articleId: string) {
     .returning();
 }
 
+/**ユーザーのブックマーク一覧を取得 */
 export async function findBookmarksQuery(userId: string) {
   return await db
     .select({
@@ -81,6 +85,7 @@ export async function findBookmarksQuery(userId: string) {
     .orderBy(desc(bookmarks.createdAt));
 }
 
+/**記事を挿入 */
 export async function insertArticleQuery(
   userId: string,
   groupId: string,
@@ -100,6 +105,7 @@ export async function insertArticleQuery(
     .returning();
 }
 
+/**記事の詳細の取得 */
 export async function findArticleQuery(
   userId: string,
   groupId: string,
@@ -142,6 +148,7 @@ export async function findArticleQuery(
     .limit(1);
 }
 
+/**記事を削除 */
 export async function deleteArticleQuery(
   userId: string,
   groupId: string,
@@ -172,6 +179,7 @@ export async function deleteArticleQuery(
     .returning();
 }
 
+/**コメントの詳細を取得 */
 export async function findCommentsQuery(groupId: string, articleId: string) {
   return await db
     .select({
@@ -195,6 +203,7 @@ export async function findCommentsQuery(groupId: string, articleId: string) {
     .orderBy(desc(comments.createdAt));
 }
 
+/**コメントを挿入 */
 export async function insertCommentQuery(
   userId: string,
   groupId: string,
@@ -212,6 +221,7 @@ export async function insertCommentQuery(
     .returning();
 }
 
+/**コメントを削除 */
 export async function deleteCommentQuery(commentId: string) {
   return await db
     .delete(comments)

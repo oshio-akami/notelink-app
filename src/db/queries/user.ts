@@ -2,6 +2,7 @@ import { and, count, eq, max, sql } from "drizzle-orm";
 import { articles, groupMembers, groups, userProfiles } from "../schema";
 import { db } from "..";
 
+/**ユーザーがグループに参加しているか */
 export async function hasJoinedGroupQuery(userId: string, groupId: string) {
   return await db
     .select()
@@ -12,6 +13,7 @@ export async function hasJoinedGroupQuery(userId: string, groupId: string) {
     .limit(1);
 }
 
+/**ユーザーのプロフィールを取得 */
 export async function findUserProfileQuery(userId: string) {
   return await db
     .select()
@@ -20,6 +22,7 @@ export async function findUserProfileQuery(userId: string) {
     .limit(1);
 }
 
+/**ユーザーのグループ内でのプロフィールを取得 */
 export async function findGroupUserProfileQuery(
   userId: string,
   groupId: string
@@ -41,6 +44,7 @@ export async function findGroupUserProfileQuery(
     .limit(1);
 }
 
+/**現在閲覧しているグループを更新 */
 export async function updateCurrentGroupQuery(userId: string, groupId: string) {
   return await db
     .update(userProfiles)
@@ -49,6 +53,7 @@ export async function updateCurrentGroupQuery(userId: string, groupId: string) {
     .returning();
 }
 
+/**参加しているグループ一覧の取得 */
 export async function findGroupsQuery(userId: string) {
   return await db
     .select({
@@ -61,6 +66,7 @@ export async function findGroupsQuery(userId: string) {
     .orderBy(groups.groupName);
 }
 
+/**参加しているグループのサマリ一覧を取得 */
 export async function findGroupSummariesQuery(userId: string) {
   return await db
     .select({
@@ -78,6 +84,7 @@ export async function findGroupSummariesQuery(userId: string) {
     .orderBy(groups.groupName);
 }
 
+/**ユーザーをグループから削除 */
 export async function deleteUserToGroupQuery(userId: string, groupId: string) {
   return await db
     .delete(groupMembers)
