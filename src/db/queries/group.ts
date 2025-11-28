@@ -3,7 +3,7 @@ import { groupMembers, roles, groups, userProfiles } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
 
 /**グループのメンバー一覧を取得 */
-export async function findGroupMembers(groupId: string) {
+export async function findGroupMembersQuery(groupId: string) {
   return await db
     .select({
       userId: groupMembers.userId,
@@ -19,7 +19,7 @@ export async function findGroupMembers(groupId: string) {
 }
 
 /**グループIDからグループの情報取得 */
-export async function findGroup(groupId: string) {
+export async function findGroupQuery(groupId: string) {
   const result = await db
     .select()
     .from(groups)
@@ -29,7 +29,7 @@ export async function findGroup(groupId: string) {
 }
 
 /**グループIDからグループ名を取得 */
-export async function findGroupName(
+export async function findGroupNameQuery(
   groupId: string
 ): Promise<{ groupName: string } | null> {
   const result = await db
@@ -41,7 +41,7 @@ export async function findGroupName(
 }
 
 /**グループを作成 */
-export async function insertGroup(
+export async function insertGroupQuery(
   groupName: string
 ): Promise<{ groupId: string; groupName: string } | null> {
   const result = await db
@@ -54,7 +54,7 @@ export async function insertGroup(
 }
 
 /**adminとしてグループに加入させる */
-export async function insertAdminToGroup(userId: string, groupId: string) {
+export async function insertAdminToGroupQuery(userId: string, groupId: string) {
   return await db
     .insert(groupMembers)
     .values({
@@ -65,7 +65,10 @@ export async function insertAdminToGroup(userId: string, groupId: string) {
     .returning();
 }
 /**メンバーとしてグループに加入させる */
-export async function insertMemberToGroup(userId: string, groupId: string) {
+export async function insertMemberToGroupQuery(
+  userId: string,
+  groupId: string
+) {
   return await db
     .insert(groupMembers)
     .values({
@@ -77,7 +80,10 @@ export async function insertMemberToGroup(userId: string, groupId: string) {
 }
 
 /**メンバーをグループから削除 */
-export async function deleteMemberToGroup(userId: string, groupId: string) {
+export async function deleteMemberToGroupQuery(
+  userId: string,
+  groupId: string
+) {
   return await db
     .delete(groupMembers)
     .where(
@@ -86,7 +92,7 @@ export async function deleteMemberToGroup(userId: string, groupId: string) {
 }
 
 /**ユーザーのロールを取得 */
-export async function findUserRoleId(userId: string, groupId: string) {
+export async function findUserRoleIdQuery(userId: string, groupId: string) {
   return await db
     .select({ roleId: groupMembers.roleId })
     .from(groupMembers)

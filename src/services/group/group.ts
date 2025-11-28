@@ -1,10 +1,10 @@
 import {
-  deleteMemberToGroup,
-  findGroup,
-  findGroupMembers,
-  findUserRoleId,
-  insertAdminToGroup,
-  insertGroup,
+  deleteMemberToGroupQuery,
+  findGroupQuery,
+  findGroupMembersQuery,
+  findUserRoleIdQuery,
+  insertAdminToGroupQuery,
+  insertGroupQuery,
 } from "@/db/queries/group";
 import { withGroupMemberCheck } from "../withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
@@ -17,7 +17,7 @@ export async function getGroupMembersService(groupId: string) {
   if (!check.success) {
     throw new ForbiddenError();
   }
-  const members = await findGroupMembers(groupId);
+  const members = await findGroupMembersQuery(groupId);
   if (!members || members.length == 0) {
     throw new NotFoundError();
   }
@@ -30,17 +30,17 @@ export async function createGroupService(groupName: string) {
   if (!userId) {
     throw new ForbiddenError();
   }
-  const createdGroup = await insertGroup(groupName);
+  const createdGroup = await insertGroupQuery(groupName);
   if (!createdGroup) {
     throw new NotFoundError();
   }
-  await insertAdminToGroup(userId, createdGroup.groupId);
+  await insertAdminToGroupQuery(userId, createdGroup.groupId);
   return { createdGroup: createdGroup };
 }
 
 /**指定したグループIDのグループ情報を取得する */
 export async function getGroupService(groupId: string) {
-  const group = await findGroup(groupId);
+  const group = await findGroupQuery(groupId);
   if (!group) {
     throw new NotFoundError();
   }
@@ -51,7 +51,7 @@ export async function getGroupService(groupId: string) {
 export async function deleteMembersService(userId: string, groupId: string) {
   //ユーザの役職取得
   const check = await withGroupMemberCheck(groupId);
-  const role = await findUserRoleId(check.userId, groupId);
+  const role = await findUserRoleIdQuery(check.userId, groupId);
   if (role.length === 0) {
     throw new NotFoundError();
   }
@@ -60,7 +60,7 @@ export async function deleteMembersService(userId: string, groupId: string) {
     throw new ForbiddenError();
   }
 
-  const deleted = await deleteMemberToGroup(userId, groupId);
+  const deleted = await deleteMemberToGroupQuery(userId, groupId);
   const success = deleted.rowCount > 0;
   if (!success) {
     throw new NotFoundError();
