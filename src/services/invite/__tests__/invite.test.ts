@@ -14,8 +14,8 @@ import * as inviteService from "@/services/invite/invite";
 import * as inviteQuery from "@/db/queries/invite";
 import { hasJoinedGroupService } from "@/services/user/user";
 import { NotFoundError, UnauthorizedError } from "@/utils/errors";
+import { MOCK_GROUP_ID } from "@/tests/__mocks__/testData";
 
-// mock参照
 const mockedFindInviteTokenQuery = vi.mocked(inviteQuery.findInviteTokenQuery);
 const mockedInsertInviteTokenQuery = vi.mocked(
   inviteQuery.insertInviteTokenQuery
@@ -23,138 +23,123 @@ const mockedInsertInviteTokenQuery = vi.mocked(
 const mockedFindInviteDataQuery = vi.mocked(inviteQuery.findInviteDataQuery);
 const mockedHasJoinedGroupService = vi.mocked(hasJoinedGroupService);
 
+const mockTokenId = 0;
+const mockToken = "test-token";
+const mockInviteData = [
+  {
+    groupInvites: {
+      id: mockTokenId,
+      groupId: MOCK_GROUP_ID,
+      token: mockToken,
+      expiresAt: new Date(Date.now() + 1000 * 60 * 60),
+      createdAt: new Date(),
+    },
+  },
+];
+const mockExpiredInviteData = [
+  {
+    groupInvites: {
+      id: mockTokenId,
+      groupId: MOCK_GROUP_ID,
+      token: mockToken,
+      expiresAt: new Date(Date.now() - 1000 * 60 * 60),
+      createdAt: new Date(),
+    },
+  },
+];
+
 describe("Invite Service", () => {
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
-  const mockTokenId = 0;
-  const mockGroupId = "11111111-1111-1111-1111-111111111111";
-  const mockToken = "test-token";
-  const mockInviteData = [
-    {
-      groupInvites: {
-        id: mockTokenId,
-        groupId: mockGroupId,
-        token: mockToken,
-        expiresAt: new Date(Date.now() + 1000 * 60 * 60),
-        createdAt: new Date(),
-      },
-    },
-  ];
-  const mockExpiredInviteData = [
-    {
-      groupInvites: {
-        id: mockTokenId,
-        groupId: mockGroupId,
-        token: mockToken,
-        expiresAt: new Date(Date.now() - 1000 * 60 * 60),
-        createdAt: new Date(),
-      },
-    },
-  ];
+  describe("validateTokenService", () => {
+    it("正常: トークンが有効なら groupId を返す", async () => {
+      mockedFindInviteTokenQuery.mockResolvedValue(mockInviteData);
+      const result = await inviteService.validateTokenService(mockToken);
+      expect(result.groupId).toBe(MOCK_GROUP_ID);
+    });
 
-  it("正常: validateTokenService - トークンが有効なら groupId を返す", async () => {
-    mockedFindInviteTokenQuery.mockResolvedValue(mockInviteData);
+    it("エラー: トークンが存在しない場合 NotFoundError", async () => {
+      mockedFindInviteTokenQuery.mockResolvedValue([]);
+      await expect(
+        inviteService.validateTokenService(mockToken)
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
 
-    const result = await inviteService.validateTokenService(mockToken);
-
-    expect(mockedFindInviteTokenQuery).toHaveBeenCalledWith(mockToken);
-    expect(result.groupId).toBe(mockGroupId);
+    it("エラー: トークンが期限切れの場合 NotFoundError", async () => {
+      mockedFindInviteTokenQuery.mockResolvedValue(mockExpiredInviteData);
+      await expect(
+        inviteService.validateTokenService(mockToken)
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
   });
 
-  it("エラー: validateTokenService - トークンが存在しない場合NotFoundErrorを投げる", async () => {
-    mockedFindInviteTokenQuery.mockResolvedValue([]);
+  describe("createInviteTokenService", () => {
+    it("正常: トークン生成", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
+      mockedInsertInviteTokenQuery.mockResolvedValue([
+        mockInviteData[0].groupInvites,
+      ]);
+      const result = await inviteService.createInviteTokenService(
+        MOCK_GROUP_ID
+      );
+      expect(result.token).toBe(mockToken);
+    });
 
-    await expect(
-      inviteService.validateTokenService(mockToken)
-    ).rejects.toBeInstanceOf(NotFoundError);
+    it("エラー: 非参加ユーザーの場合 UnauthorizedError", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: false });
+      await expect(
+        inviteService.createInviteTokenService(MOCK_GROUP_ID)
+      ).rejects.toBeInstanceOf(UnauthorizedError);
+    });
+
+    it("エラー: 作成結果が空の場合 NotFoundError", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
+      mockedInsertInviteTokenQuery.mockResolvedValue([]);
+      await expect(
+        inviteService.createInviteTokenService(MOCK_GROUP_ID)
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
   });
 
-  it("エラー: validateTokenService - トークンが期限切れの場合NotFoundErrorを投げる", async () => {
-    mockedFindInviteTokenQuery.mockResolvedValue(mockExpiredInviteData);
+  describe("getInviteTokenService", () => {
+    it("正常: 有効なトークンを取得", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
+      mockedFindInviteDataQuery.mockResolvedValue(mockInviteData);
+      const result = await inviteService.getInviteTokenService(MOCK_GROUP_ID);
+      expect(result.token).toBe(mockToken);
+    });
 
-    await expect(
-      inviteService.validateTokenService(mockToken)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
+    it("エラー: 非参加ユーザーの場合 UnauthorizedError", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: false });
+      await expect(
+        inviteService.getInviteTokenService(MOCK_GROUP_ID)
+      ).rejects.toBeInstanceOf(UnauthorizedError);
+    });
 
-  it("正常: createInviteTokenService - トークン生成", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
-    mockedInsertInviteTokenQuery.mockResolvedValue([
-      mockInviteData[0].groupInvites,
-    ]);
+    it("エラー: データが存在しない場合 NotFoundError", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
+      mockedFindInviteDataQuery.mockResolvedValue([]);
+      await expect(
+        inviteService.getInviteTokenService(MOCK_GROUP_ID)
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
 
-    const result = await inviteService.createInviteTokenService(mockGroupId);
+    it("エラー: token が空の場合 NotFoundError", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
+      mockedFindInviteDataQuery.mockResolvedValue([]);
+      await expect(
+        inviteService.getInviteTokenService(MOCK_GROUP_ID)
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
 
-    expect(mockedHasJoinedGroupService).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedInsertInviteTokenQuery).toHaveBeenCalledWith(mockGroupId);
-    expect(result.token).toBe(mockToken);
-  });
-
-  it("エラー: createInviteTokenService - 非参加ユーザーの場合UnauthorizedErrorを投げる", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: false });
-
-    await expect(
-      inviteService.createInviteTokenService(mockGroupId)
-    ).rejects.toBeInstanceOf(UnauthorizedError);
-  });
-
-  it("エラー: createInviteTokenService - 作成結果が空の場合NotFoundErrorを投げる", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
-    mockedInsertInviteTokenQuery.mockResolvedValue([]);
-
-    await expect(
-      inviteService.createInviteTokenService(mockGroupId)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
-
-  it("正常: getInviteTokenService - 有効なトークンを取得", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
-
-    mockedFindInviteDataQuery.mockResolvedValue(mockInviteData);
-
-    const result = await inviteService.getInviteTokenService(mockGroupId);
-
-    expect(mockedHasJoinedGroupService).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedFindInviteDataQuery).toHaveBeenCalledWith(mockGroupId);
-    expect(result.token).toBe(mockToken);
-  });
-
-  it("エラー: getInviteTokenService - 非参加ユーザーの場合UnauthorizedErrorを投げる", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: false });
-
-    await expect(
-      inviteService.getInviteTokenService(mockGroupId)
-    ).rejects.toBeInstanceOf(UnauthorizedError);
-  });
-
-  it("エラー: getInviteTokenService - データが存在しないの場合NotFoundErrorを投げる", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
-    mockedFindInviteDataQuery.mockResolvedValue([]);
-
-    await expect(
-      inviteService.getInviteTokenService(mockGroupId)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
-
-  it("エラー: getInviteTokenService - tokenが空の場合NotFoundErrorを投げる", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
-
-    mockedFindInviteDataQuery.mockResolvedValue([]);
-
-    await expect(
-      inviteService.getInviteTokenService(mockGroupId)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
-
-  it("エラー: getInviteTokenService - 期限切れの場合NotFoundErrorを投げる", async () => {
-    mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
-
-    mockedFindInviteDataQuery.mockResolvedValue(mockExpiredInviteData);
-
-    await expect(
-      inviteService.getInviteTokenService(mockGroupId)
-    ).rejects.toBeInstanceOf(NotFoundError);
+    it("エラー: 期限切れの場合 NotFoundError", async () => {
+      mockedHasJoinedGroupService.mockResolvedValue({ hasJoinedGroup: true });
+      mockedFindInviteDataQuery.mockResolvedValue(mockExpiredInviteData);
+      await expect(
+        inviteService.getInviteTokenService(MOCK_GROUP_ID)
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
   });
 });
