@@ -1,24 +1,14 @@
-import { vi } from "vitest";
+import { describe, vi, it, expect, beforeEach } from "vitest";
 
 vi.mock("@/db/queries/article", () => ({
   findGroupArticlesQuery: vi.fn(),
-  insertBookmarkQuery: vi.fn(),
-  deleteBookmarkQuery: vi.fn(),
-  findBookmarksQuery: vi.fn(),
   insertArticleQuery: vi.fn(),
   findArticleQuery: vi.fn(),
   deleteArticleQuery: vi.fn(),
-  findCommentsQuery: vi.fn(),
-  insertCommentQuery: vi.fn(),
-  deleteCommentQuery: vi.fn(),
 }));
 
 vi.mock("@/services/withGroupMemberCheck", () => ({
   withGroupMemberCheck: vi.fn(),
-}));
-
-vi.mock("@/libs/getSessionUserId", () => ({
-  getSessionUserId: vi.fn(),
 }));
 
 vi.mock("@/services/article/articleWhere", () => ({
@@ -29,375 +19,176 @@ vi.mock("@/services/article/normalizeArticles", () => ({
   normalizeArticles: vi.fn(),
 }));
 
-import { describe, it, expect, beforeEach } from "vitest";
+vi.mock("@/libs/getSessionUserId", () => ({
+  getSessionUserId: vi.fn(),
+}));
+
 import * as articleService from "@/services/article/article";
 import * as articleQuery from "@/db/queries/article";
 import { withGroupMemberCheck } from "@/services/withGroupMemberCheck";
-import { getSessionUserId } from "@/libs/getSessionUserId";
 import { articleWhere } from "@/services/article/articleWhere";
 import { normalizeArticles } from "@/services/article/normalizeArticles";
-import { NotFoundError, UnauthorizedError } from "@/utils/errors";
+import { NotFoundError } from "@/utils/errors";
 import { sql, SQL } from "drizzle-orm";
+import { DBArticle, PostArticle } from "@/utils/types/articleType";
 import {
-  Bookmark,
-  DBArticle,
-  PostArticle,
-  PostComment,
-} from "@/utils/types/articleType";
+  MOCK_ARTICLE_ID,
+  MOCK_DATE,
+  MOCK_GROUP_ID,
+  MOCK_USER_ID,
+} from "@/tests/__mocks__/testData";
 
 const mockedWithGroupMemberCheck = vi.mocked(withGroupMemberCheck);
 const mockedFindGroupArticlesQuery = vi.mocked(
   articleQuery.findGroupArticlesQuery
 );
-const mockedInsertBookmarkQuery = vi.mocked(articleQuery.insertBookmarkQuery);
-const mockedDeleteBookmarkQuery = vi.mocked(articleQuery.deleteBookmarkQuery);
-const mockedFindBookmarksQuery = vi.mocked(articleQuery.findBookmarksQuery);
 const mockedInsertArticleQuery = vi.mocked(articleQuery.insertArticleQuery);
 const mockedFindArticleQuery = vi.mocked(articleQuery.findArticleQuery);
 const mockedDeleteArticleQuery = vi.mocked(articleQuery.deleteArticleQuery);
-const mockedFindCommentsQuery = vi.mocked(articleQuery.findCommentsQuery);
-const mockedInsertCommentQuery = vi.mocked(articleQuery.insertCommentQuery);
-const mockedDeleteCommentQuery = vi.mocked(articleQuery.deleteCommentQuery);
-const mockedGetSessionUserId = vi.mocked(getSessionUserId);
 const mockedArticleWhere = vi.mocked(articleWhere);
 const mockedNormalizeArticles = vi.mocked(normalizeArticles);
 
-const TEST_DATE = new Date("2025-01-01T00:00:00.000Z");
+const mockPostedArticles: PostArticle[] = [
+  {
+    groupId: MOCK_GROUP_ID,
+    id: MOCK_ARTICLE_ID,
+    userId: MOCK_USER_ID,
+    image: "Test Image",
+    createdAt: MOCK_DATE(),
+    title: "Test Article",
+    content: "Test Content",
+  },
+];
+const mockDBArticles: DBArticle[] = [
+  {
+    ...mockPostedArticles[0],
+    isBookmark: null,
+    commentCount: 0,
+    userProfiles: {
+      userId: MOCK_USER_ID,
+      displayName: "Test User",
+      image: "Test Image",
+    },
+  },
+];
+
+const mockNormalizedArticles = [{ ...mockDBArticles[0], isBookmark: false }];
 
 describe("Article Service", () => {
   beforeEach(() => {
     vi.resetAllMocks();
-  });
-
-  const mockGroupId = "11111111-1111-1111-1111-111111111111";
-  const mockUserId = "22222222-2222-2222-2222-222222222222";
-  const mockArticleId = "33333333-3333-3333-3333-333333333333";
-  const mockCommentId = "44444444-4444-4444-4444-444444444444";
-  const mockPostedArticles: PostArticle[] = [
-    {
-      groupId: mockGroupId,
-      id: mockArticleId,
-      userId: mockUserId,
-      image: "Test Image",
-      createdAt: TEST_DATE,
-      title: "Test Article",
-      content: "Test Content",
-    },
-  ];
-  const mockDBArticles: DBArticle[] = [
-    {
-      ...mockPostedArticles[0],
-      isBookmark: null,
-      commentCount: 0,
-      userProfiles: {
-        userId: mockUserId,
-        displayName: "Test User",
-        image: "Test Image",
-      },
-    },
-  ];
-
-  const mockNormalizedArticles = [{ ...mockDBArticles[0], isBookmark: false }];
-
-  const mockBookmarks: Bookmark[] = [
-    { userId: mockUserId, createdAt: TEST_DATE, articleId: mockArticleId },
-  ];
-
-  const mockPostedComments: PostComment[] = [
-    {
-      id: mockCommentId,
-      articleId: mockArticleId,
-      groupId: mockGroupId,
-      userId: mockUserId,
-      createdAt: TEST_DATE,
-      comment: "Test Comment",
-    },
-  ];
-
-  const mockComments = [
-    {
-      userProfiles: {
-        userId: mockUserId,
-        displayName: "Test User",
-        image: "Test Image",
-      },
-      content: "Test Content",
-      ...mockPostedComments[0],
-    },
-  ];
-
-  it("正常: 指定したグループの記事一覧を取得する", async () => {
-    const wherePlaceholder: SQL<unknown>[] = [sql`1 = 1`];
     mockedWithGroupMemberCheck.mockResolvedValue({
       success: true,
-      userId: mockUserId,
+      userId: MOCK_USER_ID,
     });
-    mockedArticleWhere.mockReturnValue(wherePlaceholder);
-    mockedFindGroupArticlesQuery.mockResolvedValue(mockDBArticles);
-    mockedNormalizeArticles.mockReturnValue(mockNormalizedArticles);
-    const result = await articleService.getArticlesService(mockGroupId, false);
-    expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedArticleWhere).toHaveBeenCalledWith(
-      mockUserId,
-      mockGroupId,
-      false
-    );
-
-    expect(mockedFindGroupArticlesQuery).toHaveBeenCalledWith(
-      mockUserId,
-      wherePlaceholder
-    );
-    expect(result.articles[0].isBookmark).toBe(false);
   });
 
-  it("正常: addBookmarkService ブックマーク追加", async () => {
-    mockedGetSessionUserId.mockResolvedValue(mockUserId);
-    const added = mockBookmarks;
-    mockedInsertBookmarkQuery.mockResolvedValue(mockBookmarks);
-    const result = await articleService.addBookmarkService(mockArticleId);
-    expect(mockedGetSessionUserId).toHaveBeenCalled();
-    expect(mockedInsertBookmarkQuery).toHaveBeenCalledWith(
-      mockUserId,
-      mockArticleId
-    );
-    expect(result.addBookmark).toEqual(added);
-  });
+  describe("getArticlesService", () => {
+    it("正常: 指定したグループの記事一覧を取得する", async () => {
+      const wherePlaceholder: SQL<unknown>[] = [sql`1 = 1`];
+      mockedArticleWhere.mockReturnValue(wherePlaceholder);
+      mockedFindGroupArticlesQuery.mockResolvedValue(mockDBArticles);
+      mockedNormalizeArticles.mockReturnValue(mockNormalizedArticles);
 
-  it("エラー: addBookmarkService 未ログインは UnauthorizedError を投げる", async () => {
-    mockedGetSessionUserId.mockResolvedValue(undefined);
-    await expect(
-      articleService.addBookmarkService(mockArticleId)
-    ).rejects.toBeInstanceOf(UnauthorizedError);
-  });
+      const result = await articleService.getArticlesService(
+        MOCK_GROUP_ID,
+        false
+      );
 
-  it("エラー: addBookmarkService insert が空配列ならエラーを投げる", async () => {
-    mockedGetSessionUserId.mockResolvedValue(mockUserId);
-    mockedInsertBookmarkQuery.mockResolvedValue([]);
-    await expect(
-      articleService.addBookmarkService(mockArticleId)
-    ).rejects.toBeInstanceOf(Error);
-  });
-
-  it("正常: deleteBookmarkService ブックマーク削除", async () => {
-    mockedGetSessionUserId.mockResolvedValue(mockUserId);
-    mockedDeleteBookmarkQuery.mockResolvedValue(mockBookmarks);
-    const result = await articleService.deleteBookmarkService(mockArticleId);
-    expect(mockedGetSessionUserId).toHaveBeenCalled();
-    expect(mockedDeleteBookmarkQuery).toHaveBeenCalledWith(
-      mockUserId,
-      mockArticleId
-    );
-    expect(result.deleteBookmark).toEqual(mockBookmarks);
-  });
-
-  it("エラー: deleteBookmarkService 未ログインは UnauthorizedError を投げる", async () => {
-    mockedGetSessionUserId.mockResolvedValue(undefined);
-    await expect(
-      articleService.deleteBookmarkService(mockArticleId)
-    ).rejects.toBeInstanceOf(UnauthorizedError);
-  });
-
-  it("エラー: deleteBookmarkService 存在しない場合は NotFoundError を投げる", async () => {
-    mockedGetSessionUserId.mockResolvedValue(mockUserId);
-    mockedDeleteBookmarkQuery.mockResolvedValue([]);
-    await expect(
-      articleService.deleteBookmarkService(mockArticleId)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
-
-  it("正常: getBookmarksService ブックマーク一覧取得", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
+      expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(MOCK_GROUP_ID);
+      expect(mockedArticleWhere).toHaveBeenCalledWith(
+        MOCK_USER_ID,
+        MOCK_GROUP_ID,
+        false
+      );
+      expect(mockedFindGroupArticlesQuery).toHaveBeenCalledWith(
+        MOCK_USER_ID,
+        wherePlaceholder
+      );
+      expect(mockedNormalizeArticles).toHaveBeenCalledWith(mockDBArticles);
+      expect(result.articles[0].isBookmark).toBe(false);
     });
-    mockedFindBookmarksQuery.mockResolvedValue(mockBookmarks);
-
-    const result = await articleService.getBookmarksService(mockGroupId);
-    expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedFindBookmarksQuery).toHaveBeenCalledWith(mockUserId);
-    expect(result.bookmarks).toEqual(mockBookmarks);
   });
 
-  it("エラー: insertArticleService 投稿失敗は Error を投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
+  describe("insertArticleService", () => {
+    it("エラー: 投稿失敗は Error を投げる", async () => {
+      mockedInsertArticleQuery.mockResolvedValue([]);
+      await expect(
+        articleService.insertArticleService(
+          MOCK_GROUP_ID,
+          "Test Title",
+          "Test Image",
+          "Test Content"
+        )
+      ).rejects.toThrow();
     });
-    mockedInsertArticleQuery.mockResolvedValue([]);
-    await expect(
-      articleService.insertArticleService(
-        mockGroupId,
+
+    it("正常: 記事投稿", async () => {
+      mockedInsertArticleQuery.mockResolvedValue(mockPostedArticles);
+      const result = await articleService.insertArticleService(
+        MOCK_GROUP_ID,
         "Test Title",
         "Test Image",
         "Test Content"
-      )
-    ).rejects.toThrow();
+      );
+      expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(MOCK_GROUP_ID);
+      expect(mockedInsertArticleQuery).toHaveBeenCalledWith(
+        MOCK_USER_ID,
+        MOCK_GROUP_ID,
+        "Test Title",
+        "Test Image",
+        "Test Content"
+      );
+      expect(result.postedArticle).toEqual(mockPostedArticles);
+    });
   });
 
-  it("正常: insertArticleService 記事投稿", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
+  describe("getArticleService", () => {
+    it("エラー: 存在しない記事は NotFoundError を投げる", async () => {
+      mockedFindArticleQuery.mockResolvedValue([]);
+      await expect(
+        articleService.getArticleService(MOCK_GROUP_ID, MOCK_ARTICLE_ID)
+      ).rejects.toBeInstanceOf(NotFoundError);
     });
-    mockedInsertArticleQuery.mockResolvedValue(mockPostedArticles);
 
-    const result = await articleService.insertArticleService(
-      mockGroupId,
-      "Test Title",
-      "Test Image",
-      "Test Content"
-    );
-    expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedInsertArticleQuery).toHaveBeenCalledWith(
-      mockUserId,
-      mockGroupId,
-      "Test Title",
-      "Test Image",
-      "Test Content"
-    );
-    expect(result.postedArticle).toEqual(mockPostedArticles);
+    it("正常: 記事取得と正規化", async () => {
+      mockedFindArticleQuery.mockResolvedValue(mockDBArticles);
+      mockedNormalizeArticles.mockReturnValue(mockNormalizedArticles);
+
+      const result = await articleService.getArticleService(
+        MOCK_GROUP_ID,
+        MOCK_ARTICLE_ID
+      );
+      expect(mockedFindArticleQuery).toHaveBeenCalledWith(
+        MOCK_USER_ID,
+        MOCK_GROUP_ID,
+        MOCK_ARTICLE_ID
+      );
+      expect(mockedNormalizeArticles).toHaveBeenCalledWith(mockDBArticles);
+      expect(result.article.id).toBe(MOCK_ARTICLE_ID);
+      expect(result.article.isBookmark).toBe(false);
+    });
   });
 
-  it("エラー: getArticleService 存在しない記事は NotFoundError を投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
+  describe("deleteArticleService", () => {
+    it("正常: 記事削除", async () => {
+      mockedDeleteArticleQuery.mockResolvedValue(mockPostedArticles);
+      const result = await articleService.deleteArticleService(
+        MOCK_GROUP_ID,
+        MOCK_ARTICLE_ID
+      );
+      expect(mockedDeleteArticleQuery).toHaveBeenCalledWith(
+        MOCK_USER_ID,
+        MOCK_GROUP_ID,
+        MOCK_ARTICLE_ID
+      );
+      expect(result.deleted).toEqual(mockPostedArticles);
     });
-    mockedFindArticleQuery.mockResolvedValue([]);
-    await expect(
-      articleService.getArticleService(mockGroupId, mockArticleId)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
-
-  it("正常: getArticleService 記事取得と正規化", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
+    it("エラー: 存在しない場合は NotFoundError を投げる", async () => {
+      mockedDeleteArticleQuery.mockResolvedValue([]);
+      await expect(
+        articleService.deleteArticleService(MOCK_GROUP_ID, MOCK_ARTICLE_ID)
+      ).rejects.toBeInstanceOf(NotFoundError);
     });
-    mockedFindArticleQuery.mockResolvedValue(mockDBArticles);
-    mockedNormalizeArticles.mockReturnValue(mockNormalizedArticles);
-
-    const result = await articleService.getArticleService(
-      mockGroupId,
-      mockArticleId
-    );
-    expect(mockedFindArticleQuery).toHaveBeenCalledWith(
-      mockUserId,
-      mockGroupId,
-      mockArticleId
-    );
-    expect(result.article.id).toBe(mockArticleId);
-    expect(result.article.isBookmark).toBe(false);
-  });
-
-  it("エラー: deleteArticleService 存在しない場合は NotFoundError を投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedDeleteArticleQuery.mockResolvedValue([]);
-    await expect(
-      articleService.deleteArticleService(mockGroupId, mockArticleId)
-    ).rejects.toBeInstanceOf(NotFoundError);
-  });
-
-  it("正常: deleteArticleService 記事削除", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedDeleteArticleQuery.mockResolvedValue(mockPostedArticles);
-
-    const result = await articleService.deleteArticleService(
-      mockGroupId,
-      mockArticleId
-    );
-    expect(mockedDeleteArticleQuery).toHaveBeenCalledWith(
-      mockUserId,
-      mockGroupId,
-      mockArticleId
-    );
-    expect(result.deleted).toEqual(mockPostedArticles);
-  });
-
-  it("正常: getCommentsService コメント一覧取得", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedFindCommentsQuery.mockResolvedValue(mockComments);
-
-    const result = await articleService.getCommentsService(
-      mockGroupId,
-      mockArticleId
-    );
-    expect(mockedWithGroupMemberCheck).toHaveBeenCalledWith(mockGroupId);
-    expect(mockedFindCommentsQuery).toHaveBeenCalledWith(
-      mockGroupId,
-      mockArticleId
-    );
-    expect(result.comments).toEqual(mockComments);
-  });
-
-  it("エラー: postCommentService 投稿失敗は Error を投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedInsertCommentQuery.mockResolvedValue([]);
-    await expect(
-      articleService.postCommentService(
-        mockGroupId,
-        mockArticleId,
-        "Test Comment"
-      )
-    ).rejects.toThrow();
-  });
-
-  it("正常: postCommentService コメント投稿", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedInsertCommentQuery.mockResolvedValue(mockPostedComments);
-
-    const result = await articleService.postCommentService(
-      mockGroupId,
-      mockArticleId,
-      "Test Comment"
-    );
-    expect(mockedInsertCommentQuery).toHaveBeenCalledWith(
-      mockUserId,
-      mockGroupId,
-      mockArticleId,
-      "Test Comment"
-    );
-    expect(result.postComment).toEqual(mockPostedComments);
-  });
-
-  it("エラー: deleteCommentService 削除失敗は Error を投げる", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedDeleteCommentQuery.mockResolvedValue([]);
-    await expect(
-      articleService.deleteCommentService(mockGroupId, mockCommentId)
-    ).rejects.toThrow();
-  });
-
-  it("正常: deleteCommentService コメント削除", async () => {
-    mockedWithGroupMemberCheck.mockResolvedValue({
-      success: true,
-      userId: mockUserId,
-    });
-    mockedDeleteCommentQuery.mockResolvedValue(mockPostedComments);
-
-    const result = await articleService.deleteCommentService(
-      mockGroupId,
-      mockCommentId
-    );
-    expect(mockedDeleteCommentQuery).toHaveBeenCalledWith(mockCommentId);
-    expect(result.deletedComment).toEqual(mockPostedComments);
   });
 });

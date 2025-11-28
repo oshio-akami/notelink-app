@@ -25,6 +25,7 @@ export async function getArticlesService(groupId: string, mine: boolean) {
   return { articles: normalizedArticles };
 }
 
+/**ブックマークを追加する */
 export async function addBookmarkService(articleId: string) {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -37,6 +38,7 @@ export async function addBookmarkService(articleId: string) {
   return { addBookmark: addBookmark };
 }
 
+/**ブックマークを削除する */
 export async function deleteBookmarkService(articleId: string) {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -49,12 +51,14 @@ export async function deleteBookmarkService(articleId: string) {
   return { deleteBookmark: deleted };
 }
 
+/**ブックマーク一覧を取得する */
 export async function getBookmarksService(groupId: string) {
   const check = await withGroupMemberCheck(groupId);
   const bookmarks = await findBookmarksQuery(check.userId);
   return { bookmarks: bookmarks };
 }
 
+/**記事を投稿する */
 export async function insertArticleService(
   groupId: string,
   title: string,
@@ -75,6 +79,7 @@ export async function insertArticleService(
   return { postedArticle: postedArticle };
 }
 
+/**記事の詳細を取得する */
 export async function getArticleService(groupId: string, articleId: string) {
   const check = await withGroupMemberCheck(groupId);
   const article = await findArticleQuery(check.userId, groupId, articleId);
@@ -85,6 +90,7 @@ export async function getArticleService(groupId: string, articleId: string) {
   return { article: normalizedArticles[0] };
 }
 
+/**記事を削除する */
 export async function deleteArticleService(groupId: string, articleId: string) {
   const check = await withGroupMemberCheck(groupId);
   //投稿者本人か管理者の場合削除
@@ -95,12 +101,14 @@ export async function deleteArticleService(groupId: string, articleId: string) {
   return { deleted: deleted };
 }
 
+/**コメント一覧を取得する */
 export async function getCommentsService(groupId: string, articleId: string) {
   await withGroupMemberCheck(groupId);
   const comments = await findCommentsQuery(groupId, articleId);
   return { comments: comments };
 }
 
+/**コメントを投稿する */
 export async function postCommentService(
   groupId: string,
   articleId: string,
@@ -119,6 +127,7 @@ export async function postCommentService(
   return { postComment: postComment };
 }
 
+/**コメントを削除する */
 export async function deleteCommentService(groupId: string, commentId: string) {
   await withGroupMemberCheck(groupId);
   const deletedComment = await deleteCommentQuery(commentId);
