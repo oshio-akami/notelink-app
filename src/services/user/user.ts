@@ -1,4 +1,7 @@
-import { insertAdminToGroup, insertMemberToGroup } from "@/db/queries/group";
+import {
+  insertAdminToGroupQuery,
+  insertMemberToGroupQuery,
+} from "@/db/queries/group";
 import {
   deleteUserToGroupQuery,
   findGroupsQuery,
@@ -12,6 +15,7 @@ import { withGroupMemberCheck } from "../withGroupMemberCheck";
 import { getSessionUserId } from "@/libs/getSessionUserId";
 import { NotFoundError, UnauthorizedError } from "@/utils/errors";
 
+/**ユーザーがグループに参加しているかどうか確認する */
 export async function hasJoinedGroupService(groupId: string) {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -21,6 +25,7 @@ export async function hasJoinedGroupService(groupId: string) {
   return { hasJoinedGroup: hasJoinedGroup.length > 0 };
 }
 
+/**グループに参加する */
 export async function joinGroupService(groupId: string, roleId: number) {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -28,14 +33,15 @@ export async function joinGroupService(groupId: string, roleId: number) {
   }
   const joinedGroup =
     roleId === 1
-      ? await insertAdminToGroup(userId, groupId)
-      : await insertMemberToGroup(userId, groupId);
+      ? await insertAdminToGroupQuery(userId, groupId)
+      : await insertMemberToGroupQuery(userId, groupId);
   if (length === 0) {
     throw new Error();
   }
   return { joinedGroup: joinedGroup[0] };
 }
 
+/**現在のグループを更新する */
 export async function setCurrentGroupService(groupId: string) {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -49,6 +55,7 @@ export async function setCurrentGroupService(groupId: string) {
   return { success: true };
 }
 
+/**現在のグループを取得する */
 export async function getCurrentGroupService() {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -72,6 +79,7 @@ export async function getCurrentGroupService() {
   return { currentGroupId: userProfile[0].currentGroupId };
 }
 
+/**グループ一覧を取得する */
 export async function getGroupsService() {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -81,6 +89,7 @@ export async function getGroupsService() {
   return { groups: groups };
 }
 
+/**グループのサマリ一覧を取得する */
 export async function getGroupSummariesService() {
   const userId = await getSessionUserId();
   if (!userId) {
@@ -90,6 +99,7 @@ export async function getGroupSummariesService() {
   return { groupSummaries: groupSummaries };
 }
 
+/**グループから退会する */
 export async function leaveGroupService(groupId: string) {
   const check = await withGroupMemberCheck(groupId);
   const deleted = await deleteUserToGroupQuery(check.userId, groupId);
@@ -99,6 +109,7 @@ export async function leaveGroupService(groupId: string) {
   }
 }
 
+/**グループ内でのユーザーのプロフィールを取得する */
 export async function getGroupUserProfileService(groupId: string) {
   const check = await withGroupMemberCheck(groupId);
   const profile = await findGroupUserProfileQuery(check.userId, groupId);
@@ -108,6 +119,7 @@ export async function getGroupUserProfileService(groupId: string) {
   return { groupProfile: profile[0] };
 }
 
+/**ユーザーのプロフィールを取得する */
 export async function getUserProfileService() {
   const userId = await getSessionUserId();
   if (!userId) {
