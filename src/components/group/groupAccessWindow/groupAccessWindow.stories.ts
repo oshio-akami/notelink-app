@@ -3,7 +3,7 @@ import GroupAccessWindow from "./groupAccessWindow";
 import { within } from "@storybook/testing-library";
 
 const meta: Meta<typeof GroupAccessWindow> = {
-  title: "Group/GroupAccessModal",
+  title: "Group/GroupAccessWindow",
   component: GroupAccessWindow,
   tags: ["autodocs"],
 } satisfies Meta<typeof GroupAccessWindow>;

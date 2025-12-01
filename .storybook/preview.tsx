@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import ProviderWrapper from "@/components/providerWrapper/providerWrapper";
+import ProviderWrapper from "../src/components/providerWrapper/providerWrapper";
 import React from "react";
 
 const preview: Preview = {

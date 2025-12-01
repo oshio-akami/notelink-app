@@ -1,18 +1,21 @@
 "use client";
 
 import React from "react";
+import "@/styles/breakpoints.scss";
+import "@/styles/globals.scss";
+import "@mantine/core/styles.css";
 import {
   MantineProvider,
   ColorSchemeScript,
   mantineHtmlProps,
 } from "@mantine/core";
-import { Noto_Sans_JP } from "next/font/google";
 
 import "@mantine/tiptap/styles.css";
 
-const font = Noto_Sans_JP({
-  weight: "400",
-  subsets: ["latin"],
+import localFont from "next/font/local";
+
+const notoSansJPFont = localFont({
+  src: "/fonts/NotoSansJP.woff2",
 });
 
 export default function ProviderWrapper({
@@ -21,7 +24,7 @@ export default function ProviderWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <div className={font.className} {...mantineHtmlProps}>
+    <div className={notoSansJPFont.className} {...mantineHtmlProps}>
       <ColorSchemeScript />
       <MantineProvider>{children}</MantineProvider>
     </div>
