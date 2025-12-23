@@ -15,13 +15,6 @@ export const runtime = "edge";
 export const metadata: Metadata = {
   title: "NoteLink",
 };
-import { Noto_Sans_JP } from "next/font/google";
-
-const Font = Noto_Sans_JP({
-  weight: ["400", "700"],
-  subsets: ["latin"],
-  preload: false,
-});
 
 export default function RootLayout({
   children,
@@ -33,7 +26,7 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={Font.className}>
+      <body>
         <MantineProvider>
           <NextAuthProvider>{children}</NextAuthProvider>
         </MantineProvider>
