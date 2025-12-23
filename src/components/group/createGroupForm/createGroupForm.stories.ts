@@ -9,6 +9,12 @@ const meta: Meta<typeof CreateGroupForm> = {
   title: "Group/CreateGroupForm",
   component: CreateGroupForm,
   tags: ["autodocs"],
+  args: {
+    disable: false,
+    setDisable(disable: boolean) {
+      return disable;
+    },
+  },
 };
 
 export default meta;
