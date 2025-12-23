@@ -4,6 +4,7 @@ import path from "node:path";
 export default defineConfig({
   test: {
     environment: "happy-dom",
+    setupFiles: ["./vitest.setup.ts"],
     include: ["**/__tests__/**/*.test.ts"],
   },
   resolve: {
